@@ -16,9 +16,6 @@ class ImageMatricielle {
 		int getLargeur();
 		int getHauteur();
 		
-		void setLargeur(int largeur);
-		void setHauteur(int hauteur);
-		
 		int* operator[](int i);
 
 	private :

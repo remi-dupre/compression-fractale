@@ -12,8 +12,19 @@ ImagePart::ImagePart(int _taille) : taille(_taille) {
 	source = new ImageMatricielle(taille, taille);
 }
 
+ImagePart::~ImagePart() {
+	if(virtuel) { // L'image source a été créée par l'objet et doit être supprimée
+		delete source;
+	}
+}
+
 void ImagePart::set(int i, int j, int val) {
-	(*source)[i+x][j+y] = val;
+	/* Modifie la valeur d'un élément dans la parties
+	 *  /!\ Interdit les modifications de l'extérieur
+	 */
+	if( i>=0 && j>=0 && i<taille && j<taille) {
+		(*source)[i+x][j+y] = val;
+	}
 }
 
 void ImagePart::remplir(int couleur) {
@@ -30,22 +41,29 @@ void ImagePart::transformer(ImagePart& imgSortie, Transformation transfo) {
 	 * La transformation est appliqué sur la partie passée en argument
 	 */
 	int a = imgSortie.getTaille();
-	std::complex<double> rapport = std::polar(transfo.rapport, rad(transfo.rotation));
-	std::complex<double> centre(transfo.translation_x+taille/2, transfo.translation_y+taille/2);
+	double rapportx = (double(taille)/a)*cos(rad(transfo.rotation)); // r*e^(i*theta)
+	double rapporty = (double(taille)/a)*sin(rad(transfo.rotation));
+	double centrex = transfo.translation.x + (taille/2); // Centre de la rotation
+	double centrey = transfo.translation.y + (taille/2);
+	
 	for(int is=0 ; is<a ; is++) {
 		for(int js=0 ; js<a ; js++) {
-			std::complex<double> origine(is, js);
-			std::complex<double> sortie = (rapport * (origine - centre)) + centre;
-			int i = rint(sortie.real());
-			int j = rint(sortie.imag());
-			//std::cout << "["<<i<<","<<j<<"] -> ["<<is<<","<<js<<"]\n";
-			//std::cout << origine << " -> " << sortie << " -> ["<<i<<","<<j<<"]\n";
+			int i = rint( (rapportx*(is-centrex)) - (rapporty*(js-centrey)) + centrex );
+			int j = rint( (rapporty*(js-centrey)) + (rapportx*(is-centrex)) + centrey );
 			imgSortie.set(is, js, at(i, j));
 		}
 	}
 }
 
 int ImagePart::at(int i, int j) {
+	int ix = i+x;
+	int jy = j+y;
+	
+	if(ix < 0) i = 0;
+	else if(ix >= source->getLargeur()) ix = source->getLargeur() - 1;
+	if(jy < 0) j = 0;
+	else if(jy >= source->getHauteur()) jy = source->getHauteur() - 1;
+	
 	return (*source)[i+x][j+y];
 }
 
