@@ -36,7 +36,7 @@ void ImagePart::remplir(int couleur) {
 	}
 }
 
-void ImagePart::transformer(ImagePart& imgSortie, Transformation transfo) {
+void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo) {
 	/* Applique une transformation linéaire sur la partie d'image
 	 * La transformation est appliqué sur la partie passée en argument
 	 */
@@ -45,7 +45,6 @@ void ImagePart::transformer(ImagePart& imgSortie, Transformation transfo) {
 	double rapporty = (double(taille)/a)*sin(rad(transfo.rotation));
 	double centrex = transfo.translation.x + (taille/2); // Centre de la rotation
 	double centrey = transfo.translation.y + (taille/2);
-	
 	for(int is=0 ; is<a ; is++) {
 		for(int js=0 ; js<a ; js++) {
 			int i = rint( (rapportx*(is-centrex)) - (rapporty*(js-centrey)) + centrex );
@@ -55,16 +54,75 @@ void ImagePart::transformer(ImagePart& imgSortie, Transformation transfo) {
 	}
 }
 
+Transformation ImagePart::chercherTransformation(ImagePart& origine, float& varianceRetour) {
+	/* Cherche la meilleur transformation [origine -> this]
+	 * Ne modifie que la rotation
+	 * Le paramètre varianceRetour est modifié et retourne la valeur de la variance après tranformation
+	 */
+	Transformation max, min, mid;
+	max.translation.x = max.translation.y = min.translation.x = min.translation.y = mid.translation.x = mid.translation.y = 0;
+	max.rotation = 355;
+	min.rotation = 0;
+	
+	ImagePart img(taille);
+	
+	origine.transformer(img, max);
+	float varmax = varianceDifference(img);
+	
+	origine.transformer(img, min);
+	float varmin = varianceDifference(img);
+	
+	while(max.rotation - min.rotation > 5) {
+		mid.rotation = (max.rotation+min.rotation)/2;
+		origine.transformer(img, mid);
+		float variance = varianceDifference(img);
+		if(varmin < varmax) {
+			max.rotation = mid.rotation;
+			varmax = variance;
+		}
+		else {
+			min.rotation = mid.rotation;
+			varmin = variance;
+		}
+	}
+	varianceRetour = varmin;
+	return min;
+}
+
+Source ImagePart::chercherMeilleur(std::vector<ImagePart>& parties) {
+	int n = parties.size();
+	float varianceMax, variance;
+	Transformation transfo = chercherTransformation(parties[0], varianceMax);
+	Transformation transfoMax = transfo;
+	transfo.translation.x = transfo.translation.y = transfo.rotation = 0;
+	int imax = 0;
+	for(int i=1 ; i<n ; i++) {
+		transfo = chercherTransformation(parties[i], variance);
+		if(varianceMax < variance) {
+			imax = i;
+			transfoMax = transfo;
+			varianceMax = variance;
+		}
+	}
+	Source retour;
+	retour.bloc = imax;
+	retour.transformation = transfoMax;
+	return retour;
+}
+
 int ImagePart::at(int i, int j) {
+	/* Retourne la valeur aux coordonnées données
+	 * Si les coordonnées dépassent du blocs mais restent dans l'image ca marche quand même
+	 */
 	int ix = i+x;
 	int jy = j+y;
 	
-	if(ix < 0) i = 0;
+	if(ix < 0) ix = 0;
 	else if(ix >= source->getLargeur()) ix = source->getLargeur() - 1;
-	if(jy < 0) j = 0;
+	if(jy < 0) jy = 0;
 	else if(jy >= source->getHauteur()) jy = source->getHauteur() - 1;
 	
-	return (*source)[i+x][j+y];
+	return (*source)[ix][jy];
 }
 
 int ImagePart::getTaille() { return taille; }
@@ -80,7 +138,7 @@ int ImagePart::couleurMoyenne() {
 	return somme/(taille*taille);
 }
 
-float ImagePart::varianceDifference(ImagePart B) {
+float ImagePart::varianceDifference(ImagePart& B) {
 	/* Compare deux images :
 	 * Etudie la variance des "distances" entre les pixels
 	 * La moyenne de chaque image est ajustée par ajout d'une constante

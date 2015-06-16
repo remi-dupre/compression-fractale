@@ -25,7 +25,7 @@ struct Source {
 	 *  - bloc : les coordonnées du bloc a choisir dans l'image
 	 *  - transformation : le type de transformation a y appliquer
 	 */
-	Coordonnes bloc;
+	int bloc;
 	Transformation transformation;
 };
 
@@ -39,15 +39,15 @@ class ImagePart {
 		void set(int x, int y, int valeur);
 		void remplir(int couleur);
 		
-		void transformer(ImagePart& sortie, Transformation transfo); // Virer les complexes pour optimiser ?
-		Transformation chercherTransformation(ImagePart origine);
-		Source chercherMeilleur(ImagePart* parties);
+		void transformer(ImagePart& sortie, const Transformation& transfo); // Virer les complexes pour optimiser ?
+		Transformation chercherTransformation(ImagePart& origine, float& variance);
+		Source chercherMeilleur(std::vector<ImagePart>& parties);
 
 		int at(int i, int j);
 		int getTaille();
 		
 		int couleurMoyenne();
-		float varianceDifference(ImagePart partie);
+		float varianceDifference(ImagePart& partie);
 		
 		void debug();
 
