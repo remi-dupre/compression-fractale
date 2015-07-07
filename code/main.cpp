@@ -33,16 +33,13 @@ ImageMatricielle* blocs(int x, int y) {
 int main() {
 	std::srand(std::time(0));
 	
-	ImageMatricielle *img = rayures(1000, 1000);
-	std::vector<ImagePart>* dan = img->decouper(30);
+	ImageMatricielle *img = blocs(1000, 1000);
 	std::vector<ImagePart>* petit = img->decouper(30);
-	std::vector<ImagePart>* gros = img->decouper(50);
-	//(*dan)[80].debug();
-	//for(int i=0 ; i<100; i++) (*dan)[42].transformer(a, transfo);
-	//a.debug();
+	std::vector<ImagePart>* gros = img->decouper(60);
 	
-	(*petit)[10].debug();
-	Source a = (*petit)[10].chercherMeilleur(*gros);
+	(*petit)[20].debug();
+	for(int i=0 ; i<10 ; i++) Source a = (*petit)[20].chercherMeilleur(*gros);
+	Source a = (*petit)[20].chercherMeilleur(*gros);
 	ImagePart bout((*petit)[10].getTaille());
 	(*gros)[a.bloc].transformer(bout, a.transformation); 
 	std::cout << "\n";

@@ -31,6 +31,10 @@ struct Source {
 
 class ImageMatricielle;
 class ImagePart {
+	/* Représente un bout d'image carrés
+	 * C'est là-dessus que sont  effectuées les transformations
+	 */
+	 
 	public :
 		ImagePart(ImageMatricielle* maman, int x, int y, int taille);
 		ImagePart(int taille);
@@ -43,11 +47,11 @@ class ImagePart {
 		Transformation chercherTransformation(ImagePart& origine, float& variance);
 		Source chercherMeilleur(std::vector<ImagePart>& parties);
 
-		int at(int i, int j);
-		int getTaille();
+		int at(int i, int j) const;
+		int getTaille() const;
 		
-		int couleurMoyenne();
-		float varianceDifference(ImagePart& partie);
+		int couleurMoyenne() const;
+		float varianceDifference(const ImagePart& partie);
 		
 		void debug();
 

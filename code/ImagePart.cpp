@@ -1,30 +1,74 @@
 #include "ImagePart.h"
 
+/* *************** Constructeur / Destructeur *************** */
+
 ImagePart::ImagePart(ImageMatricielle* maman, int _x, int _y, int _taille) :
+	/* Pointe une partie d'image.
+	 * Entrées :
+	 *   - maman : un pointeur sur l'image source
+	 *   - x,y : les coordonnées du point haut-gauche du carré
+	 *   - taille : la cote du carrés
+	 */
 	source(maman), taille(_taille), x(_x), y(_y) {
 	virtuel = false;
 }
 
 ImagePart::ImagePart(int _taille) : taille(_taille) {
-	/* Crée un "faux" bout d'image */
+	/* Crée un "faux" bout d'image.
+	 * Entrées :
+	 *   - taille : la cote du carré */
 	virtuel = true;
 	x = y = 0;
 	source = new ImageMatricielle(taille, taille);
 }
 
 ImagePart::~ImagePart() {
-	if(virtuel) { // L'image source a été créée par l'objet et doit être supprimée
+	if(virtuel) { // L'image source a été créée dans le constructeur
 		delete source;
 	}
 }
 
+/* *************** Setteurs / Getteurs *************** */
+
 void ImagePart::set(int i, int j, int val) {
 	/* Modifie la valeur d'un élément dans la parties
-	 *  /!\ Interdit les modifications de l'extérieur
+	 * /!\ Interdit les modifications de l'extérieur
+	 * Entrées :
+	 *   - i,j : les coordonnées du pixel à modifier, dans [0, taille[
+	 *   - val : la valeur à lui attribuer
 	 */
-	if( i>=0 && j>=0 && i<taille && j<taille) {
+	if( i>=0 && j>=0 && i<taille && j<taille ) {
 		(*source)[i+x][j+y] = val;
 	}
+}
+
+int ImagePart::at(int i, int j) const {
+	/* Retourne la valeur aux coordonnées données (i,j)
+	 * Si les coordonnées dépassent du blocs mais restent dans l'image ça marche quand même
+	 */
+	int ix = i+x;
+	int jy = j+y;
+	
+	if(ix < 0) ix = 0;
+	else if(ix >= source->getLargeur()) ix = source->getLargeur() - 1;
+	
+	if(jy < 0) jy = 0;
+	else if(jy >= source->getHauteur()) jy = source->getHauteur() - 1;
+	
+	return (*source)[ix][jy];
+}
+
+int ImagePart::getTaille() const { return taille; } // La cote du carré
+
+int ImagePart::couleurMoyenne() const {
+	/* La moyenne des couleurs représentées sur le bout d'image */
+	int somme = 0;
+	for(int i=0 ; i<taille ; i++) {
+		for(int j=0 ; j<taille ; j++) {
+			somme += at(i, j);
+		}
+	}
+	return somme/(taille*taille);
 }
 
 void ImagePart::remplir(int couleur) {
@@ -36,9 +80,14 @@ void ImagePart::remplir(int couleur) {
 	}
 }
 
+/* *************** Transformations *************** */
+
 void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo) {
 	/* Applique une transformation linéaire sur la partie d'image
-	 * La transformation est appliqué sur la partie passée en argument
+	 * Entrées :
+	 *   - imgSortie : le bout d'image qui reçois le résultat de la transformation
+	 *   - transfo : un type de transformation
+	 * /!\ Il vaut mieux accompagner cette fonction d'un brouillon de calculs
 	 */
 	int a = imgSortie.getTaille();
 	double rapportx = (double(taille)/a)*cos(rad(transfo.rotation)); // r*e^(i*theta)
@@ -55,9 +104,13 @@ void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo)
 }
 
 Transformation ImagePart::chercherTransformation(ImagePart& origine, float& varianceRetour) {
-	/* Cherche la meilleur transformation [origine -> this]
-	 * Ne modifie que la rotation
-	 * Le paramètre varianceRetour est modifié et retourne la valeur de la variance après tranformation
+	/* Cherche la meilleur transformation de origine pour correspondre à cet objet
+	 * Entrées :
+	 *   - origine : l'image qui subis les transformations
+	 *   - varianceRetour : un flotant
+	 * Sorties :
+	 *   - retourne la tranformation optimale
+	 *   - modifie varianceRetour : la variance des couleurs de l'image de référence et de l'autre après transformation
 	 */
 	Transformation max, min, mid;
 	max.translation.x = max.translation.y = min.translation.x = min.translation.y = mid.translation.x = mid.translation.y = 0;
@@ -90,6 +143,13 @@ Transformation ImagePart::chercherTransformation(ImagePart& origine, float& vari
 }
 
 Source ImagePart::chercherMeilleur(std::vector<ImagePart>& parties) {
+	/* Cherche la meilleur image d'origine pour une transformation
+	 * Entrée :
+	 *   - parties : un tableau de bouts d'images
+	 * Sortie : un type source :
+	 *   - bloc : l'indice du bout d'image choisis dans "parties"
+	 *   - transformation : la transformation optimale pour ce blocs
+	 */
 	int n = parties.size();
 	float varianceMax, variance;
 	Transformation transfo = chercherTransformation(parties[0], varianceMax);
@@ -109,36 +169,7 @@ Source ImagePart::chercherMeilleur(std::vector<ImagePart>& parties) {
 	retour.transformation = transfoMax;
 	return retour;
 }
-
-int ImagePart::at(int i, int j) {
-	/* Retourne la valeur aux coordonnées données
-	 * Si les coordonnées dépassent du blocs mais restent dans l'image ca marche quand même
-	 */
-	int ix = i+x;
-	int jy = j+y;
-	
-	if(ix < 0) ix = 0;
-	else if(ix >= source->getLargeur()) ix = source->getLargeur() - 1;
-	if(jy < 0) jy = 0;
-	else if(jy >= source->getHauteur()) jy = source->getHauteur() - 1;
-	
-	return (*source)[ix][jy];
-}
-
-int ImagePart::getTaille() { return taille; }
-
-int ImagePart::couleurMoyenne() {
-	/* La moyenne des couleurs représentées sur l'image */
-	int somme = 0;
-	for(int i=0 ; i<taille ; i++) {
-		for(int j=0 ; j<taille ; j++) {
-			somme += at(i, j);
-		}
-	}
-	return somme/(taille*taille);
-}
-
-float ImagePart::varianceDifference(ImagePart& B) {
+float ImagePart::varianceDifference(const ImagePart& B) {
 	/* Compare deux images :
 	 * Etudie la variance des "distances" entre les pixels
 	 * La moyenne de chaque image est ajustée par ajout d'une constante
@@ -154,6 +185,7 @@ float ImagePart::varianceDifference(ImagePart& B) {
 }
 
 void ImagePart::debug() {
+	/* Un debug moche à l'arrache de l'image */
 	for(int i=0 ; i<taille ; i++) {
 		for(int j=0 ; j<taille ; j++) {
 			std::cout << "" << at(j, i) << " ";
