@@ -1,9 +1,14 @@
 #include "ImageMatricielle.h"
 
+/* *************** Constructeur / Destructeur *************** */
+
 ImageMatricielle::ImageMatricielle(int x, int y) : largeur(x), hauteur(y) {
+	/* Créée une nouvelle image de dimensions données
+	 * Les pixels de l'image ne sont pas initialisés
+	 */
 	image = new int* [largeur];
 	for(int i=0 ; i<largeur ; i++) {
-		image[i] = new int[y];
+		image[i] = new int[hauteur];
 	}
 }
 
@@ -15,10 +20,17 @@ ImageMatricielle::~ImageMatricielle() {
 	delete[] image;
 }
 
+/* *************** Setters / Getters *************** */
+
 int* ImageMatricielle::operator[](int i) {
-	/* Retourne la bonne ligne de l'image */
+	/* Retourne la ligne de l'image correspondante */
 	return image[i];
 }
+
+int ImageMatricielle::getHauteur() const { return hauteur; }
+int ImageMatricielle::getLargeur() const { return largeur; }
+
+/* *************** Découpe *************** */
 
 std::vector<ImagePart>* ImageMatricielle::decouper(int taille) {
 	/* Découpe l'image en sous-images
@@ -34,7 +46,4 @@ std::vector<ImagePart>* ImageMatricielle::decouper(int taille) {
 	}
 	return liste;
 }
-
-int ImageMatricielle::getHauteur() const { return hauteur; }
-int ImageMatricielle::getLargeur() const { return largeur; }
 

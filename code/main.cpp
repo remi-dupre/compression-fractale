@@ -32,8 +32,7 @@ ImageMatricielle* blocs(int x, int y) {
 
 int main() {
 	std::srand(std::time(0));
-	
-	ImageMatricielle *img = blocs(1000, 1000);
+	*img = blocs(1000, 1000);
 	std::vector<ImagePart>* petit = img->decouper(30);
 	std::vector<ImagePart>* gros = img->decouper(60);
 	

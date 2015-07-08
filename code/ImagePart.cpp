@@ -28,7 +28,7 @@ ImagePart::~ImagePart() {
 	}
 }
 
-/* *************** Setteurs / Getteurs *************** */
+/* *************** Setters / Getters *************** */
 
 void ImagePart::set(int i, int j, int val) {
 	/* Modifie la valeur d'un élément dans la parties
@@ -169,6 +169,7 @@ Source ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties) const 
 	retour.transformation = transfoMax;
 	return retour;
 }
+
 float ImagePart::varianceDifference(const ImagePart& B) const {
 	/* Compare deux images :
 	 * Etudie la variance des "distances" entre les pixels

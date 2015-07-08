@@ -11,7 +11,7 @@ class ImageMatricielle {
 		ImageMatricielle(int x, int y);
 		~ImageMatricielle();
 
-		std::vector<ImagePart>* decouper(int taille) const;
+		std::vector<ImagePart>* decouper(int taille);
 		
 		int getLargeur() const;
 		int getHauteur() const;
@@ -19,9 +19,9 @@ class ImageMatricielle {
 		int* operator[](int i);
 
 	private :
-		int **image;
-		int largeur;
-		int hauteur;
+		int **image; // L'image est représentée par une matrice de int
+		int largeur; // Largeur en pixels de l'image
+		int hauteur; // Hauteur en pixels de l'image
 };
 
 #endif
