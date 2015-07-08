@@ -31,7 +31,7 @@ struct Source {
 
 class ImageMatricielle;
 class ImagePart {
-	/* Représente un bout d'image carrés
+	/* Représente un bout d'image carré
 	 * C'est là-dessus que sont  effectuées les transformations
 	 */
 	 
@@ -42,24 +42,24 @@ class ImagePart {
 
 		void set(int x, int y, int valeur);
 		void remplir(int couleur);
-		
-		void transformer(ImagePart& sortie, const Transformation& transfo); // Virer les complexes pour optimiser ?
-		Transformation chercherTransformation(ImagePart& origine, float& variance);
-		Source chercherMeilleur(std::vector<ImagePart>& parties);
 
 		int at(int i, int j) const;
 		int getTaille() const;
 		
 		int couleurMoyenne() const;
-		float varianceDifference(const ImagePart& partie);
+		float varianceDifference(const ImagePart& partie) const;
 		
-		void debug();
+		void transformer(ImagePart& sortie, const Transformation& transfo) const;
+		Transformation chercherTransformation(const ImagePart& origine, float& variance) const;
+		Source chercherMeilleur(const std::vector<ImagePart>& parties) const;
+		
+		void debug() const;
 
 	private :
-		ImageMatricielle* source; // L'image dont c'est une partie
-		int taille; // La taille du coté de la partie
-		int x,y;
-		bool virtuel; // Si oui, la source a été créée uniquement pour simuler un bout d'image
+		ImageMatricielle* source;	// L'image dont c'est une partie
+		int taille;					// La taille du coté de la partie
+		int x,y;					// La position du pixel haut-gauche dans l'image source
+		bool virtuel;				// Si oui, la source a été créée uniquement pour simuler un bout d'image
 };
 
 #endif

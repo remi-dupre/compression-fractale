@@ -35,6 +35,6 @@ std::vector<ImagePart>* ImageMatricielle::decouper(int taille) {
 	return liste;
 }
 
-int ImageMatricielle::getHauteur() { return hauteur; }
-int ImageMatricielle::getLargeur() { return largeur; }
+int ImageMatricielle::getHauteur() const { return hauteur; }
+int ImageMatricielle::getLargeur() const { return largeur; }
 

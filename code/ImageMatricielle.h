@@ -11,10 +11,10 @@ class ImageMatricielle {
 		ImageMatricielle(int x, int y);
 		~ImageMatricielle();
 
-		std::vector<ImagePart>* decouper(int taille);
+		std::vector<ImagePart>* decouper(int taille) const;
 		
-		int getLargeur();
-		int getHauteur();
+		int getLargeur() const;
+		int getHauteur() const;
 		
 		int* operator[](int i);
 

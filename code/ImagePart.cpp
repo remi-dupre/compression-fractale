@@ -82,7 +82,7 @@ void ImagePart::remplir(int couleur) {
 
 /* *************** Transformations *************** */
 
-void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo) {
+void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo) const {
 	/* Applique une transformation linéaire sur la partie d'image
 	 * Entrées :
 	 *   - imgSortie : le bout d'image qui reçois le résultat de la transformation
@@ -103,7 +103,7 @@ void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo)
 	}
 }
 
-Transformation ImagePart::chercherTransformation(ImagePart& origine, float& varianceRetour) {
+Transformation ImagePart::chercherTransformation(const ImagePart& origine, float& varianceRetour) const {
 	/* Cherche la meilleur transformation de origine pour correspondre à cet objet
 	 * Entrées :
 	 *   - origine : l'image qui subis les transformations
@@ -142,7 +142,7 @@ Transformation ImagePart::chercherTransformation(ImagePart& origine, float& vari
 	return min;
 }
 
-Source ImagePart::chercherMeilleur(std::vector<ImagePart>& parties) {
+Source ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties) const {
 	/* Cherche la meilleur image d'origine pour une transformation
 	 * Entrée :
 	 *   - parties : un tableau de bouts d'images
@@ -169,7 +169,7 @@ Source ImagePart::chercherMeilleur(std::vector<ImagePart>& parties) {
 	retour.transformation = transfoMax;
 	return retour;
 }
-float ImagePart::varianceDifference(const ImagePart& B) {
+float ImagePart::varianceDifference(const ImagePart& B) const {
 	/* Compare deux images :
 	 * Etudie la variance des "distances" entre les pixels
 	 * La moyenne de chaque image est ajustée par ajout d'une constante
@@ -184,7 +184,7 @@ float ImagePart::varianceDifference(const ImagePart& B) {
 	return float(somme)/float(taille*taille);
 }
 
-void ImagePart::debug() {
+void ImagePart::debug() const {
 	/* Un debug moche à l'arrache de l'image */
 	for(int i=0 ; i<taille ; i++) {
 		for(int j=0 ; j<taille ; j++) {
