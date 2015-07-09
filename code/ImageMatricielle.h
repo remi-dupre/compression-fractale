@@ -4,6 +4,7 @@
 #include "lodepng.h"// https://github.com/lvandeve/lodepng
 #include <iostream>
 #include <vector>
+#include "debug.h"
 #include "ImagePart.h"
 
 class ImagePart;

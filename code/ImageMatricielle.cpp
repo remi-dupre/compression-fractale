@@ -93,10 +93,12 @@ void ImageMatricielle::compresser(unsigned int taillePetit, unsigned int tailleG
 	std::vector<ImagePart>* pavageGros = decouper(tailleGros);
 	std::cout << "   - " << pavagePetit->size() << " et " << pavageGros->size() << " blocs" << std::endl;
 
-	std::cout << " 2 - Recherche des correspondances" << std::endl;
 	std::vector<Source>* correspondances = new std::vector<Source>();
 	for(int i=0 ; i<pavagePetit->size() ; i++) {
+		chargement(" 2 - Recherche des correspondances", i, pavagePetit->size());
 		correspondances->push_back( (*pavagePetit)[i].chercherMeilleur(*pavageGros) );
-		std::cout << i << std::endl;
 	}
+	chargement(" 2 - Recherche des correspondances", pavagePetit->size(), pavagePetit->size());
+	std::cout << "\n";
+
 }
