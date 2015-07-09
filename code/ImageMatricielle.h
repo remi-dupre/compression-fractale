@@ -1,7 +1,7 @@
 #ifndef imagematricielle
 #define imagematricielle
 
-#include "lodepng.h"// https://github.com/lvandeve/lodepng
+#include "lib/lodepng.h" // https://github.com/lvandeve/lodepng
 #include <iostream>
 #include <vector>
 #include "debug.h"

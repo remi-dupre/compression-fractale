@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Téléchargement des dépendances (#yolo)
+wget --directory-prefix=code/lib/ https://raw.githubusercontent.com/lvandeve/lodepng/master/lodepng.cpp
+wget --directory-prefix=code/lib/ https://raw.githubusercontent.com/lvandeve/lodepng/master/lodepng.h
