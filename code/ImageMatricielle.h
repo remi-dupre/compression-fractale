@@ -1,6 +1,7 @@
 #ifndef imagematricielle
 #define imagematricielle
 
+#include "lodepng.h"// https://github.com/lvandeve/lodepng
 #include <iostream>
 #include <vector>
 #include "ImagePart.h"
@@ -8,21 +9,22 @@
 class ImagePart;
 class ImageMatricielle {
 	public :
-		ImageMatricielle(int x, int y);
-		ImageMatricielle(char* fichier);
+		ImageMatricielle(const char* fichier, int couche);
+		ImageMatricielle(unsigned int x, unsigned int y);
 		~ImageMatricielle();
 
 		std::vector<ImagePart>* decouper(int taille);
+		void compresser(unsigned int taillePetit, unsigned int tailleGros);
 
-		int getLargeur() const;
-		int getHauteur() const;
+		unsigned int getLargeur() const;
+		unsigned int getHauteur() const;
 
-		int* operator[](int i);
+		unsigned int* operator[](int i);
 
 	private :
-		int **image; // L'image est représentée par une matrice de int
-		int largeur; // Largeur en pixels de l'image
-		int hauteur; // Hauteur en pixels de l'image
+		unsigned int **image; // L'image est représentée par une matrice de int
+		unsigned int largeur; // Largeur en pixels de l'image
+		unsigned int hauteur; // Hauteur en pixels de l'image
 };
 
 #endif

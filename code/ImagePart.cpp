@@ -157,6 +157,7 @@ Source ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties) const 
 	transfo.translation.x = transfo.translation.y = transfo.rotation = 0;
 	int imax = 0;
 	for(int i=1 ; i<n ; i++) {
+		std::cout << i << "-";
 		transfo = chercherTransformation(parties[i], variance);
 		if(varianceMax < variance) {
 			imax = i;
