@@ -27,7 +27,7 @@ ImageMatricielle::ImageMatricielle(const char* fichier, int couche) {
 	unsigned error = lodepng::decode(img, mLargeur, mHauteur, png);
 
 	if(error) {
-		std::cout << fichier << " -> png decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+		std::cerr << fichier << " -> png decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
 		mLargeur = mHauteur = 0;
 		erreur = true;
 	}

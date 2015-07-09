@@ -5,6 +5,9 @@
 #include <cstdlib>
 #include <ctime>
 
+#include "debug.h"
+#include <fstream>
+
 ImageMatricielle* rayures(int x, int y) {
 	const int valeur = 1;
 	const int espace = 6;
@@ -31,5 +34,15 @@ ImageMatricielle* blocs(int x, int y) {
 
 int main() {
 	ImageMatricielle image("lena.png", 0);
-	image.compresser(30, 60);
+	std::vector<Source> ifs = image.compresser(30, 60);
+
+	std::cout << "Ecriture dans out.txt" << std::endl;
+	std::ofstream fichier("out.txt", std::ios::trunc);
+	if(fichier) {
+		for(int i=0 ; i<ifs.size() ; i++) {
+			fichier << i << " : " << sourceToString(ifs[i]) << std::endl;
+		}
+		fichier.close();
+	}
+	else std::cerr << "Impossible d'écrire dans le fichier" << std::endl;
 }
