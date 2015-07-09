@@ -1,21 +1,22 @@
-#ifndef imagematricielle
-#define imagematricielle
+#ifndef IMAGEMATRICIELLE
+#define IMAGEMATRICIELLE
 
 #include "lib/lodepng.h" // https://github.com/lvandeve/lodepng
 #include <iostream>
 #include <vector>
-#include "debug.h"
 #include "ImagePart.h"
+#include "debug.h"
 
 class ImagePart;
+struct Source;
 class ImageMatricielle {
 	public :
 		ImageMatricielle(const char* fichier, int couche);
 		ImageMatricielle(unsigned int x, unsigned int y);
 		~ImageMatricielle();
 
-		std::vector<ImagePart>* decouper(int taille);
-		void compresser(unsigned int taillePetit, unsigned int tailleGros);
+		std::vector<ImagePart> decouper(int taille);
+		std::vector<Source> compresser(unsigned int taillePetit, unsigned int tailleGros);
 
 		unsigned int getLargeur() const;
 		unsigned int getHauteur() const;

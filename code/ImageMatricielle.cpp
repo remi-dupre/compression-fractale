@@ -63,42 +63,43 @@ unsigned int ImageMatricielle::getLargeur() const { return mLargeur; }
 
 /* *************** Compression *************** */
 
-std::vector<ImagePart>* ImageMatricielle::decouper(int taille) {
+std::vector<ImagePart> ImageMatricielle::decouper(int taille) {
 	/* Découpe l'image en sous-images
 	 * Les sous parties sont des carrés de côté "taille", le dépassement est ignoré
 	 */
-	std::vector<ImagePart>* liste = new std::vector<ImagePart>();
+	std::vector<ImagePart> liste;
 	for(int i=0 ; i*taille<mLargeur ; i++) {
 		for(int j=0 ; j*taille<mHauteur ; j++) {
-			liste->push_back( ImagePart(this, i*taille, j*taille, taille) );////////////////////////////////////////////// !!!!!!
+			liste.push_back( ImagePart(this, i*taille, j*taille, taille) );////////////////////////////////////////////// !!!!!!
 		}
 	}
 	return liste;
 }
 
-void ImageMatricielle::compresser(unsigned int taillePetit, unsigned int tailleGros) {
-	/* Effectue la compression de l'image, pas de retour le temps de savoir quoi faire
+std::vector<Source> ImageMatricielle::compresser(unsigned int taillePetit, unsigned int tailleGros) {
+	/* Effectue la compression de l'image
 	 * Entrées :
 	 *  - taillePetit : la taille des blocs du petit pavages
 	 *  - tailleGros : taille des gros blocs, doit être plus grand que taillePetit
 	 */
 	if(taillePetit >= tailleGros) {
 		std::cout << "Le pavage n'est pas de la bonne dimension" << std::endl;
-		return;
+		return std::vector<Source>();
 	}
 	std::cout << "Compression initiée" << std::endl;
 
 	std::cout << " 1 - Création des pavages" << std::endl;
-	std::vector<ImagePart>* pavagePetit = decouper(taillePetit);
-	std::vector<ImagePart>* pavageGros = decouper(tailleGros);
-	std::cout << "   - " << pavagePetit->size() << " et " << pavageGros->size() << " blocs" << std::endl;
+	std::vector<ImagePart> pavagePetit = decouper(taillePetit);
+	std::vector<ImagePart> pavageGros = decouper(tailleGros);
+	std::cout << "   - " << pavagePetit.size() << " et " << pavageGros.size() << " blocs" << std::endl;
 
-	std::vector<Source>* correspondances = new std::vector<Source>();
-	for(int i=0 ; i<pavagePetit->size() ; i++) {
-		chargement(" 2 - Recherche des correspondances", i, pavagePetit->size());
-		correspondances->push_back( (*pavagePetit)[i].chercherMeilleur(*pavageGros) );
+	std::vector<Source> correspondances;
+	for(int i=0 ; i<pavagePetit.size() ; i++) {
+		chargement(" 2 - Recherche des correspondances", i, pavagePetit.size());
+		correspondances.push_back( pavagePetit[i].chercherMeilleur(pavageGros) );
 	}
-	chargement(" 2 - Recherche des correspondances", pavagePetit->size(), pavagePetit->size());
+	chargement(" 2 - Recherche des correspondances", pavagePetit.size(), pavagePetit.size());
 	std::cout << "\n";
 
+	return correspondances;
 }

@@ -30,21 +30,6 @@ ImageMatricielle* blocs(int x, int y) {
 }
 
 int main() {
-	/*std::srand(std::time(0));
-
-	ImageMatricielle *img = blocs(1000, 1000);
-	std::vector<ImagePart>* petit = img->decouper(30);
-	std::vector<ImagePart>* gros = img->decouper(60);
-
-	(*petit)[20].debug();
-	for(int i=0 ; i<10 ; i++) Source a = (*petit)[20].chercherMeilleur(*gros);
-	Source a = (*petit)[20].chercherMeilleur(*gros);
-	ImagePart bout((*petit)[10].getTaille());
-	(*gros)[a.bloc].transformer(bout, a.transformation);
-	std::cout << "\n";
-	bout.debug();*/
-
 	ImageMatricielle image("lena.png", 0);
 	image.compresser(30, 60);
-
 }

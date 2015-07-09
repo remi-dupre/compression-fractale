@@ -1,5 +1,5 @@
-#ifndef imagepart
-#define imagepart
+#ifndef IMAGEPART
+#define IMAGEPART
 
 #include "ImageMatricielle.h"
 #include <cmath>
@@ -57,7 +57,7 @@ class ImagePart {
 
 	private :
 		ImageMatricielle* mSource;	// L'image dont c'est une partie
-		int mTaille;					// La taille du coté de la partie
+		int mTaille;				// La taille du coté de la partie
 		int mX, mY;					// La position du pixel haut-gauche dans l'image source
 		bool mVirtuel;				// Si oui, la source a été créée uniquement pour simuler un bout d'image
 };
