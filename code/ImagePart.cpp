@@ -48,13 +48,13 @@ int ImagePart::at(int i, int j) const {
 	 */
 	int ix = i+x;
 	int jy = j+y;
-	
+
 	if(ix < 0) ix = 0;
 	else if(ix >= source->getLargeur()) ix = source->getLargeur() - 1;
-	
+
 	if(jy < 0) jy = 0;
 	else if(jy >= source->getHauteur()) jy = source->getHauteur() - 1;
-	
+
 	return (*source)[ix][jy];
 }
 
@@ -116,15 +116,15 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	max.translation.x = max.translation.y = min.translation.x = min.translation.y = mid.translation.x = mid.translation.y = 0;
 	max.rotation = 355;
 	min.rotation = 0;
-	
+
 	ImagePart img(taille);
-	
+
 	origine.transformer(img, max);
 	float varmax = varianceDifference(img);
-	
+
 	origine.transformer(img, min);
 	float varmin = varianceDifference(img);
-	
+
 	while(max.rotation - min.rotation > 5) {
 		mid.rotation = (max.rotation+min.rotation)/2;
 		origine.transformer(img, mid);

@@ -34,7 +34,7 @@ class ImagePart {
 	/* Représente un bout d'image carré
 	 * C'est là-dessus que sont  effectuées les transformations
 	 */
-	 
+
 	public :
 		ImagePart(ImageMatricielle* maman, int x, int y, int taille);
 		ImagePart(int taille);
@@ -45,14 +45,14 @@ class ImagePart {
 
 		int at(int i, int j) const;
 		int getTaille() const;
-		
+
 		int couleurMoyenne() const;
 		float varianceDifference(const ImagePart& partie) const;
-		
+
 		void transformer(ImagePart& sortie, const Transformation& transfo) const;
 		Transformation chercherTransformation(const ImagePart& origine, float& variance) const;
 		Source chercherMeilleur(const std::vector<ImagePart>& parties) const;
-		
+
 		void debug() const;
 
 	private :

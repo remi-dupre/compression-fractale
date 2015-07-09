@@ -9,13 +9,14 @@ class ImagePart;
 class ImageMatricielle {
 	public :
 		ImageMatricielle(int x, int y);
+		ImageMatricielle(char* fichier);
 		~ImageMatricielle();
 
 		std::vector<ImagePart>* decouper(int taille);
-		
+
 		int getLargeur() const;
 		int getHauteur() const;
-		
+
 		int* operator[](int i);
 
 	private :

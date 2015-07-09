@@ -12,6 +12,13 @@ ImageMatricielle::ImageMatricielle(int x, int y) : largeur(x), hauteur(y) {
 	}
 }
 
+ImageMatricielle::ImageMatricielle(char* fichier) {
+	/* Ouvre un fichier '.png'
+	 * Entrée : fichier : l'adresse du fichier
+	 */
+
+}
+
 ImageMatricielle::~ImageMatricielle() {
 	/* Suppression de l'image */
 	for(int i=0 ; i<largeur ; i++) {
@@ -46,4 +53,3 @@ std::vector<ImagePart>* ImageMatricielle::decouper(int taille) {
 	}
 	return liste;
 }
-
