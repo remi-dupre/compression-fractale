@@ -9,22 +9,22 @@ ImagePart::ImagePart(ImageMatricielle* maman, int _x, int _y, int _taille) :
 	 *   - x,y : les coordonnées du point haut-gauche du carré
 	 *   - taille : la cote du carrés
 	 */
-	source(maman), taille(_taille), x(_x), y(_y) {
-	virtuel = false;
+	mSource(maman), mTaille(_taille), mX(_x), mY(_y) {
+	mVirtuel = false;
 }
 
-ImagePart::ImagePart(int _taille) : taille(_taille) {
+ImagePart::ImagePart(int _taille) : mTaille(_taille) {
 	/* Crée un "faux" bout d'image.
 	 * Entrées :
 	 *   - taille : la cote du carré */
-	virtuel = true;
-	x = y = 0;
-	source = new ImageMatricielle(taille, taille);
+	mVirtuel = true;
+	mX = mY = 0;
+	mSource = new ImageMatricielle(mTaille, mTaille);
 }
 
 ImagePart::~ImagePart() {
-	if(virtuel) { // L'image source a été créée dans le constructeur
-		delete source;
+	if(mVirtuel) { // L'image source a été créée dans le constructeur
+		delete mSource;
 	}
 }
 
@@ -37,8 +37,8 @@ void ImagePart::set(int i, int j, int val) {
 	 *   - i,j : les coordonnées du pixel à modifier, dans [0, taille[
 	 *   - val : la valeur à lui attribuer
 	 */
-	if( i>=0 && j>=0 && i<taille && j<taille ) {
-		(*source)[i+x][j+y] = val;
+	if( i>=0 && j>=0 && i<mTaille && j<mTaille ) {
+		(*mSource)[i+mX][j+mY] = val;
 	}
 }
 
@@ -46,35 +46,35 @@ int ImagePart::at(int i, int j) const {
 	/* Retourne la valeur aux coordonnées données (i,j)
 	 * Si les coordonnées dépassent du blocs mais restent dans l'image ça marche quand même
 	 */
-	int ix = i+x;
-	int jy = j+y;
+	int ix = i+mX;
+	int jy = j+mY;
 
 	if(ix < 0) ix = 0;
-	else if(ix >= source->getLargeur()) ix = source->getLargeur() - 1;
+	else if(ix >= mSource->getLargeur()) ix = mSource->getLargeur() - 1;
 
 	if(jy < 0) jy = 0;
-	else if(jy >= source->getHauteur()) jy = source->getHauteur() - 1;
+	else if(jy >= mSource->getHauteur()) jy = mSource->getHauteur() - 1;
 
-	return (*source)[ix][jy];
+	return (*mSource)[ix][jy];
 }
 
-int ImagePart::getTaille() const { return taille; } // La cote du carré
+int ImagePart::getTaille() const { return mTaille; } // La cote du carré
 
 int ImagePart::couleurMoyenne() const {
 	/* La moyenne des couleurs représentées sur le bout d'image */
 	int somme = 0;
-	for(int i=0 ; i<taille ; i++) {
-		for(int j=0 ; j<taille ; j++) {
+	for(int i=0 ; i<mTaille ; i++) {
+		for(int j=0 ; j<mTaille ; j++) {
 			somme += at(i, j);
 		}
 	}
-	return somme/(taille*taille);
+	return somme/(mTaille*mTaille);
 }
 
 void ImagePart::remplir(int couleur) {
 	/* Remplis le bout d'image avec une couleur uniforme */
-	for(int i=0 ; i<taille ; i++) {
-		for(int j=0 ; j<taille ; j++) {
+	for(int i=0 ; i<mTaille ; i++) {
+		for(int j=0 ; j<mTaille ; j++) {
 			set(i, j, couleur);
 		}
 	}
@@ -90,10 +90,10 @@ void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo)
 	 * /!\ Il vaut mieux accompagner cette fonction d'un brouillon de calculs
 	 */
 	int a = imgSortie.getTaille();
-	double rapportx = (double(taille)/a)*cos(rad(transfo.rotation)); // r*e^(i*theta)
-	double rapporty = (double(taille)/a)*sin(rad(transfo.rotation));
-	double centrex = transfo.translation.x + (taille/2); // Centre de la rotation
-	double centrey = transfo.translation.y + (taille/2);
+	double rapportx = (double(mTaille)/a)*cos(rad(transfo.rotation)); // r*e^(i*theta)
+	double rapporty = (double(mTaille)/a)*sin(rad(transfo.rotation));
+	double centrex = transfo.translation.x + (mTaille/2); // Centre de la rotation
+	double centrey = transfo.translation.y + (mTaille/2);
 	for(int is=0 ; is<a ; is++) {
 		for(int js=0 ; js<a ; js++) {
 			int i = rint( (rapportx*(is-centrex)) - (rapporty*(js-centrey)) + centrex );
@@ -117,7 +117,7 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	max.rotation = 355;
 	min.rotation = 0;
 
-	ImagePart img(taille);
+	ImagePart img(mTaille);
 
 	origine.transformer(img, max);
 	float varmax = varianceDifference(img);
@@ -177,18 +177,18 @@ float ImagePart::varianceDifference(const ImagePart& B) const {
 	 */
 	int ecart = B.couleurMoyenne() - couleurMoyenne();
 	int somme = 0;
-	for(int i=0 ; i<taille ; i++) {
-		for(int j=0 ; j<taille ; j++) {
+	for(int i=0 ; i<mTaille ; i++) {
+		for(int j=0 ; j<mTaille ; j++) {
 			somme += std::pow(std::abs( at(i, j) - B.at(i,j) + ecart ), 2);
 		}
 	}
-	return float(somme)/float(taille*taille);
+	return float(somme)/float(mTaille*mTaille);
 }
 
 void ImagePart::debug() const {
 	/* Un debug moche à l'arrache de l'image */
-	for(int i=0 ; i<taille ; i++) {
-		for(int j=0 ; j<taille ; j++) {
+	for(int i=0 ; i<mTaille ; i++) {
+		for(int j=0 ; j<mTaille ; j++) {
 			std::cout << "" << at(j, i) << " ";
 		}
 		std::cout << "\n";

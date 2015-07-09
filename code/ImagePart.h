@@ -56,10 +56,10 @@ class ImagePart {
 		void debug() const;
 
 	private :
-		ImageMatricielle* source;	// L'image dont c'est une partie
-		int taille;					// La taille du coté de la partie
-		int x,y;					// La position du pixel haut-gauche dans l'image source
-		bool virtuel;				// Si oui, la source a été créée uniquement pour simuler un bout d'image
+		ImageMatricielle* mSource;	// L'image dont c'est une partie
+		int mTaille;					// La taille du coté de la partie
+		int mX, mY;					// La position du pixel haut-gauche dans l'image source
+		bool mVirtuel;				// Si oui, la source a été créée uniquement pour simuler un bout d'image
 };
 
 #endif

@@ -2,13 +2,13 @@
 
 /* *************** Constructeur / Destructeur *************** */
 
-ImageMatricielle::ImageMatricielle(unsigned int x, unsigned int y) : largeur(x), hauteur(y) {
+ImageMatricielle::ImageMatricielle(unsigned int x, unsigned int y) : mLargeur(x), mHauteur(y) {
 	/* Créée une nouvelle image de dimensions données
 	 * Les pixels de l'image ne sont pas initialisés
 	 */
-	image = new unsigned int* [largeur];
-	for(int i=0 ; i<largeur ; i++) {
-		image[i] = new unsigned int[hauteur];
+	mImage = new unsigned int* [mLargeur];
+	for(int i=0 ; i<mLargeur ; i++) {
+		mImage[i] = new unsigned int[mHauteur];
 	}
 }
 
@@ -24,42 +24,42 @@ ImageMatricielle::ImageMatricielle(const char* fichier, int couche) {
 	std::vector<unsigned char> img;
 
 	lodepng::load_file(png, fichier	);
-	unsigned error = lodepng::decode(img, largeur, hauteur, png);
+	unsigned error = lodepng::decode(img, mLargeur, mHauteur, png);
 
 	if(error) {
 		std::cout << fichier << " -> png decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
-		largeur = hauteur = 0;
+		mLargeur = mHauteur = 0;
 		erreur = true;
 	}
 
-	image = new unsigned int* [largeur];
-	for(int i=0 ; i<largeur ; i++) {
-		image[i] = new unsigned int[hauteur];
-		for(int j=0 ; j<hauteur ; j++) {
-			image[i][j] = img[ (i + j*largeur)*4 + couche ];
+	mImage = new unsigned int* [mLargeur];
+	for(int i=0 ; i<mLargeur ; i++) {
+		mImage[i] = new unsigned int[mHauteur];
+		for(int j=0 ; j<mHauteur ; j++) {
+			mImage[i][j] = img[ (i + j*mLargeur)*4 + couche ];
 		}
 	}
 
-	if(!erreur) std::cout << "image lue : " << fichier << " (" << largeur << "x" << hauteur << "px) : couche " << couche << std::endl;
+	if(!erreur) std::cout << "image lue : " << fichier << " (" << mLargeur << "x" << mHauteur << "px) : couche " << couche << std::endl;
 }
 
 ImageMatricielle::~ImageMatricielle() {
 	/* Suppression de l'image */
-	for(int i=0 ; i<largeur ; i++) {
-		delete[] image[i];
+	for(int i=0 ; i<mLargeur ; i++) {
+		delete[] mImage[i];
 	}
-	delete[] image;
+	delete[] mImage;
 }
 
 /* *************** Setters / Getters *************** */
 
 unsigned int* ImageMatricielle::operator[](int i) {
 	/* Retourne la ligne de l'image correspondante */
-	return image[i];
+	return mImage[i];
 }
 
-unsigned int ImageMatricielle::getHauteur() const { return hauteur; }
-unsigned int ImageMatricielle::getLargeur() const { return largeur; }
+unsigned int ImageMatricielle::getHauteur() const { return mHauteur; }
+unsigned int ImageMatricielle::getLargeur() const { return mLargeur; }
 
 /* *************** Compression *************** */
 
@@ -68,8 +68,8 @@ std::vector<ImagePart>* ImageMatricielle::decouper(int taille) {
 	 * Les sous parties sont des carrés de côté "taille", le dépassement est ignoré
 	 */
 	std::vector<ImagePart>* liste = new std::vector<ImagePart>();
-	for(int i=0 ; i*taille<largeur ; i++) {
-		for(int j=0 ; j*taille<hauteur ; j++) {
+	for(int i=0 ; i*taille<mLargeur ; i++) {
+		for(int j=0 ; j*taille<mHauteur ; j++) {
 			liste->push_back( ImagePart(this, i*taille, j*taille, taille) );////////////////////////////////////////////// !!!!!!
 		}
 	}

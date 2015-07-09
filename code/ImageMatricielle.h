@@ -23,9 +23,9 @@ class ImageMatricielle {
 		unsigned int* operator[](int i);
 
 	private :
-		unsigned int **image; // L'image est représentée par une matrice de int
-		unsigned int largeur; // Largeur en pixels de l'image
-		unsigned int hauteur; // Hauteur en pixels de l'image
+		unsigned int **mImage; // L'image est représentée par une matrice de int
+		unsigned int mLargeur; // Largeur en pixels de l'image
+		unsigned int mHauteur; // Hauteur en pixels de l'image
 };
 
 #endif
