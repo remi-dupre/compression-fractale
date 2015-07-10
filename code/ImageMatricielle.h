@@ -1,14 +1,24 @@
 #ifndef IMAGEMATRICIELLE
 #define IMAGEMATRICIELLE
 
-#include "lib/lodepng.h" // https://github.com/lvandeve/lodepng
 #include <iostream>
 #include <vector>
+#include "lib/lodepng.h" // https://github.com/lvandeve/lodepng
 #include "ImagePart.h"
 #include "debug.h"
 
 class ImagePart;
 struct Source;
+
+
+typedef struct IFS IFS;
+struct IFS {
+	/* Décrit tout ce qu'il faut savoir sur un ifs */
+	unsigned int decoupePetit;
+	unsigned int decoupeGros;
+	std::vector<Source> correspondances;
+};
+
 class ImageMatricielle {
 	public :
 		ImageMatricielle(const char* fichier, int couche);
@@ -16,7 +26,10 @@ class ImageMatricielle {
 		~ImageMatricielle();
 
 		std::vector<ImagePart> decouper(int taille);
-		std::vector<Source> compresser(unsigned int taillePetit, unsigned int tailleGros);
+		IFS chercherIFS(unsigned int taillePetit, unsigned int tailleGros);
+		ImageMatricielle appliquerIFS(const IFS& ifs);
+
+		void sauvegarder(const char* fichier) const;
 
 		unsigned int getLargeur() const;
 		unsigned int getHauteur() const;

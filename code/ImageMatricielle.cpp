@@ -36,7 +36,7 @@ ImageMatricielle::ImageMatricielle(const char* fichier, int couche) {
 	for(int i=0 ; i<mLargeur ; i++) {
 		mImage[i] = new unsigned int[mHauteur];
 		for(int j=0 ; j<mHauteur ; j++) {
-			mImage[i][j] = img[ (i + j*mLargeur)*4 + couche ];
+			mImage[i][j] = img[ (i*mHauteur + j)*4 + couche ];
 		}
 	}
 
@@ -76,15 +76,19 @@ std::vector<ImagePart> ImageMatricielle::decouper(int taille) {
 	return liste;
 }
 
-std::vector<Source> ImageMatricielle::compresser(unsigned int taillePetit, unsigned int tailleGros) {
-	/* Effectue la compression de l'image
+IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleGros) {
+	/* Recherche l'ifs pour l'image
 	 * Entrées :
 	 *  - taillePetit : la taille des blocs du petit pavages
 	 *  - tailleGros : taille des gros blocs, doit être plus grand que taillePetit
 	 */
 	if(taillePetit >= tailleGros) {
 		std::cout << "Le pavage n'est pas de la bonne dimension" << std::endl;
-		return std::vector<Source>();
+		IFS retour;
+			retour.correspondances = std::vector<Source>();
+			retour.decoupeGros = tailleGros;
+			retour.decoupePetit = taillePetit;
+		return retour;
 	}
 	std::cout << "Compression initiée" << std::endl;
 
@@ -101,5 +105,47 @@ std::vector<Source> ImageMatricielle::compresser(unsigned int taillePetit, unsig
 	chargement(" 2 - Recherche des correspondances", pavagePetit.size(), pavagePetit.size());
 	std::cout << "\n";
 
-	return correspondances;
+	IFS retour;
+		retour.correspondances = correspondances;
+		retour.decoupeGros = tailleGros;
+		retour.decoupePetit = taillePetit;
+	return retour;
+}
+
+ImageMatricielle ImageMatricielle::appliquerIFS(const IFS& ifs) {
+	/* Applique l'IFS et en retourne le résultat */
+	ImageMatricielle sortie(getLargeur(), getHauteur());
+	std::vector<ImagePart> decoupeEntree = decouper(ifs.decoupeGros);
+	std::vector<ImagePart> decoupeSortie = sortie.decouper(ifs.decoupePetit);
+
+	for(int i=0 ; i<ifs.correspondances.size() ; i++) {
+		int j = ifs.correspondances[i].bloc;
+		Transformation transfo = ifs.correspondances[i].transformation;
+		decoupeEntree[j].transformer(decoupeSortie[i], transfo);
+	}
+	return sortie;
+}
+
+/* *************** Enregistrement *************** */
+
+void ImageMatricielle::sauvegarder(const char* fichier) const {
+	/* Enregistre l'image au format png au nom donné
+	 *  /!\ Comme on ne connais qu'une couche, l'image est enregistrée en niveaux de gris
+	 */
+	std::vector<unsigned char> pixels;
+	for(int i=0 ; i<mLargeur ; i++) {
+		for(int j=0 ; j<mHauteur ; j++) {
+			pixels.push_back((unsigned char)(mImage[i][j]));
+			pixels.push_back((unsigned char)(mImage[i][j]));
+			pixels.push_back((unsigned char)(mImage[i][j]));
+			pixels.push_back(255);
+		}
+	}
+
+	std::vector<unsigned char> png;
+	unsigned error = lodepng::encode(png, pixels, mLargeur, mHauteur);
+	if(!error) lodepng::save_file(png, fichier);
+
+	if(error) std::cout << fichier << " -> encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
+	else std::cout << fichier << " enregistrée" << std::endl;
 }
