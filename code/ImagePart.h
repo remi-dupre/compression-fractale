@@ -4,21 +4,26 @@
 #include "ImageMatricielle.h"
 #include <cmath>
 
-#define rad(x) (x*3.14159265/180)
+#define RAD(x) (x*3.14159265/180)
 
+typedef struct Coordonnees Coordonnees;
 struct Coordonnes {
 	int x;
 	int y;
 };
 
+typedef struct Transformation Transformation;
 struct Transformation {
 	/* Décrit une transformation affine appliquée à un bloc
-	 *  - Translation_x/y : le décalage de la rotation avec le centre du bloc
-	 *  - Rotation : en degrés
+	 *  - translation : le décalage de la rotation avec le centre du bloc
+	 *  - rotation : en degrés
+	 *  - decalage : le décalage de couleur à ajouter
 	 */
 	int rotation;
 	Coordonnes translation;
+	int decalage;
 };
+#define ROTATION(rot) {rot, {0,0}, 0} // Initialisation d'une transformation de type rotation
 
 struct Source {
 	/* Décrit un couple bloc/transformation
@@ -47,7 +52,7 @@ class ImagePart {
 		int getTaille() const;
 
 		int couleurMoyenne() const;
-		float varianceDifference(const ImagePart& partie) const;
+		float varianceDifference(const ImagePart& partie, int *decalage = NULL) const;
 
 		void transformer(ImagePart& sortie, const Transformation& transfo) const;
 		Transformation chercherTransformation(const ImagePart& origine, float& variance) const;

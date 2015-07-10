@@ -34,7 +34,7 @@ ImageMatricielle* blocs(int x, int y) {
 
 int main() {
 	ImageMatricielle image("lena.png", 0);
-	std::vector<Source> ifs = image.compresser(30, 60);
+	std::vector<Source> ifs = image.compresser(30, 60);	
 
 	std::cout << "Ecriture dans out.txt" << std::endl;
 	std::ofstream fichier("out.txt", std::ios::trunc);

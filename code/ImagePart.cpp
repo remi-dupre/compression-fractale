@@ -90,15 +90,15 @@ void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo)
 	 * /!\ Il vaut mieux accompagner cette fonction d'un brouillon de calculs
 	 */
 	int a = imgSortie.getTaille();
-	double rapportx = (double(mTaille)/a)*cos(rad(transfo.rotation)); // r*e^(i*theta)
-	double rapporty = (double(mTaille)/a)*sin(rad(transfo.rotation));
+	double rapportx = (double(mTaille)/a)*cos(RAD(transfo.rotation)); // r*e^(i*theta)
+	double rapporty = (double(mTaille)/a)*sin(RAD(transfo.rotation));
 	double centrex = transfo.translation.x + (mTaille/2); // Centre de la rotation
 	double centrey = transfo.translation.y + (mTaille/2);
 	for(int is=0 ; is<a ; is++) {
 		for(int js=0 ; js<a ; js++) {
 			int i = rint( (rapportx*(is-centrex)) - (rapporty*(js-centrey)) + centrex );
 			int j = rint( (rapporty*(js-centrey)) + (rapportx*(is-centrex)) + centrey );
-			imgSortie.set(is, js, at(i, j));
+			imgSortie.set(is, js, at(i, j) + transfo.decalage); // On a trouvé le point correspondant, on rajoute le décalage de couleur
 		}
 	}
 }
@@ -112,10 +112,10 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	 *   - retourne la tranformation optimale
 	 *   - modifie varianceRetour : la variance des couleurs de l'image de référence et de l'autre après transformation
 	 */
-	Transformation max, min, mid;
-	max.translation.x = max.translation.y = min.translation.x = min.translation.y = mid.translation.x = mid.translation.y = 0;
-	max.rotation = 355;
-	min.rotation = 0;
+
+	Transformation max = ROTATION(355);
+	Transformation min = ROTATION(0);
+	Transformation mid = ROTATION(0);
 
 	ImagePart img(mTaille);
 
@@ -128,13 +128,13 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	while(max.rotation - min.rotation > 5) {
 		mid.rotation = (max.rotation+min.rotation)/2;
 		origine.transformer(img, mid);
-		float variance = varianceDifference(img);
+		float variance = varianceDifference(img, &mid.decalage);
 		if(varmin < varmax) {
-			max.rotation = mid.rotation;
+			max = mid;
 			varmax = variance;
 		}
 		else {
-			min.rotation = mid.rotation;
+			min = mid;
 			varmin = variance;
 		}
 	}
@@ -170,18 +170,23 @@ Source ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties) const 
 	return retour;
 }
 
-float ImagePart::varianceDifference(const ImagePart& B) const {
+float ImagePart::varianceDifference(const ImagePart& B, int *decalage) const {
 	/* Compare deux images :
 	 * Etudie la variance des "distances" entre les pixels
 	 * La moyenne de chaque image est ajustée par ajout d'une constante
+	 * Entrées :
+	 *  - B : l'image a laquelle this est comparé
+	 *  - decalage : un pointeur sur une variable qui prendra la valeur du décalage (peut être NULL)
+	 *     -> decalage doit être ajouté aux pixels de B pour équilibrer la moyenne
 	 */
-	int ecart = B.couleurMoyenne() - couleurMoyenne();
+	int ecart = couleurMoyenne() - B.couleurMoyenne();
 	int somme = 0;
 	for(int i=0 ; i<mTaille ; i++) {
 		for(int j=0 ; j<mTaille ; j++) {
-			somme += std::pow(std::abs( at(i, j) - B.at(i,j) + ecart ), 2);
+			somme += std::pow(std::abs( B.at(i,j) - at(i, j) + ecart ), 2);
 		}
 	}
+	if(decalage != NULL) *decalage = ecart;
 	return float(somme)/float(mTaille*mTaille);
 }
 

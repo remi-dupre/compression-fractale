@@ -12,7 +12,8 @@ void chargement(const char* prefixe, int actuel, int total) {
 std::string sourceToString(Source src) {
 	std::stringstream retour;
 	retour << src.bloc << " -> ";
-	retour << "rot:" << src.transformation.rotation;
-	retour << ", trans:" << src.transformation.translation.x << "|" << src.transformation.translation.y;
+	retour << "rotation:" << src.transformation.rotation;
+	retour << " translation:" << src.transformation.translation.x << "|" << src.transformation.translation.y;
+	retour << " decalage:" << src.transformation.decalage;
 	return retour.str();
 }
