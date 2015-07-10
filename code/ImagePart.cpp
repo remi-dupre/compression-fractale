@@ -37,7 +37,7 @@ void ImagePart::set(int i, int j, int val) {
 	 *   - i,j : les coordonnées du pixel à modifier, dans [0, taille[
 	 *   - val : la valeur à lui attribuer
 	 */
-	if( i>=0 && j>=0 && i<mTaille && j<mTaille ) {
+	if( i>=0 && j>=0 && i<mTaille && j<mTaille && i+mX<mSource->getLargeur() && j+mY<mSource->getHauteur() ) {
 		(*mSource)[i+mX][j+mY] = val;
 	}
 }
@@ -97,7 +97,7 @@ void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo)
 	for(int is=0 ; is<a ; is++) {
 		for(int js=0 ; js<a ; js++) {
 			int i = rint( (rapportx*(is-centrex)) - (rapporty*(js-centrey)) + centrex );
-			int j = rint( (rapporty*(js-centrey)) + (rapportx*(is-centrex)) + centrey );
+			int j = rint( (rapporty*(is-centrey)) + (rapportx*(js-centrex)) + centrey );
 			imgSortie.set(is, js, at(i, j) + transfo.decalage); // On a trouvé le point correspondant, on rajoute le décalage de couleur
 		}
 	}
