@@ -49,10 +49,10 @@ int ImagePart::at(int i, int j) const {
 	int ix = i+mX;
 	int jy = j+mY;
 
-	if(ix < 0) ix = 0;
+	if(ix < 0) ix = 0; // Si ca dépasse on se projete sur le bord
 	else if(ix >= mSource->getLargeur()) ix = mSource->getLargeur() - 1;
 
-	if(jy < 0) jy = 0;
+	if(jy < 0) jy = 0; // Si ca dépasse on se projete sur le bord
 	else if(jy >= mSource->getHauteur()) jy = mSource->getHauteur() - 1;
 
 	return (*mSource)[ix][jy];
@@ -83,9 +83,11 @@ void ImagePart::remplir(int couleur) {
 /* *************** Régression linéaire *************** */
 
 LinReg ImagePart::chercherLinReg(const ImagePart& X) const {
-	/* Pour transformer B et qu'il ressemble a cet objet */
+	/* On cherche une fonction affine f telle que f(X) ~= Y
+	 * Les formules développées viennent de wikipédia et sont démontrable avec le programme de supp
+	 */
 	const ImagePart &Y = *this;
-	double sumX, sumY, sumXY, sumXX;
+	double sumX, sumY, sumXY, sumXX; // On a besoins de calculer 4 grosses sommes
 	sumX = sumY = sumXY = sumXX = 1; // On évite les divisions par 0
 	for(int i=0 ;  i<mTaille ; i++) {
 		for(int j=0 ; j<mTaille ; j++) {
@@ -128,7 +130,7 @@ void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo)
 		for(int js=0 ; js<a ; js++) {
 			int i = rint( (rapportx*(is-centrex)) - (rapporty*(js-centrey)) + centrex );
 			int j = rint( (rapporty*(is-centrey)) + (rapportx*(js-centrex)) + centrey );
-			int couleur = std::min(255, std::max(0, couleurLinReg(transfo.droite, at(i, j))));
+			int couleur = couleurLinReg(transfo.droite, at(i, j));
 			imgSortie.set(is, js, couleur); // On a trouvé le point correspondant, on rajoute le décalage de couleur
 		}
 	}
@@ -144,17 +146,17 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	 *   - modifie varianceRetour : la variance des couleurs de l'image de référence et de l'autre après transformation
 	 */
 
-	Transformation max = ROTATION(355);
+	Transformation max = ROTATION(355); //TODO: peut-être qu'il faut inititialiser à 360 (max ne peut pas etre retourné)
 	Transformation min = ROTATION(0);
 	Transformation mid = ROTATION(0);
 
 	ImagePart img(mTaille);
 
 	origine.transformer(img, max);
-	float varmax = varianceDifference(img);
+	float varmax = varianceDifference(img); // max sert juste de borne
 
 	origine.transformer(img, min);
-	float varmin = varianceDifference(img, &min.droite);
+	float varmin = varianceDifference(img, &min.droite); // varmin contiendra toujours la plus petit variance rencontrée
 
 	LinReg droite;
 	while(max.rotation - min.rotation > 5) {
@@ -232,6 +234,7 @@ float ImagePart::varianceDifference(const ImagePart& B, LinReg *ldroite) const {
 
 
 void ImagePart::sauvegarder(const char* fichier) const {
+	/* Enregistre le bout d'image au format png */
 	ImageMatricielle image(mTaille, mTaille);
 	for(int i=0 ; i<mTaille ; i++) {
 		for(int j=0 ; j<mTaille ; j++) {

@@ -31,7 +31,7 @@ class ImagePart {
 		void appliquerLinReg(const LinReg& droite);
 
 		void transformer(ImagePart& sortie, const Transformation& transfo) const;
-		Transformation chercherTransformation(const ImagePart& origine, float& variance) const;
+		Transformation chercherTransformation(const ImagePart& origine, float& variance) const; // Virer la dichotomie si elle gène ?
 		Source chercherMeilleur(const std::vector<ImagePart>& parties) const;
 
 		void sauvegarder(const char* fichier) const;
