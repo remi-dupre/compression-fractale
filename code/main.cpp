@@ -70,8 +70,9 @@ int main() {
 
 	std::cout << "Décodage de l'image" << std::endl;
 	for(int k=0 ; k<20 ; k++) {
-		delete img;
-		img = new ImageMatricielle(img->appliquerIFS(ifs));
+		ImageMatricielle *nouveau =  new ImageMatricielle(img->appliquerIFS(ifs));
+		delete img; // On désaloue pour ne pas créer de fuite de mémoire
+		img = nouveau;
 		std::stringstream fichier;
 		fichier << "sortie/" << k << ".png";
 		img->sauvegarder(fichier.str().data());
