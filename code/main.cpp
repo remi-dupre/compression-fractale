@@ -46,7 +46,7 @@ int main() {
 	srand(time(0));
 
 	ImageMatricielle *image = new ImageMatricielle("cercle.png", 2);
-	IFS ifs = image->chercherIFS(32, 40);
+	IFS ifs = image->chercherIFS(12, 16);
 	int moyenne = image->moyenne();
 
 	std::cout << "Ecriture dans out.txt" << std::endl;
@@ -70,7 +70,7 @@ int main() {
 	std::vector<ImagePart> decoupeSortie = img->decouper(ifs.decoupePetit);
 
 		////////////
-	#define TAMER 30
+	#define TAMER 10
 	ImagePart base = decoupeSortie[TAMER];
 	ImagePart sortie(base.getTaille());
 	decoupeEntree[ifs.correspondances[TAMER].bloc].transformer(sortie, ifs.correspondances[TAMER].transformation);
@@ -87,7 +87,7 @@ int main() {
 	for(int k=0 ; k<10 ; k++) {
 		ImageMatricielle *sortie ;
 		sortie = new ImageMatricielle(img->appliquerIFS(ifs));
-		sortie->adapterMoyenne(moyenne);
+		//sortie->adapterMoyenne(moyenne);
 		img = sortie;
 		std::stringstream fichier;
 		fichier << "test" << k << ".png";
@@ -98,7 +98,7 @@ int main() {
 		ImageMatricielle *sortie ;
 		for(int i=0;i<5;i++) {
 			sortie = new ImageMatricielle(img->appliquerIFS(ifs));
-			sortie->adapterMoyenne(moyenne);
+			//sortie->adapterMoyenne(moyenne);
 			img = sortie;
 		}
 		std::stringstream fichier;

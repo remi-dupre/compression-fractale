@@ -99,7 +99,6 @@ LinReg ImagePart::chercherLinReg(const ImagePart& X) const {
 	LinReg retour;
 		retour.a = ( (sumX*sumY/n) - sumXY ) / ( (sumX*sumX/n) - sumXX );
 		retour.b = ( sumY - (retour.a*sumX) ) / n;
-		std::cout << sumX << ":" << sumY << ":" << sumXY << std::endl ;
 	return retour;
 }
 
@@ -129,7 +128,7 @@ void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo)
 		for(int js=0 ; js<a ; js++) {
 			int i = rint( (rapportx*(is-centrex)) - (rapporty*(js-centrey)) + centrex );
 			int j = rint( (rapporty*(is-centrey)) + (rapportx*(js-centrex)) + centrey );
-			int couleur = std::min(255, std::max(0, at(i, j) + transfo.decalage));
+			int couleur = std::min(255, std::max(0, couleurLinReg(transfo.droite, at(i, j))));
 			imgSortie.set(is, js, couleur); // On a trouvé le point correspondant, on rajoute le décalage de couleur
 		}
 	}
@@ -160,7 +159,7 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	while(max.rotation - min.rotation > 5) {
 		mid.rotation = (max.rotation+min.rotation)/2;
 		origine.transformer(img, mid);
-		float variance = varianceDifference(img, &mid.decalage);
+		float variance = varianceDifference(img, &mid.droite);
 		if(varmin < varmax) {
 			max = mid;
 			varmax = variance;
@@ -202,7 +201,7 @@ Source ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties) const 
 	return retour;
 }
 
-float ImagePart::varianceDifference(const ImagePart& B, int *decalage) const {
+float ImagePart::varianceDifference(const ImagePart& B, LinReg *ldroite) const {
 	/* Compare deux images :
 	 * Etudie la variance des "distances" entre les pixels
 	 * La moyenne de chaque image est ajustée par ajout d'une constante
@@ -211,15 +210,21 @@ float ImagePart::varianceDifference(const ImagePart& B, int *decalage) const {
 	 *  - decalage : un pointeur sur une variable qui prendra la valeur du décalage (peut être NULL)
 	 *     -> decalage doit être ajouté aux pixels de B pour équilibrer la moyenne
 	 */
-	int ecart = couleurMoyenne() - B.couleurMoyenne();
-	int somme = 0;
+	LinReg droite = chercherLinReg(B);
+	float sumCarre = 0;
+	float somme = 0; // Pour calculer la moyenne
 	for(int i=0 ; i<mTaille ; i++) {
 		for(int j=0 ; j<mTaille ; j++) {
-			somme += std::pow(std::abs( B.at(i,j) - at(i, j) + ecart ), 2);
+			int ecart = couleurLinReg(droite, B.at(i, j)) - at(i, j);
+			sumCarre += std::pow(ecart, 2);
+			somme += std::abs(ecart);
 		}
 	}
-	if(decalage != NULL) *decalage = ecart;
-	return float(somme)/float(mTaille*mTaille);
+	if(ldroite != NULL) *ldroite = droite;
+
+	float n = mTaille*mTaille;
+	float moyenne = somme/n;
+	return (sumCarre/n) - (moyenne*moyenne);
 }
 
 

@@ -9,6 +9,11 @@ struct Coordonnes {
 	int y;
 };
 
+typedef struct LinReg LinReg;
+struct LinReg {
+	double a, b;
+};
+
 typedef struct Transformation Transformation;
 struct Transformation {
 	/* Décrit une transformation affine appliquée à un bloc
@@ -18,9 +23,9 @@ struct Transformation {
 	 */
 	int rotation;
 	Coordonnes translation;
-	int decalage;
+	LinReg droite;
 };
-#define ROTATION(rot) {rot, {0,0}, 0} // Initialisation d'une transformation de type rotation
+#define ROTATION(rot) {rot, {0,0}, {1,0}} // Initialisation d'une transformation de type rotation
 
 typedef struct Source Source;
 struct Source {
@@ -30,11 +35,6 @@ struct Source {
 	 */
 	int bloc;
 	Transformation transformation;
-};
-
-typedef struct LinReg LinReg;
-struct LinReg {
-	double a, b;
 };
 
 /* *************** Fonctions *************** */

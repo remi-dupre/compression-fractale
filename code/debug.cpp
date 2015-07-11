@@ -14,6 +14,6 @@ std::string sourceToString(Source src) {
 	retour << src.bloc << " -> ";
 	retour << "rotation:" << src.transformation.rotation;
 	retour << " translation:" << src.transformation.translation.x << "|" << src.transformation.translation.y;
-	retour << " decalage:" << src.transformation.decalage;
+	retour << " decalage:" << src.transformation.droite.b;
 	return retour.str();
 }
