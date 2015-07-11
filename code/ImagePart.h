@@ -2,37 +2,10 @@
 #define IMAGEPART
 
 #include "ImageMatricielle.h"
+#include "format.h"
 #include <cmath>
 
 #define RAD(x) (x*3.14159265/180)
-
-typedef struct Coordonnees Coordonnees;
-struct Coordonnes {
-	int x;
-	int y;
-};
-
-typedef struct Transformation Transformation;
-struct Transformation {
-	/* Décrit une transformation affine appliquée à un bloc
-	 *  - translation : le décalage de la rotation avec le centre du bloc
-	 *  - rotation : en degrés
-	 *  - decalage : le décalage de couleur à ajouter
-	 */
-	int rotation;
-	Coordonnes translation;
-	int decalage;
-};
-#define ROTATION(rot) {rot, {0,0}, 0} // Initialisation d'une transformation de type rotation
-
-struct Source {
-	/* Décrit un couple bloc/transformation
-	 *  - bloc : les coordonnées du bloc a choisir dans l'image
-	 *  - transformation : le type de transformation a y appliquer
-	 */
-	int bloc;
-	Transformation transformation;
-};
 
 class ImageMatricielle;
 class ImagePart {
@@ -53,6 +26,9 @@ class ImagePart {
 
 		int couleurMoyenne() const;
 		float varianceDifference(const ImagePart& partie, int *decalage = NULL) const;
+
+		LinReg chercherLinReg(const ImagePart& partie) const;
+		void appliquerLinReg(const LinReg& droite);
 
 		void transformer(ImagePart& sortie, const Transformation& transfo) const;
 		Transformation chercherTransformation(const ImagePart& origine, float& variance) const;

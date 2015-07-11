@@ -80,6 +80,37 @@ void ImagePart::remplir(int couleur) {
 	}
 }
 
+/* *************** Régression linéaire *************** */
+
+LinReg ImagePart::chercherLinReg(const ImagePart& X) const {
+	/* Pour transformer B et qu'il ressemble a cet objet */
+	const ImagePart &Y = *this;
+	double sumX, sumY, sumXY, sumXX;
+	sumX = sumY = sumXY = sumXX = 1; // On évite les divisions par 0
+	for(int i=0 ;  i<mTaille ; i++) {
+		for(int j=0 ; j<mTaille ; j++) {
+			sumX += X.at(i, j);
+			sumY += Y.at(i, j);
+			sumXY += X.at(i, j) * Y.at(i, j);
+			sumXX += std::pow(X.at(i, j), 2);
+		}
+	}
+	double n = mTaille*mTaille;
+	LinReg retour;
+		retour.a = ( (sumX*sumY/n) - sumXY ) / ( (sumX*sumX/n) - sumXX );
+		retour.b = ( sumY - (retour.a*sumX) ) / n;
+		std::cout << sumX << ":" << sumY << ":" << sumXY << std::endl ;
+	return retour;
+}
+
+void ImagePart::appliquerLinReg(const LinReg &droite) {
+	for(int i=0 ; i<mTaille ; i++) {
+		for(int j=0 ; j<mTaille ; j++) {
+			set(i, j, couleurLinReg(droite, at(i, j)));
+		}
+	}
+}
+
 /* *************** Transformations *************** */
 
 void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo) const {

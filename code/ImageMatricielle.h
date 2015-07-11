@@ -6,6 +6,7 @@
 #include <ctime>
 #include "lib/lodepng.h" // https://github.com/lvandeve/lodepng
 #include "ImagePart.h"
+#include "format.h"
 #include "debug.h"
 
 class ImagePart;
