@@ -32,9 +32,21 @@ ImageMatricielle* blocs(int x, int y) {
 	return sortie;
 }
 
+ImageMatricielle randompic(int x, int y) {
+	ImageMatricielle sortie(x, y);
+	for(int i=0 ; i<x ; i++) {
+		for(int j=0 ; j<y ; j++) {
+			sortie[i][j] = rand() % 256;
+		}
+	}
+	return sortie;
+}
+
 int main() {
-	ImageMatricielle image("lena.png", 0);
-	IFS ifs = image.chercherIFS(8, 150);
+	srand(time(0));
+
+	ImageMatricielle *image = new ImageMatricielle("panda.png", 2);
+	IFS ifs = image->chercherIFS(12, 16);
 
 	std::cout << "Ecriture dans out.txt" << std::endl;
 	std::ofstream fichier("out.txt", std::ios::trunc);
@@ -46,6 +58,33 @@ int main() {
 	}
 	else std::cerr << "Impossible d'écrire dans le fichier" << std::endl;
 
-	ImageMatricielle sortie = image.appliquerIFS(ifs);
-	sortie.sauvegarder("test.png");
+	ImageMatricielle *img = new ImageMatricielle( randompic(image->getLargeur(), image->getHauteur()) );
+	//ImageMatricielle *img = image;
+	img->sauvegarder("random.png");
+
+	std::cout << "Décodage de l'image" << std::endl;
+
+	ImageMatricielle sorte(img->getLargeur(), img->getHauteur());
+	std::vector<ImagePart> decoupeEntree = img->decouper(ifs.decoupeGros);
+	std::vector<ImagePart> decoupeSortie = sorte.decouper(ifs.decoupePetit);
+
+	for(int k=0 ; k<10 ; k++) {
+		ImageMatricielle *sortie ;
+		sortie = new ImageMatricielle(img->appliquerIFS(ifs));
+		img = sortie;
+		std::stringstream fichier;
+		fichier << "test" << k << ".png";
+		sortie->sauvegarder(fichier.str().data());
+	}
+
+	for(int k=10 ; k<40 ; k++) {
+		ImageMatricielle *sortie ;
+		for(int i=0;i<5;i++) {
+			sortie = new ImageMatricielle(img->appliquerIFS(ifs));
+			img = sortie;
+		}
+		std::stringstream fichier;
+		fichier << "test" << k << ".png";
+		sortie->sauvegarder(fichier.str().data());
+	}
 }

@@ -98,7 +98,8 @@ void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo)
 		for(int js=0 ; js<a ; js++) {
 			int i = rint( (rapportx*(is-centrex)) - (rapporty*(js-centrey)) + centrex );
 			int j = rint( (rapporty*(is-centrey)) + (rapportx*(js-centrex)) + centrey );
-			imgSortie.set(is, js, at(i, j) + transfo.decalage); // On a trouvé le point correspondant, on rajoute le décalage de couleur
+			int couleur = std::min(255, std::max(0, at(i, j) + transfo.decalage));
+			imgSortie.set(is, js, couleur); // On a trouvé le point correspondant, on rajoute le décalage de couleur
 		}
 	}
 }
@@ -151,22 +152,22 @@ Source ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties) const 
 	 *   - transformation : la transformation optimale pour ce blocs
 	 */
 	int n = parties.size();
-	float varianceMax, variance;
-	Transformation transfo = chercherTransformation(parties[0], varianceMax);
-	Transformation transfoMax = transfo;
+	float varianceMin, variance;
+	Transformation transfo = chercherTransformation(parties[0], varianceMin);
+	Transformation transfoMin = transfo;
 	transfo.translation.x = transfo.translation.y = transfo.rotation = 0;
 	int imax = 0;
 	for(int i=1 ; i<n ; i++) {
 		transfo = chercherTransformation(parties[i], variance);
-		if(varianceMax < variance) {
+		if(varianceMin > variance) {
 			imax = i;
-			transfoMax = transfo;
-			varianceMax = variance;
+			transfoMin = transfo;
+			varianceMin = variance;
 		}
 	}
 	Source retour;
 	retour.bloc = imax;
-	retour.transformation = transfoMax;
+	retour.transformation = transfoMin;
 	return retour;
 }
 
@@ -188,6 +189,17 @@ float ImagePart::varianceDifference(const ImagePart& B, int *decalage) const {
 	}
 	if(decalage != NULL) *decalage = ecart;
 	return float(somme)/float(mTaille*mTaille);
+}
+
+
+void ImagePart::sauvegarder(const char* fichier) const {
+	ImageMatricielle image(mTaille, mTaille);
+	for(int i=0 ; i<mTaille ; i++) {
+		for(int j=0 ; j<mTaille ; j++) {
+			image[i][j] = at(i, j);
+		}
+	}
+	image.sauvegarder(fichier);
 }
 
 void ImagePart::debug() const {

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <ctime>
 #include "lib/lodepng.h" // https://github.com/lvandeve/lodepng
 #include "ImagePart.h"
 #include "debug.h"

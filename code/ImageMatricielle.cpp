@@ -82,7 +82,8 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 	 *  - taillePetit : la taille des blocs du petit pavages
 	 *  - tailleGros : taille des gros blocs, doit être plus grand que taillePetit
 	 */
-	if(taillePetit >= tailleGros) {
+	int tDebut = time(0);
+	if(taillePetit > tailleGros) {
 		std::cout << "Le pavage n'est pas de la bonne dimension" << std::endl;
 		IFS retour;
 			retour.correspondances = std::vector<Source>();
@@ -92,18 +93,18 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 	}
 	std::cout << "Compression initiée" << std::endl;
 
-	std::cout << " 1 - Création des pavages" << std::endl;
+	std::cout << " - Création des pavages";
 	std::vector<ImagePart> pavagePetit = decouper(taillePetit);
 	std::vector<ImagePart> pavageGros = decouper(tailleGros);
-	std::cout << "   - " << pavagePetit.size() << " et " << pavageGros.size() << " blocs" << std::endl;
+	std::cout << " (" << pavagePetit.size() << ":" << pavageGros.size() << " blocs)" << std::endl;
 
+	chargement(" - Recherche des correspondances", 0, pavagePetit.size());
 	std::vector<Source> correspondances;
 	for(int i=0 ; i<pavagePetit.size() ; i++) {
-		chargement(" 2 - Recherche des correspondances", i, pavagePetit.size());
+		chargement(" - Recherche des correspondances", i, pavagePetit.size());
 		correspondances.push_back( pavagePetit[i].chercherMeilleur(pavageGros) );
 	}
-	chargement(" 2 - Recherche des correspondances", pavagePetit.size(), pavagePetit.size());
-	std::cout << "\n";
+	std::cout << "\r\033[K - " << pavagePetit.size() << " correspondances en " << time(0) - tDebut << "s" << std::endl;
 
 	IFS retour;
 		retour.correspondances = correspondances;
@@ -147,5 +148,4 @@ void ImageMatricielle::sauvegarder(const char* fichier) const {
 	if(!error) lodepng::save_file(png, fichier);
 
 	if(error) std::cout << fichier << " -> encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
-	else std::cout << fichier << " enregistrée" << std::endl;
 }

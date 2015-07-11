@@ -58,6 +58,7 @@ class ImagePart {
 		Transformation chercherTransformation(const ImagePart& origine, float& variance) const;
 		Source chercherMeilleur(const std::vector<ImagePart>& parties) const;
 
+		void sauvegarder(const char* fichier) const;
 		void debug() const;
 
 	private :
