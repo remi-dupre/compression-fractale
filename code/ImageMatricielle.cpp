@@ -62,6 +62,7 @@ unsigned int ImageMatricielle::getHauteur() const { return mHauteur; }
 unsigned int ImageMatricielle::getLargeur() const { return mLargeur; }
 
 unsigned int ImageMatricielle::moyenne() const {
+	/* Retourne la moyenne de teinte des pixels de l'image */
 	int somme = 0;
 	for(int i=0 ; i<mLargeur ; i++) {
 		for(int j=0 ; j<mHauteur ; j++) {
@@ -72,6 +73,7 @@ unsigned int ImageMatricielle::moyenne() const {
 }
 
 void ImageMatricielle::adapterMoyenne(int val) {
+	/* Décale la moyenne de couleur des pixels pour la faire correspondre à 'val' */
 	int decalage = val - moyenne();
 	for(int i=0 ; i<mLargeur ; i++) {
 		for(int j=0 ; j<mHauteur ; j++) {
@@ -89,7 +91,7 @@ std::vector<ImagePart> ImageMatricielle::decouper(int taille) {
 	std::vector<ImagePart> liste;
 	for(int i=0 ; i*taille<mLargeur ; i++) {
 		for(int j=0 ; j*taille<mHauteur ; j++) {
-			liste.push_back( ImagePart(this, i*taille, j*taille, taille) );////////////////////////////////////////////// !!!!!!
+			liste.push_back( ImagePart(this, i*taille, j*taille, taille) );
 		}
 	}
 	return liste;
@@ -100,6 +102,9 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 	 * Entrées :
 	 *  - taillePetit : la taille des blocs du petit pavages
 	 *  - tailleGros : taille des gros blocs, doit être plus grand que taillePetit
+	 * Sortie : IFS
+	 *  - correspondances : la liste (respectant les indinces des blocs) des 'Source' a appliquer
+	 *  - taillePetit / tailleGros : la taille de découpe
 	 */
 	int tDebut = time(0);
 	if(taillePetit > tailleGros) {
@@ -133,7 +138,10 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 }
 
 ImageMatricielle ImageMatricielle::appliquerIFS(const IFS& ifs) {
-	/* Applique l'IFS et en retourne le résultat */
+	/* Applique l'IFS et en retourne le résultat
+	 * Entrée : IFS : tout ce qui décrit une image encodée
+	 * Sortie : l'image obtenue après application à cet objet
+	 */
 	ImageMatricielle sortie(getLargeur(), getHauteur());
 	std::vector<ImagePart> decoupeEntree = decouper(ifs.decoupeGros);
 	std::vector<ImagePart> decoupeSortie = sortie.decouper(ifs.decoupePetit);

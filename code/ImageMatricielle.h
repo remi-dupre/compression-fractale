@@ -27,7 +27,7 @@ class ImageMatricielle {
 		ImageMatricielle(unsigned int x, unsigned int y);
 		~ImageMatricielle();
 
-		std::vector<ImagePart> decouper(int taille);
+		std::vector<ImagePart> decouper(int taille); //todo: si c'est pas trop moche, le passer en const
 		IFS chercherIFS(unsigned int taillePetit, unsigned int tailleGros);
 		ImageMatricielle appliquerIFS(const IFS& ifs);
 

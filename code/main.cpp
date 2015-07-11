@@ -74,6 +74,7 @@ int main() {
 		img = new ImageMatricielle(img->appliquerIFS(ifs));
 		std::stringstream fichier;
 		fichier << "sortie/" << k << ".png";
-		sortie->sauvegarder(fichier.str().data());
+		img->sauvegarder(fichier.str().data());
 	}
+	img->sauvegarder("resultat.png");
 }
