@@ -35,6 +35,9 @@ class ImageMatricielle {
 		unsigned int getLargeur() const;
 		unsigned int getHauteur() const;
 
+		unsigned int moyenne() const;
+		void adapterMoyenne(int val);
+
 		unsigned int* operator[](int i);
 
 	private :

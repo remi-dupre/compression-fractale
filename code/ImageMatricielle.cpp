@@ -61,6 +61,25 @@ unsigned int* ImageMatricielle::operator[](int i) {
 unsigned int ImageMatricielle::getHauteur() const { return mHauteur; }
 unsigned int ImageMatricielle::getLargeur() const { return mLargeur; }
 
+unsigned int ImageMatricielle::moyenne() const {
+	int somme = 0;
+	for(int i=0 ; i<mLargeur ; i++) {
+		for(int j=0 ; j<mHauteur ; j++) {
+			somme += mImage[i][j];
+		}
+	}
+	return somme/(mLargeur * mHauteur);
+}
+
+void ImageMatricielle::adapterMoyenne(int val) {
+	int decalage = val - moyenne();
+	for(int i=0 ; i<mLargeur ; i++) {
+		for(int j=0 ; j<mHauteur ; j++) {
+			mImage[i][j] += decalage;
+		}
+	}
+}
+
 /* *************** Compression *************** */
 
 std::vector<ImagePart> ImageMatricielle::decouper(int taille) {
