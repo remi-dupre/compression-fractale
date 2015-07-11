@@ -1,5 +1,8 @@
+
 #ifndef FORMAT
 #define FORMAT
+
+#include <iostream>
 
 /* *************** Définition de structures *************** */
 

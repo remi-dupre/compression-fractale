@@ -154,18 +154,21 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	float varmax = varianceDifference(img);
 
 	origine.transformer(img, min);
-	float varmin = varianceDifference(img);
+	float varmin = varianceDifference(img, &min.droite);
 
+	LinReg droite;
 	while(max.rotation - min.rotation > 5) {
 		mid.rotation = (max.rotation+min.rotation)/2;
 		origine.transformer(img, mid);
-		float variance = varianceDifference(img, &mid.droite);
+		float variance = varianceDifference(img, &droite);
 		if(varmin < varmax) {
 			max = mid;
+			max.droite = droite;
 			varmax = variance;
 		}
 		else {
 			min = mid;
+			min.droite = droite;
 			varmin = variance;
 		}
 	}

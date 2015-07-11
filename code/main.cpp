@@ -45,8 +45,9 @@ ImageMatricielle randompic(int x, int y) {
 int main() {
 	srand(time(0));
 
-	ImageMatricielle *image = new ImageMatricielle("cercle.png", 2);
-	IFS ifs = image->chercherIFS(12, 16);
+	ImageMatricielle *image = new ImageMatricielle("lena.png", 2);
+	image->sauvegarder("travail.png");
+	IFS ifs = image->chercherIFS(12, 24);
 	int moyenne = image->moyenne();
 
 	std::cout << "Ecriture dans out.txt" << std::endl;
@@ -59,8 +60,13 @@ int main() {
 	}
 	else std::cerr << "Impossible d'écrire dans le fichier" << std::endl;
 
-	//ImageMatricielle *img = new ImageMatricielle( randompic(image->getLargeur(), image->getHauteur()) );
-	ImageMatricielle *img = image;
+	ImageMatricielle *img = new ImageMatricielle( randompic(image->getLargeur(), image->getHauteur()) );
+	//ImageMatricielle *img = image;
+	for(int i=0 ; i<img->getLargeur() ; i++) {
+		for(int j=0 ; j<img->getHauteur() ; j++) {
+			(*img)[i][j] = 0;
+		}
+	}
 	img->sauvegarder("random.png");
 
 	std::cout << "Décodage de l'image" << std::endl;
@@ -70,7 +76,7 @@ int main() {
 	std::vector<ImagePart> decoupeSortie = img->decouper(ifs.decoupePetit);
 
 		////////////
-	#define TAMER 10
+	/*#define TAMER 10
 	ImagePart base = decoupeSortie[TAMER];
 	ImagePart sortie(base.getTaille());
 	decoupeEntree[ifs.correspondances[TAMER].bloc].transformer(sortie, ifs.correspondances[TAMER].transformation);
@@ -80,7 +86,7 @@ int main() {
 	std::cout << "transfo : " << droite.a << ":" << droite.b << std::endl;
 	sortie.appliquerLinReg(droite);
 	sortie.sauvegarder("_sortie_apres.png");
-	std::cout << "moyennes : " << base.couleurMoyenne() << ":" << sortie.couleurMoyenne() << std::endl;
+	std::cout << "moyennes : " << base.couleurMoyenne() << ":" << sortie.couleurMoyenne() << std::endl;*/
 
 		////////////
 
