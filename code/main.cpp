@@ -45,10 +45,8 @@ ImageMatricielle randompic(int x, int y) {
 int main() {
 	srand(time(0));
 
-	ImageMatricielle *image = new ImageMatricielle("lena.png", 2);
-	image->sauvegarder("travail.png");
+	ImageMatricielle *image = new ImageMatricielle("lena.png", 0);
 	IFS ifs = image->chercherIFS(12, 24);
-	int moyenne = image->moyenne();
 
 	std::cout << "Ecriture dans out.txt" << std::endl;
 	std::ofstream fichier("out.txt", std::ios::trunc);
@@ -60,55 +58,22 @@ int main() {
 	}
 	else std::cerr << "Impossible d'écrire dans le fichier" << std::endl;
 
-	ImageMatricielle *img = new ImageMatricielle( randompic(image->getLargeur(), image->getHauteur()) );
-	//ImageMatricielle *img = image;
+	// Décodage
+
+	ImageMatricielle *img = new ImageMatricielle(image->getLargeur(), image->getHauteur());
 	for(int i=0 ; i<img->getLargeur() ; i++) {
 		for(int j=0 ; j<img->getHauteur() ; j++) {
-			(*img)[i][j] = 0;
+			(*img)[i][j] = 0; // On part du noir, ca semble mieu quand c'est lisse
 		}
 	}
-	img->sauvegarder("random.png");
+	img->sauvegarder("depart.png");
 
 	std::cout << "Décodage de l'image" << std::endl;
-
-	ImageMatricielle sorte(img->getLargeur(), img->getHauteur());
-	std::vector<ImagePart> decoupeEntree = img->decouper(ifs.decoupeGros);
-	std::vector<ImagePart> decoupeSortie = img->decouper(ifs.decoupePetit);
-
-		////////////
-	/*#define TAMER 10
-	ImagePart base = decoupeSortie[TAMER];
-	ImagePart sortie(base.getTaille());
-	decoupeEntree[ifs.correspondances[TAMER].bloc].transformer(sortie, ifs.correspondances[TAMER].transformation);
-	base.sauvegarder("_ssd.png");
-	sortie.sauvegarder("_sortie.png");
-	LinReg droite = base.chercherLinReg(sortie);
-	std::cout << "transfo : " << droite.a << ":" << droite.b << std::endl;
-	sortie.appliquerLinReg(droite);
-	sortie.sauvegarder("_sortie_apres.png");
-	std::cout << "moyennes : " << base.couleurMoyenne() << ":" << sortie.couleurMoyenne() << std::endl;*/
-
-		////////////
-
-	for(int k=0 ; k<10 ; k++) {
-		ImageMatricielle *sortie ;
-		sortie = new ImageMatricielle(img->appliquerIFS(ifs));
-		//sortie->adapterMoyenne(moyenne);
-		img = sortie;
+	for(int k=0 ; k<20 ; k++) {
+		delete img;
+		img = new ImageMatricielle(img->appliquerIFS(ifs));
 		std::stringstream fichier;
-		fichier << "test" << k << ".png";
-		sortie->sauvegarder(fichier.str().data());
-	}
-
-	for(int k=10 ; k<40 ; k++) {
-		ImageMatricielle *sortie ;
-		for(int i=0;i<5;i++) {
-			sortie = new ImageMatricielle(img->appliquerIFS(ifs));
-			//sortie->adapterMoyenne(moyenne);
-			img = sortie;
-		}
-		std::stringstream fichier;
-		fichier << "test" << k << ".png";
+		fichier << "sortie/" << k << ".png";
 		sortie->sauvegarder(fichier.str().data());
 	}
 }
