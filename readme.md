@@ -13,5 +13,5 @@ script/configure
 ### Compilation
 ```shell
 cd code
-g++ *.cpp lib/*.cpp # Debug
-g++ -s -O3 *.cpp lib/*.cpp # Release
+g++ *.cpp lib/*.cpp -lpthread # Debug
+g++ -s -O3 *.cpp lib/*.cpp -lpthread # Release

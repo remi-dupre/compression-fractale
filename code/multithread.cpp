@@ -1,13 +1,16 @@
 #include "multithread.h"
+	
+#include <cstdlib> // WINDOWS
 
 void *lancerThread(void *t_data) {
     ThreadData *data = (ThreadData *) t_data;
 	for(int i=0 ; i < data->travail.size() ; i++) {
 		data->resultat->push_back( data->travail[i].chercherMeilleur(data->correspondances) );
         ++ *(data->avancement);
+		EFFACER();
         chargement(" - Recherche des correspondances", *(data->avancement), data->total);
 	}
-    std::cout << "\r\033[KProcesseur " << data->thread_id  << " : terminé" << std::endl;
+    //std::cout << "\r\033[KProcesseur " << data->thread_id  << " : terminé" << std::endl;
     pthread_exit(NULL);
 }
 

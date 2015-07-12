@@ -4,9 +4,12 @@
 #include <iostream>
 #include <vector>
 #include <ctime>
-#include <pthread.h>
 #include <unistd.h>
 #include "lib/lodepng.h" // https://github.com/lvandeve/lodepng
+
+#define timespec thread_timespec // Evite un conflict avec time (win)
+#include <pthread.h>
+#undef timespec
 
 #include "ImagePart.h"
 #include "format.h"
