@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <ctime>
-#include <unistd.h>
+#include <unistd.h> // sleep(int)
 #include "lib/lodepng.h" // https://github.com/lvandeve/lodepng
 
 #define timespec thread_timespec // Evite un conflict avec time (win)
@@ -17,16 +17,6 @@
 #include "multithread.h"
 
 class ImagePart;
-struct Source;
-
-typedef struct IFS IFS;
-struct IFS {
-	/* Décrit tout ce qu'il faut savoir sur un ifs */
-	unsigned int decoupePetit;
-	unsigned int decoupeGros;
-	std::vector<Source> correspondances;
-};
-
 class ImageMatricielle {
 	public :
 		ImageMatricielle(const char* fichier, int couche);

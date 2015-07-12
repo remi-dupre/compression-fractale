@@ -46,7 +46,7 @@ int main() {
 	srand(time(0));
 
 	ImageMatricielle *image = new ImageMatricielle("lena.png", 0);
-	IFS ifs = image->chercherIFS(8, 12);
+	IFS ifs = image->chercherIFS(32, 42);
 
 	std::cout << std::endl << "Ecriture dans out.txt ..." << std::endl;
 	std::ofstream fichier("out.txt", std::ios::trunc);

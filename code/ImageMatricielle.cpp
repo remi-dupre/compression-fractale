@@ -103,7 +103,7 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 	 *  - taillePetit : la taille des blocs du petit pavages
 	 *  - tailleGros : taille des gros blocs, doit être plus grand que taillePetit
 	 * Sortie : IFS
-	 *  - correspondances : la liste (respectant les indinces des blocs) des 'Source' a appliquer
+	 *  - correspondances : la liste (respectant les indinces des blocs) des 'Correspondance' a appliquer
 	 *  - taillePetit / tailleGros : la taille de découpe
 	 */
 	int nbThreads = 6;
@@ -111,7 +111,7 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 	if(taillePetit > tailleGros) {
 		std::cout << "Le pavage n'est pas de la bonne dimension" << std::endl;
 		IFS retour;
-			retour.correspondances = std::vector<Source>();
+			retour.correspondances = std::vector<Correspondance>();
 			retour.decoupeGros = tailleGros;
 			retour.decoupePetit = taillePetit;
 		return retour;
@@ -126,13 +126,13 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 	std::cout << " - Conditionement des threads" << std::endl;
 
 	std::vector< std::vector<ImagePart> > taches = decouperTache(pavagePetit, nbThreads); // Découpe les tâches
-	std::vector< std::vector<Source> > resultats(nbThreads, std::vector<Source>() );
+	std::vector< std::vector<Correspondance> > resultats(nbThreads, std::vector<Correspondance>() );
 	std::vector<pthread_t> threads(nbThreads, pthread_t());
 	std::vector<ThreadData> datas(nbThreads, ThreadData());
 	for(int i=0 ; i<nbThreads ; i++) {
 		datas[i].thread_id = i;
 		datas[i].travail = taches[i];
-		datas[i].correspondances = pavageGros;
+		datas[i].antecedants = pavageGros;
 		datas[i].resultat = &resultats[i];
 	}
 	for(int i=0 ; i<nbThreads ; i++) {
@@ -157,7 +157,7 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 		}
 	}
 
-	std::vector<Source> correspondances;
+	std::vector<Correspondance> correspondances;
 	for(int i=0 ; i<nbThreads ; i++) {
 		for(int j=0 ; j<resultats[i].size() ; j++) {
 			correspondances.push_back(resultats[i][j]);
