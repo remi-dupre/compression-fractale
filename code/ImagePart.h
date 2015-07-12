@@ -25,7 +25,7 @@ class ImagePart {
 		int getTaille() const;
 
 		int couleurMoyenne() const;
-		float varianceDifference(const ImagePart& partie, LinReg *decalage = NULL) const;
+		float varianceDifference(const ImagePart& partie, LinReg *decalage = NULL, bool regression = true ) const;
 
 		LinReg chercherLinReg(const ImagePart& partie) const;
 		void appliquerLinReg(const LinReg& droite);

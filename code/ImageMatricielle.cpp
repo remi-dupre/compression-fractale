@@ -196,8 +196,8 @@ void ImageMatricielle::sauvegarder(const char* fichier) const {
 	 *  /!\ Comme on ne connais qu'une couche, l'image est enregistrée en niveaux de gris
 	 */
 	std::vector<unsigned char> pixels;
-		for(int j=0 ; j<mHauteur ; j++) {
-	for(int i=0 ; i<mLargeur ; i++) {
+	for(int j=0 ; j<mHauteur ; j++) {
+		for(int i=0 ; i<mLargeur ; i++) {
 			pixels.push_back((unsigned char)(mImage[i][j]));
 			pixels.push_back((unsigned char)(mImage[i][j]));
 			pixels.push_back((unsigned char)(mImage[i][j]));

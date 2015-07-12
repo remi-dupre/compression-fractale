@@ -45,8 +45,8 @@ ImageMatricielle randompic(int x, int y) {
 int main() {
 	srand(time(0));
 
-	ImageMatricielle *image = new ImageMatricielle("lena.png", 0);
-	IFS ifs = image->chercherIFS(32, 42);
+	ImageMatricielle *image = new ImageMatricielle("panda.png", 0);
+	IFS ifs = image->chercherIFS(16, 24);
 
 	std::cout << std::endl << "Ecriture dans out.txt ..." << std::endl;
 	std::ofstream fichier("out.txt", std::ios::trunc);
@@ -64,7 +64,7 @@ int main() {
 	int moyenne = image->moyenne();
 	for(int i=0 ; i<img->getLargeur() ; i++) {
 		for(int j=0 ; j<img->getHauteur() ; j++) {
-			(*img)[i][j] = 0; // On part du noir, ca semble mieu quand c'est lisse
+			(*img)[i][j] = moyenne; // On part du noir, ca semble mieu quand c'est lisse
 		}
 	}
 	img->sauvegarder("depart.png");

@@ -146,8 +146,10 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	 */
 
 	Transformation max = ROTATION(360); // max sert juste de borne mais ne peut pas être la valeur de retour
-	Transformation min = ROTATION(0);
 	Transformation mid = ROTATION(0);
+	Transformation min = ROTATION(0);
+		min.droite.a = 0;					// Vérifie la droite verticale
+		min.droite.b = couleurMoyenne();	// Comme ca on a la bonen couleur sur les bouts lisses
 
 	ImagePart img(mTaille);
 
@@ -155,7 +157,8 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	float varmax = varianceDifference(img); // max sert juste de borne
 
 	origine.transformer(img, min);
-	float varmin = varianceDifference(img, &min.droite); // Il faut donner une valeur à min.droite au cas où il est retourné
+	float varmin = varianceDifference(img, &min.droite, false); // Il faut donner une valeur à min.droite au cas où il est retourné
+	//std::cout << min.droite.b << "-" << varmin << " ";
 
 	/* Application de la dichotomie :
 	 * La variance en fonction de l'angle n'est pas (/rarement) monotone, l'algorithme tend vers un minimum local
@@ -164,7 +167,7 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	 *  -> de toutes facons, à la fin varmin ~= varmax
 	 */
 	LinReg droite;
-	while(max.rotation - min.rotation > 5) {
+	while(max.rotation - min.rotation > 5 && varmin > 0.1) {
 		mid.rotation = (max.rotation + min.rotation) / 2; // On prend le milieu et on calcul la transformation
 		origine.transformer(img, mid);
 		float variance = varianceDifference(img, &droite);
@@ -210,7 +213,7 @@ Correspondance ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties
 	return retour;
 }
 
-float ImagePart::varianceDifference(const ImagePart& B, LinReg *ldroite) const {
+float ImagePart::varianceDifference(const ImagePart& B, LinReg *ldroite, bool regression) const {
 	/* Compare deux images :
 	 * Etudie la variance des "distances" entre les pixels
 	 * La moyenne de chaque image est ajustée par ajout d'une constante
@@ -218,8 +221,13 @@ float ImagePart::varianceDifference(const ImagePart& B, LinReg *ldroite) const {
 	 *  - B : l'image à laquelle this est comparé
 	 *  - decalage : un pointeur sur une variable qui prendra la valeur de la régression linéaire appliquée
 	 *     -> decalage doit être appliqué à B pour qu'il ressemble à l'objet courrant
+	 *   - regression : doit faire une regression linéaire ?
+	 *     -> sinon il utilise celle passée en argument
 	 */
-	LinReg droite = chercherLinReg(B); // On cherche une transfo linéaire
+	LinReg droite;
+	if(regression) droite = chercherLinReg(B); // On cherche une transfo linéaire
+	else droite = *ldroite;
+
 	float sumCarre = 0;
 	float somme = 0; // Pour calculer la moyenne
 	for(int i=0 ; i<mTaille ; i++) {
