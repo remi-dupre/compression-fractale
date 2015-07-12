@@ -106,7 +106,7 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 	 *  - correspondances : la liste (respectant les indinces des blocs) des 'Source' a appliquer
 	 *  - taillePetit / tailleGros : la taille de découpe
 	 */
-	int nbThreads = 4;
+	int nbThreads = 6;
 	int tDebut = time(0);
 	if(taillePetit > tailleGros) {
 		std::cout << "Le pavage n'est pas de la bonne dimension" << std::endl;
@@ -123,17 +123,14 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 	std::vector<ImagePart> pavageGros = decouper(tailleGros);
 	std::cout << " (" << pavagePetit.size() << ":" << pavageGros.size() << " blocs)" << std::endl;
 
-	std::cout << " - Répartition des threads" << std::endl;
+	std::cout << " - Conditionement des threads" << std::endl;
 
 	std::vector< std::vector<ImagePart> > taches = decouperTache(pavagePetit, nbThreads); // Découpe les tâches
 	std::vector< std::vector<Source> > resultats(nbThreads, std::vector<Source>() );
 	std::vector<pthread_t> threads(nbThreads, pthread_t());
 	std::vector<ThreadData> datas(nbThreads, ThreadData());
-	int avancement = 0;
 	for(int i=0 ; i<nbThreads ; i++) {
 		datas[i].thread_id = i;
-		datas[i].avancement = &avancement;
-		datas[i].total = pavagePetit.size();
 		datas[i].travail = taches[i];
 		datas[i].correspondances = pavageGros;
 		datas[i].resultat = &resultats[i];
@@ -141,8 +138,23 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 	for(int i=0 ; i<nbThreads ; i++) {
 		pthread_create(&threads[i], NULL, lancerThread, (void *)&datas[i]);
 	}
-	for(int i=0 ; i<nbThreads ; i++) {
-		pthread_join(threads[i], NULL);
+
+	int avancement = 0;
+	while(avancement < pavagePetit.size()) {
+		sleep(1);
+		EFFACER();
+		avancement = 0;
+		for(int i=0 ; i<nbThreads ; i++) {
+			avancement += resultats[i].size();
+		}
+		std::cout << "Recherche des correspondances : " << std::endl;
+		std::cout << " - " << pavagePetit.size() << "/" << pavageGros.size() << " blocs" << std::endl;
+		std::cout << " - format d'image : " << mLargeur << "x" << mHauteur << std::endl;
+        std::cout << std::endl << chargement(avancement, pavagePetit.size(), 40) << std::endl;
+
+		for(int i=0 ; i<nbThreads ; i++) {
+			std::cout << " Thread " << i << " " << chargement(resultats[i].size(), taches[i].size()) << std::endl;
+		}
 	}
 
 	std::vector<Source> correspondances;
@@ -151,9 +163,8 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 			correspondances.push_back(resultats[i][j]);
 		}
 	}
-	std::cout << correspondances.size();
 
-	std::cout << "\r\033[K - " << pavagePetit.size() << " correspondances en " << time(0) - tDebut << "s" << std::endl;
+	std::cout << "Terminé en " << time(0) - tDebut << " secondes" << std::endl;
 	IFS retour;
 		retour.correspondances = correspondances;
 		retour.decoupeGros = tailleGros;

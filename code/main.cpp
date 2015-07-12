@@ -45,14 +45,14 @@ ImageMatricielle randompic(int x, int y) {
 int main() {
 	srand(time(0));
 
-	ImageMatricielle *image = new ImageMatricielle("montagne.png", 0);
-	IFS ifs = image->chercherIFS(8, 10);
+	ImageMatricielle *image = new ImageMatricielle("lena.png", 0);
+	IFS ifs = image->chercherIFS(8, 12);
 
-	std::cout << "Ecriture dans out.txt" << std::endl;
+	std::cout << std::endl << "Ecriture dans out.txt ..." << std::endl;
 	std::ofstream fichier("out.txt", std::ios::trunc);
 	if(fichier) {
 		for(int i=0 ; i<ifs.correspondances.size() ; i++) {
-			fichier << i << " : " << sourceToString(ifs.correspondances[i]) << std::endl;
+			fichier << i << "\t: " << sourceToString(ifs.correspondances[i]) << std::endl;
 		}
 		fichier.close();
 	}
@@ -69,7 +69,7 @@ int main() {
 	}
 	img->sauvegarder("depart.png");
 
-	std::cout << "Décodage de l'image" << std::endl;
+	std::cout << "Décodage de l'image ..." << std::endl;
 	for(int k=0 ; k<20 ; k++) {
 		ImageMatricielle *nouveau =  new ImageMatricielle(img->appliquerIFS(ifs));
 		delete img; // On désaloue pour ne pas créer de fuite de mémoire

@@ -9,8 +9,6 @@ struct ImagePart;
 typedef struct ThreadData ThreadData;
 struct ThreadData {
 	int thread_id; // Identifie le thread
-    int *avancement; // Pour el chargement
-    int total; // Ici aussi
 	std::vector<ImagePart> travail;
 	std::vector<ImagePart> correspondances;
 	std::vector<Source>* resultat;

@@ -2,20 +2,21 @@
 #define DEBUG
 
 #include <iostream>
+#include <stdlib.h>
 #include <sstream>
 #include <string>
 
 #include "ImagePart.h"
 
 #ifdef __MINGW32__
-#define EFFACER() std::system("cls")
+#define EFFACER() system("cls")
 #endif
 
-#ifdef __LINUX__
-#define EFFACER() std::system("clear")
+#ifdef __linux__
+#define EFFACER() int retour_system = system("clear") ; std::cout << std::endl;
 #endif
 
-void chargement(const char* prefixe, int actuel, int total);
+std::string chargement(int actuel, int total, int taille=30);
 
 struct Source;
 std::string sourceToString(Source source);

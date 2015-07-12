@@ -1,19 +1,20 @@
 #include "debug.h"
 
-void chargement(const char* prefixe, int actuel, int total) {
-	std::cout << '\r' << prefixe << " [";
-	for(int i=1 ; i<=20 ; i++) {
-		if( int(i*total/20) <= actuel ) std::cout << "#";
-		else std::cout << "-";
+std::string chargement(int actuel, int total, int taille) {
+	std::stringstream retour;
+	retour << "[";
+	for(int i=1 ; i<=taille ; i++) {
+		if( int(i*total/taille) <= actuel ) retour << "#";
+		else retour << "-";
 	}
-    std::cout << "] (" << actuel << "/" << total << ")";
+    retour << "] (" << actuel << "/" << total << ")";
+	return retour.str();
 }
 
 std::string sourceToString(Source src) {
 	std::stringstream retour;
-	retour << src.bloc << " -> ";
+	retour << src.bloc << " ->\t";
 	retour << "rotation:" << src.transformation.rotation;
-	retour << " translation:" << src.transformation.translation.x << "|" << src.transformation.translation.y;
-	retour << " decalage:" << src.transformation.droite.b;
+	retour << "\tdecalage:" << src.transformation.droite.a << "X+(" << src.transformation.droite.b << ")";
 	return retour.str();
 }
