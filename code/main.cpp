@@ -45,8 +45,8 @@ ImageMatricielle randompic(int x, int y) {
 int main() {
 	srand(time(0));
 
-	ImageMatricielle *image = new ImageMatricielle("lena.png", 0);
-	IFS ifs = image->chercherIFS(12, 24);
+	ImageMatricielle *image = new ImageMatricielle("cuisine.png", 0);
+	IFS ifs = image->chercherIFS(64, 128);
 
 	std::cout << "Ecriture dans out.txt" << std::endl;
 	std::ofstream fichier("out.txt", std::ios::trunc);
@@ -60,12 +60,12 @@ int main() {
 
 	// Décodage
 
-	ImageMatricielle *img = new ImageMatricielle(image->getLargeur(), image->getHauteur());
-	for(int i=0 ; i<img->getLargeur() ; i++) {
+	ImageMatricielle *img = new ImageMatricielle(randompic(image->getLargeur(), image->getHauteur()));
+	/*for(int i=0 ; i<img->getLargeur() ; i++) {
 		for(int j=0 ; j<img->getHauteur() ; j++) {
 			(*img)[i][j] = 0; // On part du noir, ca semble mieu quand c'est lisse
 		}
-	}
+	}*/
 	img->sauvegarder("depart.png");
 
 	std::cout << "Décodage de l'image" << std::endl;

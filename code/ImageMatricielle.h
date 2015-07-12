@@ -4,14 +4,17 @@
 #include <iostream>
 #include <vector>
 #include <ctime>
+#include <pthread.h>
+#include <unistd.h>
 #include "lib/lodepng.h" // https://github.com/lvandeve/lodepng
+
 #include "ImagePart.h"
 #include "format.h"
 #include "debug.h"
+#include "multithread.h"
 
 class ImagePart;
 struct Source;
-
 
 typedef struct IFS IFS;
 struct IFS {

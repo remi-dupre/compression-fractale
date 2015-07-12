@@ -106,6 +106,7 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 	 *  - correspondances : la liste (respectant les indinces des blocs) des 'Source' a appliquer
 	 *  - taillePetit / tailleGros : la taille de découpe
 	 */
+	int nbThreads = 4;
 	int tDebut = time(0);
 	if(taillePetit > tailleGros) {
 		std::cout << "Le pavage n'est pas de la bonne dimension" << std::endl;
@@ -122,14 +123,37 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 	std::vector<ImagePart> pavageGros = decouper(tailleGros);
 	std::cout << " (" << pavagePetit.size() << ":" << pavageGros.size() << " blocs)" << std::endl;
 
-	chargement(" - Recherche des correspondances", 0, pavagePetit.size());
-	std::vector<Source> correspondances;
-	for(int i=0 ; i<pavagePetit.size() ; i++) {
-		chargement(" - Recherche des correspondances", i, pavagePetit.size());
-		correspondances.push_back( pavagePetit[i].chercherMeilleur(pavageGros) );
-	}
-	std::cout << "\r\033[K - " << pavagePetit.size() << " correspondances en " << time(0) - tDebut << "s" << std::endl;
+	std::cout << " - Répartition des threads" << std::endl;
 
+	std::vector< std::vector<ImagePart> > taches = decouperTache(pavagePetit, nbThreads); // Découpe les tâches
+	std::vector< std::vector<Source> > resultats(nbThreads, std::vector<Source>() );
+	std::vector<pthread_t> threads(nbThreads, pthread_t());
+	std::vector<ThreadData> datas(nbThreads, ThreadData());
+	int avancement = 0;
+	for(int i=0 ; i<nbThreads ; i++) {
+		datas[i].thread_id = i;
+		datas[i].avancement = &avancement;
+		datas[i].total = pavagePetit.size();
+		datas[i].travail = taches[i];
+		datas[i].correspondances = pavageGros;
+		datas[i].resultat = &resultats[i];
+	}
+	for(int i=0 ; i<nbThreads ; i++) {
+		pthread_create(&threads[i], NULL, lancerThread, (void *)&datas[i]);
+	}
+	for(int i=0 ; i<nbThreads ; i++) {
+		pthread_join(threads[i], NULL);
+	}
+
+	std::vector<Source> correspondances;
+	for(int i=0 ; i<nbThreads ; i++) {
+		for(int j=0 ; j<resultats[i].size() ; j++) {
+			correspondances.push_back(resultats[i][j]);
+		}
+	}
+	std::cout << correspondances.size();
+
+	std::cout << "\r\033[K - " << pavagePetit.size() << " correspondances en " << time(0) - tDebut << "s" << std::endl;
 	IFS retour;
 		retour.correspondances = correspondances;
 		retour.decoupeGros = tailleGros;
