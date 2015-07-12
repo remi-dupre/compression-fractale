@@ -15,3 +15,5 @@ script/configure
 cd code
 g++ *.cpp lib/*.cpp -lpthread # Debug
 g++ -s -O3 *.cpp lib/*.cpp -lpthread # Release
+
+![Exemple:Lena](https://raw.githubusercontent.com/remi100756/Compression-Fractale/master/lena.gif)
