@@ -40,7 +40,7 @@ ImageFractale::ImageFractale(const char* fichier) : mIfs(std::vector<IFS>()), mM
 }
 
 ImageFractale ImageFractale::compresser(const char* fichier, int precisionPetit, int precisionGros, bool couleur, bool transparence) {
-    /* Retourne la compression d'un fichierau format ImageFractale
+    /* Retourne la compression d'un fichier au format ImageFractale
      * Entrées :
      *  - fichier : l'adresse du fichier (.png) à lire
      *  - precisionPetit : la taille des petits blocs
@@ -59,28 +59,39 @@ ImageFractale ImageFractale::compresser(const char* fichier, int precisionPetit,
 		retour.mHauteur = image.getHauteur();
 		retour.mCouleur = couleur;
 		retour.mTransparence = transparence;
-		if(couleur) {
-			for(int i=0 ; i<3 ; i++) {
+
+	COUT << "Dimension de l'image : " << retour.mLargeur << "x" << retour.mHauteur << std::endl;
+
+	if(couleur) {
+		const char* message[] = {" - Couche rouge ", " - Couche verte", " - Couche bleue"};
+		for(int i=0 ; i<3 ; i++) {
 			ImageMatricielle imageTr(fichier, i);
-			retour.mIfs.push_back( imageTr.chercherIFS(precisionPetit, precisionGros) );
-			retour.mMoyenne.push_back( imageTr.moyenne() );
-			}
-		}
-		else {
-			retour.mIfs.push_back( image.chercherIFS(precisionPetit, precisionGros) );
-			retour.mMoyenne.push_back( image.moyenne() );
-		}
-		if(transparence) {
-			ImageMatricielle imageTr(fichier, 3);
-			retour.mIfs.push_back( imageTr.chercherIFS(precisionPetit*2, precisionGros*2) );
+			retour.mIfs.push_back( imageTr.chercherIFS(precisionPetit, precisionGros, message[i]) );
 			retour.mMoyenne.push_back( imageTr.moyenne() );
 		}
+	}
+	else {
+		retour.mIfs.push_back( image.chercherIFS(precisionPetit, precisionGros, " - Couche NVDG  ") );
+		retour.mMoyenne.push_back( image.moyenne() );
+	}
+	if(transparence) {
+		ImageMatricielle imageTr(fichier, 3);
+		retour.mIfs.push_back( imageTr.chercherIFS(precisionPetit*2, precisionGros*2, " - Couche alpha") );
+		retour.mMoyenne.push_back( imageTr.moyenne() );
+	}
+
 	return retour;
 }
 
 /* *************** Enregistrement *************** */
 
 void ImageFractale::enregistrer(const char* fichier) const {
+	DEBUG << "Enregistrement commencée" << std::endl;
+	DEBUG << "Flotant : " << sizeof(Flotant16b) << "bits" << std::endl;
+	DEBUG << "En tete : " << sizeof(Pack_Entete) << "bits" << std::endl;
+	DEBUG << "ISF : " << sizeof(Pack_IFS) << "bits" << std::endl;
+	DEBUG << "Correspondance : " << sizeof(Pack_Correspondance) << "bits" << std::endl << std::endl;
+
 	std::ofstream f(fichier, std::ios::trunc | std::ios::binary);
 	if (!f.is_open()) std::cout << "Impossible d'ouvrir le fichier '" << fichier << "'" << std::endl;
 
@@ -102,12 +113,15 @@ void ImageFractale::enregistrer(const char* fichier) const {
 }
 
 void ImageFractale::exporter(const char* fichier) {
-    /* Crée un rendu de l'image et l'exporte au format (.png) */
+    /* Crée un rendu de l'image et l'exporte au format (.png)
+	*/
+	extern int ITERATIONS_DECOMPRESSION;
+
 	std::vector<ImageMatricielle*> couche(mIfs.size(), NULL);
 	for(int i=0 ; i < mIfs.size() ; i++) {
 		couche[i] = new ImageMatricielle(mLargeur, mHauteur);
 		couche[i]->remplir(mMoyenne[i]);
-		for(int k=0 ; k<20 ; k++) {
+		for(int k=0 ; k < ITERATIONS_DECOMPRESSION ; k++) {
 			ImageMatricielle *nouveau =  new ImageMatricielle(couche[i]->appliquerIFS(mIfs[i]));
 			delete couche[i]; // On désaloue pour ne pas créer de fuite de mémoire
 			couche[i] = nouveau;

@@ -19,6 +19,8 @@ ImageMatricielle::ImageMatricielle(const char* fichier, int couche) {
 		- couche : la couche à lire (de 0 à 3)
 	 * Sortie : si l'ouverture échoue, l'image prend les dimensions 0x0
 	 */
+	extern bool VERBOSE;
+
 	bool erreur = false;
 	std::vector<unsigned char> png;
 	std::vector<unsigned char> img;
@@ -40,7 +42,7 @@ ImageMatricielle::ImageMatricielle(const char* fichier, int couche) {
 		}
 	}
 
-	if(!erreur) std::cout << "image lue : " << fichier << " (" << mLargeur << "x" << mHauteur << "px) : couche " << couche << std::endl;
+	if(!erreur) DEBUG << "image lue : " << fichier << " (" << mLargeur << "x" << mHauteur << "px) : couche " << couche << std::endl;
 }
 
 ImageMatricielle::~ImageMatricielle() {
@@ -105,7 +107,7 @@ std::vector<ImagePart> ImageMatricielle::decouper(int taille) {
 	return liste;
 }
 
-IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros) {
+IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros, const char* message) {
 	/* Recherche l'ifs pour l'image
 	 * Entrées :
 	 *  - taillePetit : la taille des blocs du petit pavages
@@ -115,6 +117,7 @@ IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros) {
 	 *  - taillePetit / tailleGros : la taille de découpe
 	 */
 	extern int NB_THREADS;
+
 	int tDebut = time(0);
 	if(taillePetit > tailleGros) {
 		std::cout << "Le pavage n'est pas de la bonne dimension" << std::endl;
@@ -124,14 +127,13 @@ IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros) {
 			retour.decoupePetit = taillePetit;
 		return retour;
 	}
-	std::cout << "Compression initiée" << std::endl;
 
-	std::cout << " - Création des pavages";
+	COUT << "Création des pavages ...";
 	std::vector<ImagePart> pavagePetit = decouper(taillePetit);
 	std::vector<ImagePart> pavageGros = decouper(tailleGros);
-	std::cout << " (" << pavagePetit.size() << ":" << pavageGros.size() << " blocs)" << std::endl;
+	std::cout << "\rPetits pavés : " << pavagePetit.size() << ", Gros pavés : " << pavageGros.size() << std::endl;
 
-	std::cout << " - Conditionement des threads" << std::endl;
+	COUT << "Conditionement des threads ...";
 
 	std::vector< std::vector<ImagePart> > taches = decouperTache(pavagePetit, NB_THREADS); // Découpe les tâches
 	std::vector< std::vector<Correspondance> > resultats(NB_THREADS, std::vector<Correspondance>() );
@@ -150,19 +152,11 @@ IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros) {
 	int avancement = 0;
 	while(avancement < pavagePetit.size()) {
 		sleep(1);
-		EFFACER();
 		avancement = 0;
 		for(int i=0 ; i<NB_THREADS ; i++) {
 			avancement += resultats[i].size();
 		}
-		std::cout << "Recherche des correspondances : " << std::endl;
-		std::cout << " - " << pavagePetit.size() << "/" << pavageGros.size() << " blocs" << std::endl;
-		std::cout << " - format d'image : " << mLargeur << "x" << mHauteur << std::endl;
-        std::cout << std::endl << chargement(avancement, pavagePetit.size(), 40) << std::endl;
-
-		for(int i=0 ; i<NB_THREADS ; i++) {
-			std::cout << " Thread " << i << " " << chargement(resultats[i].size(), taches[i].size()) << std::endl;
-		}
+        COUT << '\r' << message << chargement(avancement, pavagePetit.size(), 20);
 	}
 
 	std::vector<Correspondance> correspondances;
@@ -172,7 +166,7 @@ IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros) {
 		}
 	}
 
-	std::cout << "Terminé en " << time(0) - tDebut << " secondes" << std::endl;
+	COUT << '\r' << message << ": " << pavagePetit.size() << '/' << pavagePetit.size() << " " << "(" << time(0) - tDebut << " secondes)" << "                       "<< std::endl;
 	IFS retour;
 		retour.correspondances = correspondances;
 		retour.decoupeGros = tailleGros;

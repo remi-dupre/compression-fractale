@@ -5,7 +5,9 @@ class ImageFractale;
 
 #include <fstream>
 #include <vector>
-#include <cmath>
+#include <cmath> // ceil
+
+#include "debug.h"
 #include "format.h"
 #include "formatFichier.h"
 #include "ImageMatricielle.h"

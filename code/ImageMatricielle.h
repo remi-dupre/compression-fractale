@@ -25,7 +25,7 @@ class ImageMatricielle {
 		~ImageMatricielle();
 
 		std::vector<ImagePart> decouper(int taille);
-		IFS chercherIFS(int taillePetit, int tailleGros);
+		IFS chercherIFS(int taillePetit, int tailleGros, const char* message = "");
 		ImageMatricielle appliquerIFS(const IFS& ifs);
 
 		void sauvegarder(const char* fichier) const;
@@ -40,9 +40,9 @@ class ImageMatricielle {
 		unsigned char* operator[](int i);
 
 	private :
-		unsigned char **mImage; // L'image est représentée par une matrice de int
-		unsigned int mLargeur; // Largeur en pixels de l'image
-		unsigned int mHauteur; // Hauteur en pixels de l'image
+		unsigned char **mImage;	// L'image est représentée par une matrice de int
+		unsigned int mLargeur;	// Largeur en pixels de l'image
+		unsigned int mHauteur;	// Hauteur en pixels de l'image
 };
 
 #endif

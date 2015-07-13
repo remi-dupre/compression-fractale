@@ -1,5 +1,5 @@
-#ifndef DEBUG
-#define DEBUG
+#ifndef DEBUG_
+#define DEBUG_
 
 #include <iostream>
 #include <stdlib.h>
@@ -14,7 +14,10 @@
 #define EFFACER() int retour_system = system("clear") ; std::cout << std::endl;
 #endif
 
+#define COUT extern bool SILENCIEUX ; if(!SILENCIEUX) std::cout
+#define DEBUG extern bool VERBOSE ; if(VERBOSE) std::cout << "(dbg) "
+
 std::string chargement(int actuel, int total, int taille=30);
 std::string sourceToString(Correspondance source);
 
-#endif // DEBUG
+#endif
