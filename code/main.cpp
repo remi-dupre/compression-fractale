@@ -1,6 +1,6 @@
-#include "format.h"
+#include "ImageFractale.h"
 
 int main() {
-	ImageFractale imgF = compresser("pokemon.png", 16, 24, true, true);
-	sauvegarder("pokemon_resultat.png", imgF);
+	ImageFractale imgF = ImageFractale::compresser("lena.png", 16, 24);
+	imgF.exporter("lena_resultat.png");
 }

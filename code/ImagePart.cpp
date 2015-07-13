@@ -1,6 +1,6 @@
 #include "ImagePart.h"
 
-#define SEUIL_LISSAGE 4
+#define SEUIL_LISSAGE 1
 
 /* *************** Constructeur / Destructeur *************** */
 
