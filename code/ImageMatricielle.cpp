@@ -114,7 +114,7 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 	 *  - correspondances : la liste (respectant les indinces des blocs) des 'Correspondance' a appliquer
 	 *  - taillePetit / tailleGros : la taille de découpe
 	 */
-	int nbThreads = 10;
+	extern int NB_THREADS;
 	int tDebut = time(0);
 	if(taillePetit > tailleGros) {
 		std::cout << "Le pavage n'est pas de la bonne dimension" << std::endl;
@@ -133,17 +133,17 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 
 	std::cout << " - Conditionement des threads" << std::endl;
 
-	std::vector< std::vector<ImagePart> > taches = decouperTache(pavagePetit, nbThreads); // Découpe les tâches
-	std::vector< std::vector<Correspondance> > resultats(nbThreads, std::vector<Correspondance>() );
-	std::vector<pthread_t> threads(nbThreads, pthread_t());
-	std::vector<ThreadData> datas(nbThreads, ThreadData());
-	for(int i=0 ; i<nbThreads ; i++) {
+	std::vector< std::vector<ImagePart> > taches = decouperTache(pavagePetit, NB_THREADS); // Découpe les tâches
+	std::vector< std::vector<Correspondance> > resultats(NB_THREADS, std::vector<Correspondance>() );
+	std::vector<pthread_t> threads(NB_THREADS, pthread_t());
+	std::vector<ThreadData> datas(NB_THREADS, ThreadData());
+	for(int i=0 ; i<NB_THREADS ; i++) {
 		datas[i].thread_id = i;
 		datas[i].travail = taches[i];
 		datas[i].antecedants = pavageGros;
 		datas[i].resultat = &resultats[i];
 	}
-	for(int i=0 ; i<nbThreads ; i++) {
+	for(int i=0 ; i<NB_THREADS ; i++) {
 		pthread_create(&threads[i], NULL, lancerThread, (void *)&datas[i]);
 	}
 
@@ -152,7 +152,7 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 		sleep(1);
 		EFFACER();
 		avancement = 0;
-		for(int i=0 ; i<nbThreads ; i++) {
+		for(int i=0 ; i<NB_THREADS ; i++) {
 			avancement += resultats[i].size();
 		}
 		std::cout << "Recherche des correspondances : " << std::endl;
@@ -160,13 +160,13 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 		std::cout << " - format d'image : " << mLargeur << "x" << mHauteur << std::endl;
         std::cout << std::endl << chargement(avancement, pavagePetit.size(), 40) << std::endl;
 
-		for(int i=0 ; i<nbThreads ; i++) {
+		for(int i=0 ; i<NB_THREADS ; i++) {
 			std::cout << " Thread " << i << " " << chargement(resultats[i].size(), taches[i].size()) << std::endl;
 		}
 	}
 
 	std::vector<Correspondance> correspondances;
-	for(int i=0 ; i<nbThreads ; i++) {
+	for(int i=0 ; i<NB_THREADS ; i++) {
 		for(int j=0 ; j<resultats[i].size() ; j++) {
 			correspondances.push_back(resultats[i][j]);
 		}

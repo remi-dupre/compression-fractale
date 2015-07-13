@@ -144,6 +144,7 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	 *   - retourne la tranformation optimale
 	 *   - modifie varianceRetour : la variance des couleurs de l'image de référence et de l'autre après transformation
 	 */
+	extern double SEUIL_LISSAGE, SEUIL_VARIANCE;
 
 	Transformation max = ROTATION(360); // max sert juste de borne mais ne peut pas être la valeur de retour
 	Transformation mid = ROTATION(0);
@@ -168,7 +169,7 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	 */
 	LinReg droite;
 	if(varmin > SEUIL_LISSAGE) {
-		while(max.rotation - min.rotation > 5) {
+		while(max.rotation - min.rotation > 5 && varmin > SEUIL_VARIANCE) {
 			mid.rotation = (max.rotation + min.rotation) / 2; // On prend le milieu et on calcul la transformation
 			origine.transformer(img, mid);
 			float variance = varianceDifference(img, &droite);
@@ -196,12 +197,14 @@ Correspondance ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties
 	 *   - bloc : l'indice du bout d'image choisis dans "parties"
 	 *   - transformation : la transformation optimale pour ce blocs
 	 */
+	extern double SEUIL_LISSAGE, SEUIL_VARIANCE;
+
 	int n = parties.size();
 	float varianceMin, variance;
 	Transformation transfo = chercherTransformation(parties[0], varianceMin); // Donne une valeur initiale à varianceMin
 	Transformation transfoMin = transfo;
 	int imin = 0;
-	for(int i=1 ; i<n && (varianceMin>SEUIL_LISSAGE || transfoMin.droite.a != 0) ; i++) { // On fait une recherche de minimum sur la variance
+	for(int i=1 ; i<n && (varianceMin>SEUIL_LISSAGE || transfoMin.droite.a != 0) && varianceMin>SEUIL_VARIANCE ; i++) { // On fait une recherche de minimum sur la variance
 		transfo = chercherTransformation(parties[i], variance);
 		if(varianceMin > variance) {
 			imin = i;
