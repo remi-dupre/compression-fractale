@@ -10,6 +10,7 @@ struct IFS;
 #include <vector>
 #include "ImageMatricielle.h"
 #include "ImageFractale.h"
+
 /* *************** Définition de structures *************** */
 
 typedef struct Coordonnees Coordonnees;

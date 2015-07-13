@@ -4,8 +4,12 @@ class ImageFractale;
 #define IMAGE_FRACTALE
 
 #include <fstream>
+#include <vector>
+#include <cmath>
 #include "format.h"
+#include "formatFichier.h"
 #include "ImageMatricielle.h"
+
 
 class ImageFractale {
 	/* Décrit une image fractale
@@ -13,7 +17,12 @@ class ImageFractale {
 	 */
 
 	public :
-		void exporter(const char* fichier); // Enregistre au format .png
+		ImageFractale();
+		// Constructeur à partir d'un fichier .ifs
+		ImageFractale(const char* fichier);
+
+		// Enregistre au format .png
+		void exporter(const char* fichier);
 
 		// Importe le format .png
 		static ImageFractale compresser(const char* fichier, int precisionPetit, int precisionGros, bool couleur = false, bool transparence = false);
@@ -21,11 +30,17 @@ class ImageFractale {
 		// Enregistre l'image au format ifs
 		void enregistrer(const char* fichier) const;
 
+		// Getters
+		int getLargeur() const;
+		int getHauteur() const;
+		bool isCouleur() const;
+		bool isTransparent() const;
+
 	protected :
-		int mLargeur, mHauteur;			// Les dimensions de l'image
-		bool mCouleur, mTransparence;	// L'image est en couleur ? Transparente ?
-		std::vector<int> mMoyenne;		// La moyenne de teinte des couches : gris/RGB puis alpha
-		std::vector<IFS> mIfs;			// Les ifs de chaque couche
+		int mLargeur, mHauteur;				// Les dimensions de l'image
+		bool mCouleur, mTransparence;		// L'image est en couleur ? Transparente ?
+		std::vector<unsigned char> mMoyenne;// La moyenne de teinte des couches : gris/RGB puis alpha
+		std::vector<IFS> mIfs;				// Les ifs de chaque couche
 };
 
 #endif

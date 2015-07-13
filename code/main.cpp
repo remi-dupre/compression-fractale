@@ -3,11 +3,11 @@
 #include <iostream>
 #include "format.h"
 
-#include <cmath>
-
 int main() {
-	std::cout << sizeof(Transformation) << '\n';
-	ImageFractale imgF = ImageFractale::compresser("lena.png", 12, 16);
-	imgF.enregistrer("lena.ifs");
-	imgF.exporter("lena_resultat.png");
+	ImageFractale imgF = ImageFractale::compresser("pokemon.png", 12, 36, true, false);
+	imgF.enregistrer("pokemon.ifs");
+
+	ImageFractale imgB("pokemon.ifs");
+	imgB.exporter("pokemon_resultat.png");
 }
+	
