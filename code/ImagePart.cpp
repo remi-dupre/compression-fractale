@@ -100,7 +100,6 @@ LinReg ImagePart::chercherLinReg(const ImagePart& X) const {
 	double n = mTaille*mTaille;
 	LinReg retour;
 		retour.a = ( (sumX*sumY/n) - sumXY ) / ( (sumX*sumX/n) - sumXX );
-		retour.a = int(retour.a*100)/100;
 		retour.b = ( sumY - (retour.a*sumX) ) / n;
 	return retour;
 }

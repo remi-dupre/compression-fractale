@@ -75,6 +75,23 @@ ImageFractale ImageFractale::compresser(const char* fichier, int precisionPetit,
 
 /* *************** Enregistrement *************** */
 
+struct Flotant16b {
+	short signed int exp :5;		// Facteur < 2^(2^31) = 128
+	short signed int mantisse :11;	// -1023 <= ... <= 1024
+
+	Flotant16b() { mantisse = exp = 0; }
+	Flotant16b(float x) {
+		int e;
+		mantisse = 1024 * std::frexp(x, &e);
+		exp = e;
+	}
+};
+
+float decode16bFlotant(Flotant16b x) {
+	/* Retourne un flotant 32 bits (natif) à partir d'un flotant 16 bits */
+	return x.mantisse * std::pow(2, x.exp) / 1024;
+}
+
 struct Pack_Entete {
 	unsigned int largeur:15;
 	unsigned int hauteur:15;
@@ -91,7 +108,7 @@ struct Pack_Correspondance { // 14 + 9 + 9 + 16 = 48 = 6*8 octects
 	unsigned int bloc		:14; // Jusqu'a 16383 blocs
 	unsigned int rotation	:9;	 // 511°
 	signed short int b		:9;	 // -255 à 256
-	signed short int a:16,	:16; // 16 bits inutiles à la fin
+	Flotant16b a;				 // 16 bits inutiles à la fin
 };
 
 void ImageFractale::enregistrer(const char* fichier) const {
@@ -116,7 +133,7 @@ void ImageFractale::enregistrer(const char* fichier) const {
 			Pack_Correspondance correspondance;
 				correspondance.bloc = mCorrespondances[j].bloc;
 				correspondance.rotation = mCorrespondances[j].transformation.rotation;
-				correspondance.a = mCorrespondances[j].transformation.droite.a*100;
+				correspondance.a = Flotant16b( mCorrespondances[j].transformation.droite.a );
 				correspondance.b = mCorrespondances[j].transformation.droite.b;
 			f.write((char*)&correspondance, 6); // ! \\ Le 6 peut varier avec un changement de structure
 		}
