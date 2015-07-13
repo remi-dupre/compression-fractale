@@ -1,3 +1,5 @@
+class ImageMatricielle;
+
 #ifndef IMAGEMATRICIELLE
 #define IMAGEMATRICIELLE
 
@@ -7,7 +9,7 @@
 #include <unistd.h> // sleep(int)
 #include "lib/lodepng.h" // https://github.com/lvandeve/lodepng
 
-#define timespec thread_timespec // Evite un conflict avec time (win)
+#define timespec thread_timespec // Evite un conflict avec ctime (win)
 #include <pthread.h>
 #undef timespec
 
@@ -16,7 +18,6 @@
 #include "debug.h"
 #include "multithread.h"
 
-class ImagePart;
 class ImageMatricielle {
 	public :
 		ImageMatricielle(const char* fichier, int couche);
@@ -34,6 +35,7 @@ class ImageMatricielle {
 
 		unsigned int moyenne() const;
 		void adapterMoyenne(int val);
+		void remplir(int val);
 
 		unsigned int* operator[](int i);
 

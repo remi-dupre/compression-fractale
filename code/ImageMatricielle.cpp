@@ -82,6 +82,14 @@ void ImageMatricielle::adapterMoyenne(int val) {
 	}
 }
 
+void ImageMatricielle::remplir(int val) {
+	for(int i=0 ; i<mLargeur ; i++) {
+		for(int j=0 ; j<mHauteur ; j++) {
+			mImage[i][j] = val;
+		}
+	}
+}
+
 /* *************** Compression *************** */
 
 std::vector<ImagePart> ImageMatricielle::decouper(int taille) {
@@ -106,7 +114,7 @@ IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleG
 	 *  - correspondances : la liste (respectant les indinces des blocs) des 'Correspondance' a appliquer
 	 *  - taillePetit / tailleGros : la taille de découpe
 	 */
-	int nbThreads = 6;
+	int nbThreads = 10;
 	int tDebut = time(0);
 	if(taillePetit > tailleGros) {
 		std::cout << "Le pavage n'est pas de la bonne dimension" << std::endl;

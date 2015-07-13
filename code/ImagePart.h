@@ -1,3 +1,5 @@
+class ImageMatricielle;
+
 #ifndef IMAGEPART
 #define IMAGEPART
 
@@ -7,7 +9,6 @@
 
 #define RAD(x) (x*3.14159265/180) // degrés -> randians
 
-class ImageMatricielle;
 class ImagePart {
 	/* Représente un bout d'image carré
 	 * C'est là-dessus que sont  effectuées les transformations

@@ -1,5 +1,7 @@
 #include "ImagePart.h"
 
+#define SEUIL_LISSAGE 4
+
 /* *************** Constructeur / Destructeur *************** */
 
 ImagePart::ImagePart(ImageMatricielle* maman, int x, int y, int taille) :
@@ -167,7 +169,7 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	 *  -> de toutes facons, à la fin varmin ~= varmax
 	 */
 	LinReg droite;
-	while(max.rotation - min.rotation > 5 && varmin > 0.1) {
+	while(max.rotation - min.rotation > 5 && varmin > SEUIL_LISSAGE) {
 		mid.rotation = (max.rotation + min.rotation) / 2; // On prend le milieu et on calcul la transformation
 		origine.transformer(img, mid);
 		float variance = varianceDifference(img, &droite);
@@ -199,7 +201,7 @@ Correspondance ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties
 	Transformation transfo = chercherTransformation(parties[0], varianceMin); // Donne une valeur initiale à varianceMin
 	Transformation transfoMin = transfo;
 	int imin = 0;
-	for(int i=1 ; i<n ; i++) { // On fait une recherche de minimum sur la variance
+	for(int i=1 ; i<n && varianceMin > SEUIL_LISSAGE ; i++) { // On fait une recherche de minimum sur la variance
 		transfo = chercherTransformation(parties[i], variance);
 		if(varianceMin > variance) {
 			imin = i;

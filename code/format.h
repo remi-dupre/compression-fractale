@@ -1,8 +1,14 @@
+struct LinReg;
+struct Transformation;
+struct Correspondance;
+struct IFS;
+
 #ifndef FORMAT
 #define FORMAT
 
 #include <iostream>
 #include <vector>
+#include "ImageMatricielle.h"
 
 /* *************** Définition de structures *************** */
 
@@ -48,8 +54,18 @@ struct IFS {
 	std::vector<Correspondance> correspondances; // L'ifs : la liste de la transformation/antécédant de chaque bloc
 };
 
+typedef struct ImageFractale ImageFractale;
+struct ImageFractale {
+	int largeur, hauteur;
+	bool couleur, transparence;
+	std::vector<int> moyenne;
+	std::vector<IFS> ifs;
+};
+
 /* *************** Fonctions *************** */
 
 int couleurLinReg(const LinReg& droite, int couleur);
+void sauvegarder(const char* fichier, const ImageFractale& imageFractale);
+ImageFractale compresser(const char* fichier, int precisionPetit, int precisionGros, bool couleur = false, bool transparence = false);
 
 #endif
