@@ -33,7 +33,7 @@ struct Transformation {
 	 *  - rotation : en degrés
 	 *  - decalage : le décalage de couleur à ajouter
 	 */
-	short int rotation;		// Rotation par rapport au centre de la parcelle en ° (0 à 360)
+	unsigned short int rotation;		// Rotation par rapport au centre de la parcelle en ° (0 à 360)
 	LinReg droite;		 	// La correction à appliquer à la couleur
 };
 #define ROTATION(rot) {rot, {1,0}} // Initialisation d'une transformation de type rotation

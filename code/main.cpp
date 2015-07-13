@@ -1,6 +1,11 @@
 #include "ImageFractale.h"
 
+#include <iostream>
+#include "format.h"
+
 int main() {
-	ImageFractale imgF = ImageFractale::compresser("lena.png", 16, 24);
+	std::cout << sizeof(Transformation) << '\n';
+	ImageFractale imgF = ImageFractale::compresser("lena.png", 64, 96);
+	imgF.enregistrer("lena.ifs");
 	imgF.exporter("lena_resultat.png");
 }

@@ -21,7 +21,7 @@ class ImageMatricielle;
 class ImageMatricielle {
 	public :
 		ImageMatricielle(const char* fichier, int couche);
-		ImageMatricielle(int x, int y);
+		ImageMatricielle(unsigned int x, unsigned int y);
 		~ImageMatricielle();
 
 		std::vector<ImagePart> decouper(int taille);
@@ -41,8 +41,8 @@ class ImageMatricielle {
 
 	private :
 		unsigned char **mImage; // L'image est représentée par une matrice de int
-		int mLargeur; // Largeur en pixels de l'image
-		int mHauteur; // Hauteur en pixels de l'image
+		unsigned int mLargeur; // Largeur en pixels de l'image
+		unsigned int mHauteur; // Hauteur en pixels de l'image
 };
 
 #endif

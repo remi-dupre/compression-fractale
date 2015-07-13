@@ -2,7 +2,7 @@
 
 /* *************** Constructeur / Destructeur *************** */
 
-ImageMatricielle::ImageMatricielle(int x, int y) : mLargeur(x), mHauteur(y) {
+ImageMatricielle::ImageMatricielle(unsigned int x, unsigned int y) : mLargeur(x), mHauteur(y) {
 	/* Créée une nouvelle image de dimensions données
 	 * Les pixels de l'image ne sont pas initialisés
 	 */

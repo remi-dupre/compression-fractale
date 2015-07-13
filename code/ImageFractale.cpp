@@ -72,3 +72,55 @@ ImageFractale ImageFractale::compresser(const char* fichier, int precisionPetit,
 		}
 	return retour;
 }
+
+/* *************** Enregistrement *************** */
+
+struct Pack_Entete {
+	unsigned int largeur:15;
+	unsigned int hauteur:15;
+	bool couleur:1;
+	bool transparence:1;
+};
+
+struct Pack_IFS { // 4 octects
+	unsigned short int decoupeGros;
+	unsigned short int decoupePetit;
+};
+
+struct Pack_Correspondance { // 14 + 9 + 9 + 16 = 48 = 6*8 octects
+	unsigned int bloc		:14; // Jusqu'a 16383 blocs
+	unsigned int rotation	:9;	 // 511°
+	signed short int b		:9;	 // -255 à 256
+	signed short int a:16,	:16; // 16 bits inutiles à la fin
+};
+
+void ImageFractale::enregistrer(const char* fichier) const {
+	std::ofstream f(fichier, std::ios::trunc | std::ios::binary);
+	if (!f.is_open()) std::cout << "Impossible d'ouvrir le fichier en lecture !" << std::endl;
+
+	Pack_Entete entete;
+		entete.largeur = mLargeur;
+		entete.hauteur = mHauteur;
+		entete.couleur = mCouleur;
+		entete.transparence = mTransparence;
+	f.write((char*)&entete, sizeof(Pack_Entete));
+
+	for(int i=0 ; i < mIfs.size() ; i++) {
+		Pack_IFS ifs;
+			ifs.decoupeGros = mIfs[i].decoupeGros;
+			ifs.decoupePetit = mIfs[i].decoupePetit;
+		f.write((char*)&ifs, sizeof(Pack_IFS));
+
+		const std::vector<Correspondance> &mCorrespondances = mIfs[i].correspondances;
+		for(int j=0 ; j < mCorrespondances.size() ; j++) {
+			Pack_Correspondance correspondance;
+				correspondance.bloc = mCorrespondances[j].bloc;
+				correspondance.rotation = mCorrespondances[j].transformation.rotation;
+				correspondance.a = mCorrespondances[j].transformation.droite.a*100;
+				correspondance.b = mCorrespondances[j].transformation.droite.b;
+			f.write((char*)&correspondance, 6); // ! \\ Le 6 peut varier avec un changement de structure
+		}
+	}
+
+	f.close();
+}
