@@ -1,7 +1,5 @@
 #include "ImagePart.h"
 
-#define SEUIL_LISSAGE 1
-
 /* *************** Constructeur / Destructeur *************** */
 
 ImagePart::ImagePart(ImageMatricielle* maman, int x, int y, int taille) :
@@ -169,19 +167,21 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	 *  -> de toutes facons, à la fin varmin ~= varmax
 	 */
 	LinReg droite;
-	while(max.rotation - min.rotation > 5 && varmin > SEUIL_LISSAGE) {
-		mid.rotation = (max.rotation + min.rotation) / 2; // On prend le milieu et on calcul la transformation
-		origine.transformer(img, mid);
-		float variance = varianceDifference(img, &droite);
-		if(varmin < varmax) {
-			max.rotation = mid.rotation;
-			max.droite = droite;
-			varmax = variance;
-		}
-		else {
-			min.rotation = mid.rotation;
-			min.droite = droite;
-			varmin = variance;
+	if(varmin > SEUIL_LISSAGE) {
+		while(max.rotation - min.rotation > 5) {
+			mid.rotation = (max.rotation + min.rotation) / 2; // On prend le milieu et on calcul la transformation
+			origine.transformer(img, mid);
+			float variance = varianceDifference(img, &droite);
+			if(varmin < varmax) {
+				max.rotation = mid.rotation;
+				max.droite = droite;
+				varmax = variance;
+			}
+			else {
+				min.rotation = mid.rotation;
+				min.droite = droite;
+				varmin = variance;
+			}
 		}
 	}
 	varianceRetour = varmin; // On retourne la variance obtenue pour éviter de refaire le calcul
@@ -201,7 +201,7 @@ Correspondance ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties
 	Transformation transfo = chercherTransformation(parties[0], varianceMin); // Donne une valeur initiale à varianceMin
 	Transformation transfoMin = transfo;
 	int imin = 0;
-	for(int i=1 ; i<n && varianceMin > SEUIL_LISSAGE ; i++) { // On fait une recherche de minimum sur la variance
+	for(int i=1 ; i<n && (varianceMin>SEUIL_LISSAGE || transfoMin.droite.a != 0) ; i++) { // On fait une recherche de minimum sur la variance
 		transfo = chercherTransformation(parties[i], variance);
 		if(varianceMin > variance) {
 			imin = i;
