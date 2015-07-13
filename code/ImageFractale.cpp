@@ -19,31 +19,20 @@ ImageFractale::ImageFractale(const char* fichier) : mIfs(std::vector<IFS>()), mM
 		mCouleur = entete.couleur;
 		mTransparence = entete.transparence;
 
-	int nbCouches = mCouleur ? 3 : 1;
+	int nbCouches = mCouleur ? 3 : 1; // Calcul du nombre de couches
 	if(mTransparence) nbCouches += 1;
 
 	for(int i=0 ; i<nbCouches ; i++) {
 		Pack_IFS ifs;
-		mIfs.push_back(IFS());
 		f.read((char*)&ifs, sizeof(Pack_IFS));
-			mIfs[i].decoupeGros = ifs.decoupeGros;
-			mIfs[i].decoupePetit = ifs.decoupePetit;
-		mMoyenne.push_back( ifs.moyenne );
+		mIfs.push_back( unpack_IFS(ifs) );
+		mMoyenne.push_back( unpack_moyenne(ifs) );
 
 		int nbBlocs = std::ceil((float)mLargeur/ifs.decoupePetit) * std::ceil((float)mHauteur/ifs.decoupePetit);
 		for(int j=0 ; j < nbBlocs ; j++) {
 			Pack_Correspondance correspondance;
-			Correspondance mCorrespondance;
-			f.read((char*)&correspondance, 4); // ! \\ Le 6 peut varier avec un changement de structure
-				mCorrespondance.bloc = correspondance.bloc;
-				mCorrespondance.transformation.rotation = correspondance.rotation * 360 / 255;
-				mCorrespondance.transformation.droite.b = correspondance.b;
-
-			Flotant16b a;
-			f.read((char*)&a, 2); // ! \\ Le 6 peut varier avec un changement de structure
-			mCorrespondance.transformation.droite.a = decode16bFloat(a);
-
-			mIfs[i].correspondances.push_back( mCorrespondance );
+			f.read((char*)&correspondance, SIZEOF_PACK_CORRESPONDANCE);
+			mIfs[i].correspondances.push_back( unpack_correspondance(correspondance) );
 		}
 	}
 
@@ -93,28 +82,19 @@ ImageFractale ImageFractale::compresser(const char* fichier, int precisionPetit,
 
 void ImageFractale::enregistrer(const char* fichier) const {
 	std::ofstream f(fichier, std::ios::trunc | std::ios::binary);
-	if (!f.is_open()) std::cout << "Impossible d'ouvrir le fichier en lecture !" << std::endl;
+	if (!f.is_open()) std::cout << "Impossible d'ouvrir le fichier '" << fichier << "'" << std::endl;
 
-	Pack_Entete entete = packer_entete(*this);
+	Pack_Entete entete = packer_entete(*this); // Récupère les données binaires de l'en-tête
 	f.write((char*)&entete, sizeof(Pack_Entete));
 
 	for(int i=0 ; i < mIfs.size() ; i++) {
-		Pack_IFS ifs;
-			ifs.decoupeGros = mIfs[i].decoupeGros;
-			ifs.decoupePetit = mIfs[i].decoupePetit;
-			ifs.moyenne = mMoyenne[i];
+		Pack_IFS ifs = packer_ifs(mIfs[i], mMoyenne[i]);
 		f.write((char*)&ifs, sizeof(Pack_IFS));
 
 		const std::vector<Correspondance> &mCorrespondances = mIfs[i].correspondances;
 		for(int j=0 ; j < mCorrespondances.size() ; j++) {
-			Pack_Correspondance correspondance;
-				correspondance.bloc = mCorrespondances[j].bloc;
-				correspondance.rotation = mCorrespondances[j].transformation.rotation * 255 / 360;
-				correspondance.b = mCorrespondances[j].transformation.droite.b;
-			f.write((char*)&correspondance, sizeof(Pack_Correspondance)); // ! \\ Le 6 peut varier avec un changement de structure
-
-			Flotant16b a = (mCorrespondances[j].transformation.droite.a);
-			f.write((char*)&a, 2); // ! \\ Le 6 peut varier avec un changement de structure
+			Pack_Correspondance correspondance = packer_correspondance(mCorrespondances[j]);
+			f.write((char*)&correspondance, SIZEOF_PACK_CORRESPONDANCE);
 		}
 	}
 
@@ -138,10 +118,12 @@ void ImageFractale::exporter(const char* fichier) {
 	for(int j=0 ; j<mHauteur ; j++) {
 		for(int i=0 ; i<mLargeur ; i++) {
 			if(mCouleur) {
-				for(int n=0 ; n<3 ; n++) pixels.push_back( (unsigned char)( (*couche[n])[i][j] ) );
+				for(int n=0 ; n<3 ; n++) // Ajoute les 3 couleurs
+					pixels.push_back( (unsigned char)( (*couche[n])[i][j] ) );
 			}
 			else{
-				for(int n=0 ; n<3 ; n++) pixels.push_back( (unsigned char)( (*couche[0])[i][j] ) );
+				for(int n=0 ; n<3 ; n++) // Pose 3 fois la même couleur
+					pixels.push_back( (unsigned char)( (*couche[0])[i][j] ) );
 			}
 			if(mTransparence) pixels.push_back( (unsigned char)( (*couche[couche.size()-1])[i][j] ) );
 			else pixels.push_back(255);
@@ -152,7 +134,7 @@ void ImageFractale::exporter(const char* fichier) {
 	unsigned error = lodepng::encode(png, pixels, mLargeur, mHauteur);
 	if(!error) lodepng::save_file(png, fichier);
 
-	if(error) std::cout << fichier << " -> encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
+	if(error) std::cout << fichier << " -> png encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
 }
 
 /* *************** Getters / Setters *************** */

@@ -52,14 +52,19 @@ struct Pack_IFS {
 	unsigned char moyenne		:8;
 };
 
+#define MAX_GROS_BLOCS 4095
+#define SIZEOF_PACK_CORRESPONDANCE 6
+
 struct Pack_Correspondance {
     /* Une correspondance
      *  sur 32 bits
      *  avec a (float) : 48 bits
      */
 	unsigned int bloc		:12;	// Limité à 4095 gros blocs
-	unsigned int rotation	:8;		// 0 à 255 proportionel à l'angle
+	unsigned int rotation	:8;		// 0 à 255, proportionel à l'angle
 	signed int b			:12;	// -512 à 512
+	Flotant16b a;		//	:16;	// Flotant 16 bits
+	// : 16 bits de vide 
 };
 
 /* *************** Fonctions de mise en paquets *************** */
@@ -67,5 +72,11 @@ struct Pack_Correspondance {
 #define WARNING_PACKING true // Doit t'on afficher un message dans la console si une entrée semble dangereuse
 
 Pack_Entete packer_entete(const ImageFractale&);
+Pack_IFS packer_ifs(const IFS& ifs, unsigned char moyenne = 0);
+Pack_Correspondance packer_correspondance(const Correspondance&);
+
+unsigned char unpack_moyenne(const Pack_IFS&);
+IFS unpack_IFS(const Pack_IFS&);
+Correspondance unpack_correspondance(const Pack_Correspondance&);
 
 #endif
