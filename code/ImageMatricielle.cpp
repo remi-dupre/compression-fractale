@@ -2,13 +2,13 @@
 
 /* *************** Constructeur / Destructeur *************** */
 
-ImageMatricielle::ImageMatricielle(unsigned int x, unsigned int y) : mLargeur(x), mHauteur(y) {
+ImageMatricielle::ImageMatricielle(int x, int y) : mLargeur(x), mHauteur(y) {
 	/* Créée une nouvelle image de dimensions données
 	 * Les pixels de l'image ne sont pas initialisés
 	 */
-	mImage = new unsigned int* [mLargeur];
+	mImage = new unsigned char* [mLargeur];
 	for(int i=0 ; i<mLargeur ; i++) {
-		mImage[i] = new unsigned int[mHauteur];
+		mImage[i] = new unsigned char[mHauteur];
 	}
 }
 
@@ -32,9 +32,9 @@ ImageMatricielle::ImageMatricielle(const char* fichier, int couche) {
 		erreur = true;
 	}
 
-	mImage = new unsigned int* [mLargeur];
+	mImage = new unsigned char* [mLargeur];
 	for(int i=0 ; i<mLargeur ; i++) {
-		mImage[i] = new unsigned int[mHauteur];
+		mImage[i] = new unsigned char[mHauteur];
 		for(int j=0 ; j<mHauteur ; j++) {
 			mImage[i][j] = img[ (i + j*mLargeur)*4 + couche ];
 		}
@@ -53,15 +53,15 @@ ImageMatricielle::~ImageMatricielle() {
 
 /* *************** Setters / Getters *************** */
 
-unsigned int* ImageMatricielle::operator[](int i) {
+unsigned char* ImageMatricielle::operator[](int i) {
 	/* Retourne la ligne de l'image correspondante */
 	return mImage[i];
 }
 
-unsigned int ImageMatricielle::getHauteur() const { return mHauteur; }
-unsigned int ImageMatricielle::getLargeur() const { return mLargeur; }
+int ImageMatricielle::getHauteur() const { return mHauteur; }
+int ImageMatricielle::getLargeur() const { return mLargeur; }
 
-unsigned int ImageMatricielle::moyenne() const {
+unsigned char ImageMatricielle::moyenne() const {
 	/* Retourne la moyenne de teinte des pixels de l'image */
 	int somme = 0;
 	for(int i=0 ; i<mLargeur ; i++) {
@@ -72,7 +72,7 @@ unsigned int ImageMatricielle::moyenne() const {
 	return somme/(mLargeur * mHauteur);
 }
 
-void ImageMatricielle::adapterMoyenne(int val) {
+void ImageMatricielle::adapterMoyenne(unsigned char val) {
 	/* Décale la moyenne de couleur des pixels pour la faire correspondre à 'val' */
 	int decalage = val - moyenne();
 	for(int i=0 ; i<mLargeur ; i++) {
@@ -82,7 +82,7 @@ void ImageMatricielle::adapterMoyenne(int val) {
 	}
 }
 
-void ImageMatricielle::remplir(int val) {
+void ImageMatricielle::remplir(unsigned char val) {
 	for(int i=0 ; i<mLargeur ; i++) {
 		for(int j=0 ; j<mHauteur ; j++) {
 			mImage[i][j] = val;
@@ -105,7 +105,7 @@ std::vector<ImagePart> ImageMatricielle::decouper(int taille) {
 	return liste;
 }
 
-IFS ImageMatricielle::chercherIFS(unsigned int taillePetit, unsigned int tailleGros) {
+IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros) {
 	/* Recherche l'ifs pour l'image
 	 * Entrées :
 	 *  - taillePetit : la taille des blocs du petit pavages
@@ -206,9 +206,9 @@ void ImageMatricielle::sauvegarder(const char* fichier) const {
 	std::vector<unsigned char> pixels;
 	for(int j=0 ; j<mHauteur ; j++) {
 		for(int i=0 ; i<mLargeur ; i++) {
-			pixels.push_back((unsigned char)(mImage[i][j]));
-			pixels.push_back((unsigned char)(mImage[i][j]));
-			pixels.push_back((unsigned char)(mImage[i][j]));
+			pixels.push_back(mImage[i][j]);
+			pixels.push_back(mImage[i][j]);
+			pixels.push_back(mImage[i][j]);
 			pixels.push_back(255);
 		}
 	}

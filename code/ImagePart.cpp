@@ -30,7 +30,7 @@ ImagePart::~ImagePart() {
 
 /* *************** Setters / Getters *************** */
 
-void ImagePart::set(int i, int j, int val) {
+void ImagePart::set(int i, int j, unsigned char val) {
 	/* Modifie la valeur d'un élément dans la parties
 	 * /!\ Interdit les modifications de l'extérieur
 	 * Entrées :
@@ -42,7 +42,7 @@ void ImagePart::set(int i, int j, int val) {
 		(*mImage)[i+mX][j+mY] = val;
 }
 
-int ImagePart::at(int i, int j) const {
+unsigned char ImagePart::at(int i, int j) const {
 	/* Retourne la valeur aux coordonnées données (i,j)
 	 * Si les coordonnées dépassent du blocs mais restent dans l'image ça marche quand même
 	 */
@@ -60,9 +60,9 @@ int ImagePart::at(int i, int j) const {
 
 int ImagePart::getTaille() const { return mTaille; } // La cote du carré
 
-int ImagePart::couleurMoyenne() const {
+unsigned char ImagePart::couleurMoyenne() const {
 	/* La moyenne des couleurs représentées sur le bout d'image */
-	int somme = 0;
+	unsigned int somme = 0;
 	for(int i=0 ; i<mTaille ; i++) {
 		for(int j=0 ; j<mTaille ; j++) {
 			somme += at(i, j);
@@ -71,7 +71,7 @@ int ImagePart::couleurMoyenne() const {
 	return somme/(mTaille*mTaille);
 }
 
-void ImagePart::remplir(int couleur) {
+void ImagePart::remplir(unsigned char couleur) {
 	/* Remplis le bout d'image avec une couleur uniforme */
 	for(int i=0 ; i<mTaille ; i++) {
 		for(int j=0 ; j<mTaille ; j++) {

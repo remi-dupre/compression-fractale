@@ -17,6 +17,6 @@ struct ThreadData {
 };
 
 void *lancerThread(void *data);
-std::vector< std::vector<ImagePart> > decouperTache(const std::vector<ImagePart>& tache, unsigned int nombre);
+std::vector< std::vector<ImagePart> > decouperTache(const std::vector<ImagePart>& tache, int nombre);
 
 #endif //MULTITHREAD

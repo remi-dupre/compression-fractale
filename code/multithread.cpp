@@ -16,7 +16,7 @@ void *lancerThread(void *t_data) {
     pthread_exit(NULL);
 }
 
-std::vector< std::vector<ImagePart> > decouperTache(const std::vector<ImagePart>& tache, unsigned int nombre) {
+std::vector< std::vector<ImagePart> > decouperTache(const std::vector<ImagePart>& tache, int nombre) {
     /* Découpe un vector en plusieurs parties, en respectant l'ordre
      * Entrées :
      *  - tache : un vector

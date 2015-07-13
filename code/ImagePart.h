@@ -19,20 +19,20 @@ class ImagePart {
 		ImagePart(int taille);
 		~ImagePart();
 
-		void set(int x, int y, int valeur);
-		void remplir(int couleur);
+		void set(int x, int y, unsigned char valeur);
+		void remplir(unsigned char couleur);
 
-		int at(int i, int j) const;
+		unsigned char at(int i, int j) const;
 		int getTaille() const;
 
-		int couleurMoyenne() const;
+		unsigned char couleurMoyenne() const;
 		float varianceDifference(const ImagePart& partie, LinReg *decalage = NULL, bool regression = true ) const;
 
 		LinReg chercherLinReg(const ImagePart& partie) const;
 		void appliquerLinReg(const LinReg& droite);
 
 		void transformer(ImagePart& sortie, const Transformation& transfo) const;
-		Transformation chercherTransformation(const ImagePart& origine, float& variance) const; // Virer la dichotomie si elle gène ?
+		Transformation chercherTransformation(const ImagePart& origine, float& variance) const;
 		Correspondance chercherMeilleur(const std::vector<ImagePart>& parties) const;
 
 		void sauvegarder(const char* fichier) const;
