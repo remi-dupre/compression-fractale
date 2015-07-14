@@ -2,5 +2,5 @@
 
 # Téléchargement des dépendances (#yolo)
 mkdir code/lib
-wget --directory-prefix=code/lib/ https://raw.githubusercontent.com/lvandeve/lodepng/master/lodepng.cpp
-wget --directory-prefix=code/lib/ https://raw.githubusercontent.com/lvandeve/lodepng/master/lodepng.h
+wget --directory-prefix=code/lib/ https://raw.githubusercontent.com/lvandeve/lodepng/master/lodepng.cpp -nv
+wget --directory-prefix=code/lib/ https://raw.githubusercontent.com/lvandeve/lodepng/
