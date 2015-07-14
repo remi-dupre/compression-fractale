@@ -1,53 +1,79 @@
-#include "ImageFractale.h"
-
-#include <stdlib.h> // Pour la bibliothèque retard ci-dessous
-#include <tclap/CmdLine.h>
-#include <iostream>
-#include "debug.h"
-
 /*
- * Dépendances :
- *  - libtclap-dev
- *  - lpthread
+ * Programme de compression d'image par fractale (Rémi Dupré & Lucas Demarne)
+ * Dépendances foireuses :
+ *  - tclap (dans les dépots ubuntu, à intégrer à l'arrache avec mingw)
+ *  - lpthread (nécessite d'être linké avec -lpthread)
  */
 
+#include "ImageFractale.h"
+#include <tclap/CmdLine.h>
+#include "debug.h"
+
 int main(int argc, char** argv) {
-    extern bool VERBOSE;
+	extern bool VERBOSE, SILENCIEUX;
+    extern int ITERATIONS_DECOMPRESSION, NB_THREADS;
 
-    try {
-        TCLAP::CmdLine cmd("Algorithme de compression fractal", ' ', "0.42");
+		/* *************** Lecture des entrées *************** */
 
-        TCLAP::ValueArg<int> argTailleGros("b", "big", "La taille des gros carrés (compression)", false, 12, "int");
-        TCLAP::ValueArg<int> argTaillePetit("s", "small", "La taille des petits carrés (compression)", false, 8, "int");
-        TCLAP::ValueArg<std::string> argFractalFile("f", "fractal-file", "Le fichier .ifs", false, "out.ifs", "string");
-        TCLAP::ValueArg<std::string> argNormalFile("p", "png-file", "Le fichier .png", false, "out.png", "string");
-        TCLAP::SwitchArg argVerbose("v", "verbose", "Afficher le debugage", cmd, !VERBOSE);
-        TCLAP::SwitchArg argCompresser("z", "compress", "Le fichier entré doit être compressé", cmd, false);
-        TCLAP::SwitchArg argExtraire("x", "extract", "Le fichier entré doit être extrait", cmd, false);
+	try {
+		TCLAP::CmdLine cmd("Algorithme de compression fractal", ' ', "0.42");
 
-        cmd.add( argNormalFile );
-        cmd.add( argFractalFile );
-        cmd.add( argTaillePetit );
-        cmd.add( argTailleGros );
+        // Paramètres de compression
+		TCLAP::ValueArg<int> argTailleGros("b", "big", "La taille des gros carrés (compression)", false, 12, "int");
+		TCLAP::ValueArg<int> argTaillePetit("s", "small", "La taille des petits carrés (compression)", false, 8, "int");
+		TCLAP::ValueArg<int> argNbIterations("n", "nb-iterations", "Le nombre d'itérations à la décompression", false, ITERATIONS_DECOMPRESSION, "int");
+		TCLAP::ValueArg<int> argThreads("", "threads", "Nombre de threads maximum utilisés", false, NB_THREADS, "int");
+        // Fichiers d'entrée
+		TCLAP::ValueArg<std::string> argFractalFile("f", "fractal-file", "Le fichier .ifs", false, "out.ifs", "string");
+		TCLAP::ValueArg<std::string> argNormalFile("p", "png-file", "Le fichier .png", false, "out.png", "string");
+        // Affichage
+		TCLAP::SwitchArg argVerbose("v", "verbose", "Afficher le debugage", cmd, !VERBOSE);
+		TCLAP::SwitchArg argQuiet("q", "quiet", "Retire les affichages courants de la console", cmd, SILENCIEUX);
+        // Type d'image
+		TCLAP::SwitchArg argCouleur("c", "couleur", "L'image doit être compressée en couleur", cmd, false);
+		TCLAP::SwitchArg argTransparence("t", "transparence", "L'image doit être compressée avec transparence", cmd, false);
+        // Type de travail
+		TCLAP::SwitchArg argCompresser("z", "compress", "Le fichier entré doit être compressé", cmd, false);
+		TCLAP::SwitchArg argExtraire("x", "extract", "Le fichier entré doit être extrait", cmd, false);
 
-        cmd.parse( argc, argv );
-        VERBOSE = argVerbose.getValue();
-        const char* fractalFile = argFractalFile.getValue().c_str();
-        const char* normalFile = argNormalFile.getValue().c_str();
-        int taillePetit = argTaillePetit.getValue();
-        int tailleGros = argTailleGros.getValue();
+		cmd.add( argNormalFile );
+		cmd.add( argFractalFile );
+		cmd.add( argTaillePetit );
+		cmd.add( argTailleGros );
+		cmd.add( argNbIterations );
+		cmd.add( argThreads );
+		cmd.parse( argc, argv );
 
-        if( argCompresser.getValue() ) { // Doit encoder
-            ImageFractale imgF = ImageFractale::compresser(normalFile, taillePetit, tailleGros, false, false);
-        	imgF.enregistrer( fractalFile );
-        }
+		VERBOSE = argVerbose.getValue();
+		SILENCIEUX = argQuiet.getValue();
+        ITERATIONS_DECOMPRESSION = argNbIterations.getValue();
+        NB_THREADS = argThreads.getValue();
 
-        if( argExtraire.getValue() ) { // Doit décoder
-            ImageFractale img( fractalFile );
-            img.exporter( normalFile );
-        }
-    }
-    catch (TCLAP::ArgException &e) {
-        std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;
-    }
+		const char* fractalFile = argFractalFile.getValue().c_str();
+		const char* normalFile = argNormalFile.getValue().c_str();
+		int taillePetit = argTaillePetit.getValue();
+		int tailleGros = argTailleGros.getValue();
+        bool couleur = argCouleur.getValue();
+        bool transparence = argTransparence.getValue();
+
+		/* *************** Fin du traitement des entrées *************** */
+
+		DEBUG << "Flotant : " << sizeof(Flotant16b) << "octets" << std::endl;
+		DEBUG << "En tete : " << sizeof(Pack_Entete) << "octets" << std::endl;
+		DEBUG << "ISF : " << sizeof(Pack_IFS) << "octets" << std::endl;
+		DEBUG << "Correspondance : " << sizeof(Pack_Correspondance) << "octets" << std::endl;
+
+		if( argCompresser.getValue() ) { // Doit encoder
+			ImageFractale imgF = ImageFractale::compresser(normalFile, taillePetit, tailleGros, couleur, transparence);
+			imgF.enregistrer( fractalFile );
+		}
+
+		if( argExtraire.getValue() ) { // Doit décoder
+			ImageFractale img( fractalFile );
+			img.exporter( normalFile );
+		}
+	}
+	catch (TCLAP::ArgException &e) {
+		std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;
+	}
 }

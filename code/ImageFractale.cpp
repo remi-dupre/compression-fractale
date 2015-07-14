@@ -63,7 +63,7 @@ ImageFractale ImageFractale::compresser(const char* fichier, int precisionPetit,
 	COUT << "Dimension de l'image : " << retour.mLargeur << "x" << retour.mHauteur << std::endl;
 
 	if(couleur) {
-		const char* message[] = {" - Couche rouge ", " - Couche verte", " - Couche bleue"};
+		const char* message[] = {" - Couche rouge ", " - Couche verte ", " - Couche bleue "};
 		for(int i=0 ; i<3 ; i++) {
 			ImageMatricielle imageTr(fichier, i);
 			retour.mIfs.push_back( imageTr.chercherIFS(precisionPetit, precisionGros, message[i]) );
@@ -86,12 +86,6 @@ ImageFractale ImageFractale::compresser(const char* fichier, int precisionPetit,
 /* *************** Enregistrement *************** */
 
 void ImageFractale::enregistrer(const char* fichier) const {
-	DEBUG << "Enregistrement commencée" << std::endl;
-	DEBUG << "Flotant : " << sizeof(Flotant16b) << "bits" << std::endl;
-	DEBUG << "En tete : " << sizeof(Pack_Entete) << "bits" << std::endl;
-	DEBUG << "ISF : " << sizeof(Pack_IFS) << "bits" << std::endl;
-	DEBUG << "Correspondance : " << sizeof(Pack_Correspondance) << "bits" << std::endl << std::endl;
-
 	std::ofstream f(fichier, std::ios::trunc | std::ios::binary);
 	if (!f.is_open()) std::cout << "Impossible d'ouvrir le fichier '" << fichier << "'" << std::endl;
 

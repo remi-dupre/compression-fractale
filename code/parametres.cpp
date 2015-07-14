@@ -9,15 +9,15 @@
 int NB_THREADS = 10;
 
 // Le nombre d'itérations effectuées pour décompresser une image
-int ITERATIONS_DECOMPRESSION = 40;
+int ITERATIONS_DECOMPRESSION = 30;
 
 /* ****************** Algorithme de compression ****************** */
 
 // Limite d'acceptation pour les bouts lisses
-double SEUIL_LISSAGE = 4;
+double SEUIL_LISSAGE = 1;
 
 // Limite d'acceptation pour les transfos en général
-double SEUIL_VARIANCE = 1;
+double SEUIL_VARIANCE = 0.1;
 
 /* ****************** Débugage ****************** */
 

@@ -120,7 +120,7 @@ IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros, const char* m
 
 	int tDebut = time(0);
 	if(taillePetit > tailleGros) {
-		std::cout << "Le pavage n'est pas de la bonne dimension" << std::endl;
+		std::cerr << "Le pavage n'est pas de la bonne dimension" << std::endl;
 		IFS retour;
 			retour.correspondances = std::vector<Correspondance>();
 			retour.decoupeGros = tailleGros;
@@ -131,9 +131,7 @@ IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros, const char* m
 	COUT << "Création des pavages ...";
 	std::vector<ImagePart> pavagePetit = decouper(taillePetit);
 	std::vector<ImagePart> pavageGros = decouper(tailleGros);
-	std::cout << "\rPetits pavés : " << pavagePetit.size() << ", Gros pavés : " << pavageGros.size() << std::endl;
-
-	COUT << "Conditionement des threads ...";
+	COUT << "\rPetits pavés : " << pavagePetit.size() << ", Gros pavés : " << pavageGros.size() << std::endl;
 
 	std::vector< std::vector<ImagePart> > taches = decouperTache(pavagePetit, NB_THREADS); // Découpe les tâches
 	std::vector< std::vector<Correspondance> > resultats(NB_THREADS, std::vector<Correspondance>() );

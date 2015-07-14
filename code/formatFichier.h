@@ -26,7 +26,7 @@ struct Flotant16b {
 	Flotant16b() { mantisse = exp = 0; }	// Un constructeur élémentaire
     Flotant16b(float x) {					// Constructeur à partir d'un float 32 bits
     	int e;
-    	mantisse = 1024 * std::frexp(x, &e);
+    	mantisse = TAILLE_MANTISSE * std::frexp(x, &e);
     	exp = e - DECALAGE_EXPOSANT;
     }
 };
@@ -53,18 +53,20 @@ struct Pack_IFS {
 };
 
 #define MAX_GROS_BLOCS 4095
-#define SIZEOF_PACK_CORRESPONDANCE 6
+#define MAX_B 1023
+#define MIN_B -1024
+
+#define SIZEOF_PACK_CORRESPONDANCE 8
 
 struct Pack_Correspondance {
     /* Une correspondance
      *  sur 32 bits
      *  avec a (float) : 48 bits
      */
-	unsigned int bloc		:12;	// Limité à 4095 gros blocs
-	unsigned int rotation	:8;		// 0 à 255, proportionel à l'angle
-	signed int b			:12;	// -512 à 512
-	Flotant16b a;		//	:16;	// Flotant 16 bits
-	// : 16 bits de vide 
+	Flotant16b a;			//	:16;	// Flotant 16 bits
+	signed short int b			:16;	// -512 à 512
+	unsigned int bloc			:23;	// Limité à 8M de gros blocs
+	unsigned int rotation		:9;		// 0 à 255, proportionel à l'angle
 };
 
 /* *************** Fonctions de mise en paquets *************** */
