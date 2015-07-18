@@ -5,8 +5,8 @@
  *  - lpthread (nécessite d'être linké avec -lpthread)
  */
 
-#include "ImageFractale.h"
 #include <tclap/CmdLine.h>
+#include "ImageFractale.h"
 #include "debug.h"
 
 int main(int argc, char** argv) {

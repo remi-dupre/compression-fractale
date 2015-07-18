@@ -9,7 +9,7 @@ ImageFractale::ImageFractale() {
 	mIfs = std::vector<IFS>();
 }
 
-ImageFractale::ImageFractale(const char* fichier) : mIfs(std::vector<IFS>()), mMoyenne(std::vector<unsigned char>()) {
+ImageFractale::ImageFractale(const char* fichier) : mMoyenne(std::vector<unsigned char>()), mIfs(std::vector<IFS>()) {
 	std::ifstream f(fichier, std::ios::in | std::ios::binary);
 
 	Pack_Entete entete;
