@@ -14,10 +14,13 @@ int ITERATIONS_DECOMPRESSION = 30;
 /* ****************** Algorithme de compression ****************** */
 
 // Limite d'acceptation pour les bouts lisses
-double SEUIL_LISSAGE = 1;
+float SEUIL_LISSAGE = 1;
 
 // Limite d'acceptation pour les transfos en général
-double SEUIL_VARIANCE = 0.1;
+float SEUIL_VARIANCE = 0.1;
+
+// Limite au dessus de laquelle on redécoupe la partie
+float SEUL_DECOUPE = 49;
 
 /* ****************** Débugage ****************** */
 

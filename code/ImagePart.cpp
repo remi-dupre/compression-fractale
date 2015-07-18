@@ -145,7 +145,7 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	 *   - retourne la tranformation optimale
 	 *   - modifie varianceRetour : la variance des couleurs de l'image de référence et de l'autre après transformation
 	 */
-	extern double SEUIL_LISSAGE, SEUIL_VARIANCE;
+	extern float SEUIL_LISSAGE, SEUIL_VARIANCE;
 
 	Transformation max = ROTATION(360); // max sert juste de borne mais ne peut pas être la valeur de retour
 	Transformation mid = ROTATION(0);
@@ -198,20 +198,24 @@ Correspondance ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties
 	 *   - bloc : l'indice du bout d'image choisis dans "parties"
 	 *   - transformation : la transformation optimale pour ce blocs
 	 */
-	extern double SEUIL_LISSAGE, SEUIL_VARIANCE;
+	extern float SEUIL_LISSAGE, SEUIL_VARIANCE;
 
 	int n = parties.size();
 	float varianceMin, variance;
 	Transformation transfo = chercherTransformation(parties[0], varianceMin); // Donne une valeur initiale à varianceMin
 	Transformation transfoMin = transfo;
 	int imin = 0;
-	for(int i=1 ; i<n && (varianceMin>SEUIL_LISSAGE || transfoMin.droite.a != 0) && varianceMin>SEUIL_VARIANCE ; i++) { // On fait une recherche de minimum sur la variance
+	// On fait une recherche de minimum sur la variance
+	for(int i=1 ; i<n && (varianceMin>SEUIL_LISSAGE || transfoMin.droite.a != 0) && varianceMin>SEUIL_VARIANCE ; i++) {
 		transfo = chercherTransformation(parties[i], variance);
 		if(varianceMin > variance) {
 			imin = i;
 			transfoMin = transfo;
 			varianceMin = variance;
 		}
+	}
+	if(varianceMin > 49) {
+		DEBUG << varianceMin << std::endl;
 	}
 	Correspondance retour;
 		retour.bloc = imin;
@@ -250,6 +254,26 @@ float ImagePart::varianceDifference(const ImagePart& B, LinReg *ldroite, bool re
 	return (sumCarre/n) - (moyenne*moyenne);
 }
 
+std::vector<ImagePart> ImagePart::spliter() const {
+	/* Découpe la partie d'image en 4 sous-parties
+	 * /!\ Pour une entrée de taille impaire le pixel du milieu sera pris en compte deux fois
+	 * Si la découpe échoue, la valeur de retour est cet objet
+	 */
+	int nvlleTaille = mTaille / 2;
+	int midX = (mX + mTaille) / 2;
+	int midY = (mY + mTaille) / 2;
+	std::vector<ImagePart> retour;
+		if(mTaille == 1) {
+			DEBUG << "Tentative de découpe de taille 1" << std::endl;
+			retour.push_back(*this);
+			return retour;
+		}
+		retour.push_back(ImagePart(mImage, mX, mY, nvlleTaille));
+		retour.push_back(ImagePart(mImage, midX, mY, mTaille - nvlleTaille));
+		retour.push_back(ImagePart(mImage, mX, midY, mTaille - nvlleTaille));
+		retour.push_back(ImagePart(mImage, midX, midY, nvlleTaille));
+	return retour;
+}
 
 void ImagePart::sauvegarder(const char* fichier) const {
 	/* Enregistre le bout d'image au format png */

@@ -1,3 +1,7 @@
+/*
+ * Contient es structures nécéssaires à la représentation d'une IFS
+ */
+
 struct LinReg;
 struct Transformation;
 struct Correspondance;
@@ -12,12 +16,6 @@ struct IFS;
 #include "ImageFractale.h"
 
 /* *************** Définition de structures *************** */
-
-typedef struct Coordonnees Coordonnees;
-struct Coordonnes {
-	/* Des coordonnées entières dans deux dimensions */
-	unsigned short int x, y;
-};
 
 typedef struct LinReg LinReg;
 struct LinReg {
