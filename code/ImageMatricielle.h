@@ -5,6 +5,7 @@ class ImageMatricielle;
 
 #include <iostream>
 #include <vector>
+#include <queue>
 #include <ctime>
 #include <unistd.h> // sleep(int)
 #include "lib/lodepng.h" // https://github.com/lvandeve/lodepng

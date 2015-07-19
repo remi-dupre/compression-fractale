@@ -133,7 +133,7 @@ IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros, const char* m
 	std::vector<ImagePart> pavageGros = decouper(tailleGros);
 	COUT << "\rPetits pavés : " << pavagePetit.size() << ", Gros pavés : " << pavageGros.size() << std::endl;
 
-	std::vector< std::vector<ImagePart> > taches = decouperTache(pavagePetit, NB_THREADS); // Découpe les tâches
+	std::vector< std::queue<ImagePart> > taches = decouperTache(pavagePetit, NB_THREADS); // Découpe les tâches
 	std::vector< std::vector<Correspondance> > resultats(NB_THREADS, std::vector<Correspondance>() );
 	std::vector<pthread_t> threads(NB_THREADS, pthread_t());
 	std::vector<ThreadData> datas(NB_THREADS, ThreadData());
