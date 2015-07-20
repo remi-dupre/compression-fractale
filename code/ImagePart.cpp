@@ -190,15 +190,17 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	return min;
 }
 
-Correspondance ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties) const {
+Correspondance ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties, bool *satisfaisant) const {
 	/* Cherche la meilleur image d'origine pour une transformation
 	 * Entrée :
 	 *   - parties : un tableau de bouts d'images
+	 *   - satisfaisant : un pointeur (NULL ok) sur qui vaut false si la variance est trop grande
 	 * Sortie : un type Correspondance :
 	 *   - bloc : l'indice du bout d'image choisis dans "parties"
-	 *   - transformation : la transformation optimale pour ce blocs
+	 *   - transformation : la transformation optimale pour ce bloc
 	 */
 	extern float SEUIL_LISSAGE, SEUIL_VARIANCE;
+	extern int SEUIL_DECOUPE;
 
 	int n = parties.size();
 	float varianceMin, variance;
@@ -214,10 +216,10 @@ Correspondance ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties
 			varianceMin = variance;
 		}
 	}
-	if(varianceMin > 49) {
-		DEBUG << varianceMin << std::endl;
-	}
+
+	if( satisfaisant != NULL ) *satisfaisant = varianceMin > SEUIL_DECOUPE;
 	Correspondance retour;
+		retour.spliter = 0;
 		retour.bloc = imin;
 		retour.transformation = transfoMin;
 	return retour;
@@ -254,24 +256,24 @@ float ImagePart::varianceDifference(const ImagePart& B, LinReg *ldroite, bool re
 	return (sumCarre/n) - (moyenne*moyenne);
 }
 
-std::vector<ImagePart> ImagePart::spliter() const {
+std::queue<ImagePart> ImagePart::spliter() const {
 	/* Découpe la partie d'image en 4 sous-parties
 	 * /!\ Pour une entrée de taille impaire le pixel du milieu sera pris en compte deux fois
 	 * Si la découpe échoue, la valeur de retour est cet objet
 	 */
 	int nvlleTaille = mTaille / 2;
-	int midX = (mX + mTaille) / 2;
-	int midY = (mY + mTaille) / 2;
-	std::vector<ImagePart> retour;
+	int midX = mX + nvlleTaille;
+	int midY = mY + nvlleTaille;
+	std::queue<ImagePart> retour;
 		if(mTaille == 1) {
 			DEBUG << "Tentative de découpe de taille 1" << std::endl;
-			retour.push_back(*this);
+			retour.push(*this);
 			return retour;
 		}
-		retour.push_back(ImagePart(mImage, mX, mY, nvlleTaille));
-		retour.push_back(ImagePart(mImage, midX, mY, mTaille - nvlleTaille));
-		retour.push_back(ImagePart(mImage, mX, midY, mTaille - nvlleTaille));
-		retour.push_back(ImagePart(mImage, midX, midY, nvlleTaille));
+		retour.push(ImagePart(mImage, mX, mY, nvlleTaille));
+		retour.push(ImagePart(mImage, midX, mY, mTaille - nvlleTaille));
+		retour.push(ImagePart(mImage, mX, midY, mTaille - nvlleTaille));
+		retour.push(ImagePart(mImage, midX, midY, nvlleTaille));
 	return retour;
 }
 

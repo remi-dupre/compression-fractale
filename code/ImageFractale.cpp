@@ -29,11 +29,7 @@ ImageFractale::ImageFractale(const char* fichier) : mMoyenne(std::vector<unsigne
 		mMoyenne.push_back( unpack_moyenne(ifs) );
 
 		int nbBlocs = std::ceil((float)mLargeur/ifs.decoupePetit) * std::ceil((float)mHauteur/ifs.decoupePetit);
-		for(int j=0 ; j < nbBlocs ; j++) {
-			Pack_Correspondance correspondance;
-			f.read((char*)&correspondance, SIZEOF_PACK_CORRESPONDANCE);
-			mIfs[i].correspondances.push_back( unpack_correspondance(correspondance) );
-		}
+		lireCorrespondancesFichier(f, nbBlocs, mIfs[i].correspondances);
 	}
 
 	f.close();
@@ -97,6 +93,7 @@ void ImageFractale::enregistrer(const char* fichier) const {
 		f.write((char*)&ifs, sizeof(Pack_IFS));
 
 		const std::vector<Correspondance> &mCorrespondances = mIfs[i].correspondances;
+		std::cout << mCorrespondances.size() << std::endl;
 		for(int j=0 ; j < mCorrespondances.size() ; j++) {
 			Pack_Correspondance correspondance = packer_correspondance(mCorrespondances[j]);
 			f.write((char*)&correspondance, SIZEOF_PACK_CORRESPONDANCE);

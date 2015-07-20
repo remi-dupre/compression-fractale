@@ -29,6 +29,7 @@ Pack_IFS packer_ifs(const IFS& ifs, unsigned char moyenne) {
 Pack_Correspondance packer_correspondance(const Correspondance& correspondance) {
 	Pack_Correspondance retour;
 		retour.bloc = correspondance.bloc;
+		retour.spliter = correspondance.spliter;
 		retour.rotation = correspondance.transformation.rotation;
 		retour.a = correspondance.transformation.droite.a;
 		retour.b = correspondance.transformation.droite.b;
@@ -51,8 +52,23 @@ IFS unpack_IFS(const Pack_IFS& paquet) {
 Correspondance unpack_correspondance(const Pack_Correspondance& paquet) {
 	Correspondance retour;
 		retour.bloc = paquet.bloc;
+		retour.spliter = paquet.spliter;
 		retour.transformation.rotation = paquet.rotation;
 		retour.transformation.droite.b = paquet.b;
 		retour.transformation.droite.a = decode16bFloat(paquet.a);
 	return retour;
+}
+
+/* *************** Fonctions de lecture *************** */
+
+void lireCorrespondancesFichier(std::ifstream& fichier, int nombre, std::vector<Correspondance>& sortie) {
+	for(int i=0 ; i < nombre ; i++) {
+		Pack_Correspondance correspondance;
+		fichier.read((char*)&correspondance, SIZEOF_PACK_CORRESPONDANCE);
+		sortie.push_back( unpack_correspondance(correspondance) );
+		if( sortie.back().spliter > 0 ) {
+			std::cout << sortie.back().spliter;
+			lireCorrespondancesFichier(fichier, 3*sortie.back().spliter , sortie); // On lis les 3 autres petits bouts
+		}
+	}
 }

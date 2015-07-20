@@ -4,6 +4,7 @@ class ImageMatricielle;
 #define IMAGEPART
 
 #include <cmath>
+#include <queue>
 #include "ImageMatricielle.h"
 #include "format.h"
 
@@ -33,9 +34,9 @@ class ImagePart {
 
 		void transformer(ImagePart& sortie, const Transformation& transfo) const;
 		Transformation chercherTransformation(const ImagePart& origine, float& variance) const;
-		Correspondance chercherMeilleur(const std::vector<ImagePart>& parties) const;
+		Correspondance chercherMeilleur(const std::vector<ImagePart>& parties, bool *satisfaisant = NULL) const;
 
-		std::vector<ImagePart> spliter() const;
+		std::queue<ImagePart> spliter() const;
 
 		void sauvegarder(const char* fichier) const;
 

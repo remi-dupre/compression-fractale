@@ -65,7 +65,8 @@ struct Pack_Correspondance {
      */
 	Flotant16b a;			//	:16;	// Flotant 16 bits
 	signed short int b			:16;	// -512 à 512
-	unsigned int bloc			:23;	// Limité à 8M de gros blocs
+	unsigned int bloc			:20;	// Limité à 1M de gros blocs
+	unsigned int spliter		:3;		// Un booléen
 	unsigned int rotation		:9;		// 0 à 255, proportionel à l'angle
 };
 
@@ -80,5 +81,9 @@ Pack_Correspondance packer_correspondance(const Correspondance&);
 unsigned char unpack_moyenne(const Pack_IFS&);
 IFS unpack_IFS(const Pack_IFS&);
 Correspondance unpack_correspondance(const Pack_Correspondance&);
+
+/* *************** Fonctions de lecture *************** */
+
+void lireCorrespondancesFichier(std::ifstream& fichier, int nombre, std::vector<Correspondance>& sortie);
 
 #endif

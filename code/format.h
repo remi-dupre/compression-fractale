@@ -40,6 +40,7 @@ struct Transformation {
 typedef struct Correspondance Correspondance;
 struct Correspondance {
 	/* Décrit un couple bloc/transformation */
+	int spliter; // Le nombre de fois qu'il faut découper le bloc avant d'y appliquer la transformation
 	int bloc; // l'indice du bloc à choisir dans l'image
 	Transformation transformation; // le type de transformation à y appliquer
 };

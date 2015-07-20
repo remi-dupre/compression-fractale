@@ -65,11 +65,13 @@ int main(int argc, char** argv) {
 
 		if( argCompresser.getValue() ) { // Doit encoder
 			ImageFractale imgF = ImageFractale::compresser(normalFile, taillePetit, tailleGros, couleur, transparence);
+			imgF.exporter("debug.png");
 			imgF.enregistrer( fractalFile );
 		}
 
 		if( argExtraire.getValue() ) { // Doit décoder
 			ImageFractale img( fractalFile );
+			std::cout << "dan";
 			img.exporter( normalFile );
 		}
 	}

@@ -14,6 +14,8 @@ class ImageMatricielle;
 #include <pthread.h>
 #undef timespec
 
+#include <list>
+
 #include "ImagePart.h"
 #include "format.h"
 #include "debug.h"
@@ -26,6 +28,8 @@ class ImageMatricielle {
 		~ImageMatricielle();
 
 		std::vector<ImagePart> decouper(int taille);
+		static std::vector<ImagePart> adapterDecoupe(std::vector<ImagePart>&, const std::vector<Correspondance>&);
+
 		IFS chercherIFS(int taillePetit, int tailleGros, const char* message = "");
 		ImageMatricielle appliquerIFS(const IFS& ifs);
 

@@ -107,6 +107,32 @@ std::vector<ImagePart> ImageMatricielle::decouper(int taille) {
 	return liste;
 }
 
+std::vector<ImagePart> ImageMatricielle::adapterDecoupe(std::vector<ImagePart>& decoupe, const std::vector<Correspondance>& correspondances) {
+	// sdmofv s,dmoicjidfhvnc, cfcvhxjkc,jcgvfxdg,csvdifb ndfjnbg d fjgnbfdjvhnxfjdv nfxbgsdxnwsd lunhds ubxfwfn drsitjsrgfsdkgdsfuk g;jsgc k fdguyvngf iuù*pç*)ùçà*ùàç_è$
+	std::list<ImagePart> aTraiter;
+	for(int i=0 ; i < decoupe.size() ; i++) {
+		aTraiter.push_back(decoupe[i]);
+	}
+	std::vector<ImagePart> retour;
+	int i = 0;
+
+	while( !aTraiter.empty() ) {
+		for(int k=0 ; k < correspondances[i].spliter ; k++) {
+			std::queue<ImagePart> decoupes = aTraiter.front().spliter(); // Une file de 4 éléments
+			aTraiter.pop_front();
+			std::list<ImagePart>::iterator pos = aTraiter.begin();
+			for(int j=0 ; j<4 ; j++) {
+				aTraiter.insert(pos, decoupes.front());
+				decoupes.pop();
+			}
+		}
+		retour.push_back( aTraiter.front() );
+		aTraiter.pop_front();
+		i++;
+	}
+	return retour;
+}
+
 IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros, const char* message) {
 	/* Recherche l'ifs pour l'image
 	 * Entrées :
@@ -147,12 +173,14 @@ IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros, const char* m
 		pthread_create(&threads[i], NULL, lancerThread, (void *)&datas[i]);
 	}
 
-	int avancement = 0;
-	while(avancement < pavagePetit.size()) {
+	bool fini(false);
+	while(!fini) {
 		sleep(1);
-		avancement = 0;
+		int avancement(pavagePetit.size());
+		fini = true;
 		for(int i=0 ; i<NB_THREADS ; i++) {
-			avancement += resultats[i].size();
+			avancement -= datas[i].travail.size();
+			fini &= datas[i].travail.empty();
 		}
         COUT << '\r' << message << chargement(avancement, pavagePetit.size(), 20);
 	}
@@ -180,6 +208,7 @@ ImageMatricielle ImageMatricielle::appliquerIFS(const IFS& ifs) {
 	ImageMatricielle sortie(getLargeur(), getHauteur());
 	std::vector<ImagePart> decoupeEntree = decouper(ifs.decoupeGros);
 	std::vector<ImagePart> decoupeSortie = sortie.decouper(ifs.decoupePetit);
+	decoupeSortie = adapterDecoupe(decoupeSortie, ifs.correspondances);
 
 	for(int i=0 ; i<ifs.correspondances.size() ; i++) {
 		int j = ifs.correspondances[i].bloc;

@@ -8,30 +8,39 @@ void *lancerThread(void *t_data) {
      * Sortie : dans *t_data->resultat
      */
     ThreadData *data = (ThreadData *) t_data;
-	while(!data->travail.empty()) {
-		data->resultat->push_back( data->travail.front().chercherMeilleur(data->antecedants) );
-        data->travail.pop();
-	}
+    *data->resultat = chercherCorrespondances(data->travail, data->antecedants);
+    DEBUG << "Thread " << data->thread_id << " terminé" << std::endl;
     pthread_exit(NULL);
 }
 
-// std::vector< std::vector<ImagePart> > decouperTache(const std::vector<ImagePart>& tache, int nombre) {
-//     /* Découpe un vector en plusieurs parties, en respectant l'ordre
-//      * Entrées :
-//      *  - tache : un vector
-//      *  - nombre : le nombre de vectors souhaités en sortie
-//      * Sortie : /!\ les tableaux en sortie ne sont pas tous nécéssairement de la même taille
-//      */
-//     int taille = (tache.size() / nombre) + 1; // On se fait pas chier a arrondir
-//     std::vector< std::vector<ImagePart> > sortie(nombre, std::vector<ImagePart>());
-//     for(int i=0 ; i<nombre ; i++) {
-//         for(int j=0 ; j < taille && j+(taille*i) < tache.size() ; j++) {
-//             sortie[i].push_back( tache[j+(taille*i)] );
-//         }
-//     }
-//     return sortie;
-// }
-
+std::vector<Correspondance> chercherCorrespondances(std::queue<ImagePart>& travail, const std::vector<ImagePart>& antecedants ) {
+    /* Cherche les correspondances pour un travail donné
+     * Sortie :
+     *  - les correspondances sont ajoutées progressivement à 'resultat'
+     *  - 'travail' est régulièrement élagué
+     */
+    extern int TAILLE_MIN_DECOUPE;
+    int gros(0);
+    bool satisfaisant;
+    std::vector<Correspondance> retour;
+	while(!travail.empty()) {
+        Correspondance bloc = travail.front().chercherMeilleur(antecedants, &satisfaisant);
+        if( satisfaisant || TAILLE_MIN_DECOUPE >= travail.front().getTaille() ) {
+    		retour.push_back( bloc );
+        }
+        else {
+            gros++;
+            std::queue<ImagePart> decoupe = travail.front().spliter();
+            std::vector<Correspondance> insertion = chercherCorrespondances(decoupe, antecedants); // Insère les nouveaux bouts dans le résultat
+            insertion[0].spliter++;
+            for(int i=0 ; i < insertion.size() ; i++) {
+                retour.push_back( insertion[i] );
+            }
+        }
+        travail.pop();
+	}
+    return retour;
+}
 
 std::vector< std::queue<ImagePart> > decouperTache(const std::vector<ImagePart>& tache, int nombre) {
     /* Découpe un vector en plusieurs parties, en respectant l'ordre
