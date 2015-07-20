@@ -62,13 +62,18 @@ Correspondance unpack_correspondance(const Pack_Correspondance& paquet) {
 /* *************** Fonctions de lecture *************** */
 
 void lireCorrespondancesFichier(std::ifstream& fichier, int nombre, std::vector<Correspondance>& sortie) {
+	/* Lis des correspondances dans un fichier en prenant en compte les splitages
+	 * Entrées :
+	 *  - fichier : le fichier dans lequel lire
+	 *  - nombre : le nombre de correspondances -de bases- à lire
+	 *  - sortie : le vecteur dans lequel verser les résultat
+	*/
 	for(int i=0 ; i < nombre ; i++) {
 		Pack_Correspondance correspondance;
 		fichier.read((char*)&correspondance, SIZEOF_PACK_CORRESPONDANCE);
 		sortie.push_back( unpack_correspondance(correspondance) );
 		if( sortie.back().spliter > 0 ) {
-			std::cout << sortie.back().spliter;
-			lireCorrespondancesFichier(fichier, 3*sortie.back().spliter , sortie); // On lis les 3 autres petits bouts
+			lireCorrespondancesFichier(fichier, 3*sortie.back().spliter , sortie); // Le splitage a engendré des nouveaux
 		}
 	}
 }

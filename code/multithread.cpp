@@ -20,21 +20,19 @@ std::vector<Correspondance> chercherCorrespondances(std::queue<ImagePart>& trava
      *  - 'travail' est régulièrement élagué
      */
     extern int TAILLE_MIN_DECOUPE;
-    int gros(0);
-    bool satisfaisant;
     std::vector<Correspondance> retour;
 	while(!travail.empty()) {
+        bool satisfaisant;
         Correspondance bloc = travail.front().chercherMeilleur(antecedants, &satisfaisant);
         if( satisfaisant || TAILLE_MIN_DECOUPE >= travail.front().getTaille() ) {
-    		retour.push_back( bloc );
+    		retour.push_back( bloc ); // On est satisfait, on conserve le resultat
         }
         else {
-            gros++;
-            std::queue<ImagePart> decoupe = travail.front().spliter();
-            std::vector<Correspondance> insertion = chercherCorrespondances(decoupe, antecedants); // Insère les nouveaux bouts dans le résultat
-            insertion[0].spliter++;
+            std::queue<ImagePart> decoupe = travail.front().spliter(); // On récupère les nouvelles parties
+            std::vector<Correspondance> insertion = chercherCorrespondances(decoupe, antecedants); // On cherche les correspondances de ces bouts
+            insertion[0].spliter++; // On rappel qu'on a dût spliter une fois
             for(int i=0 ; i < insertion.size() ; i++) {
-                retour.push_back( insertion[i] );
+                retour.push_back( insertion[i] ); // On rajoute les nouvelles correspondances
             }
         }
         travail.pop();

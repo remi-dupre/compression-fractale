@@ -66,7 +66,7 @@ struct Pack_Correspondance {
 	Flotant16b a;			//	:16;	// Flotant 16 bits
 	signed short int b			:16;	// -512 à 512
 	unsigned int bloc			:20;	// Limité à 1M de gros blocs
-	unsigned int spliter		:3;		// Un booléen
+	unsigned int spliter		:3;		// Limité à 7 splitages consécutifs
 	unsigned int rotation		:9;		// 0 à 255, proportionel à l'angle
 };
 

@@ -108,21 +108,22 @@ std::vector<ImagePart> ImageMatricielle::decouper(int taille) {
 }
 
 std::vector<ImagePart> ImageMatricielle::adapterDecoupe(std::vector<ImagePart>& decoupe, const std::vector<Correspondance>& correspondances) {
-	// sdmofv s,dmoicjidfhvnc, cfcvhxjkc,jcgvfxdg,csvdifb ndfjnbg d fjgnbfdjvhnxfjdv nfxbgsdxnwsd lunhds ubxfwfn drsitjsrgfsdkgdsfuk g;jsgc k fdguyvngf iuù*pç*)ùçà*ùàç_è$
+	/* Adapte une découpe triviale à une liste de correspondances :
+	 *  - les blocs à spliter vont se spliter
+	 *  - la découpe de sortie sera de la même taille que la liste des correspondances
+	 */
 	std::list<ImagePart> aTraiter;
-	for(int i=0 ; i < decoupe.size() ; i++) {
-		aTraiter.push_back(decoupe[i]);
-	}
+	for(int i=0 ; i < decoupe.size() ; i++) aTraiter.push_back(decoupe[i]); // On transforme l'entrée en liste
 	std::vector<ImagePart> retour;
 	int i = 0;
 
 	while( !aTraiter.empty() ) {
-		for(int k=0 ; k < correspondances[i].spliter ; k++) {
+		for(int k=0 ; k < correspondances[i].spliter ; k++) { // On splite le nombre de fois demandé
 			std::queue<ImagePart> decoupes = aTraiter.front().spliter(); // Une file de 4 éléments
 			aTraiter.pop_front();
-			std::list<ImagePart>::iterator pos = aTraiter.begin();
-			for(int j=0 ; j<4 ; j++) {
-				aTraiter.insert(pos, decoupes.front());
+			std::list<ImagePart>::iterator pos = aTraiter.begin(); // La position où on insère tout
+			while( !decoupes.empty() ) {
+				aTraiter.insert(pos, decoupes.front()); // On verse la découpe
 				decoupes.pop();
 			}
 		}
