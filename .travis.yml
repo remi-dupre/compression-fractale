@@ -3,7 +3,7 @@ script: /bin/true
 before_install:
  - sudo apt-get update
  - sudo apt-get install -y g++ libtclap-dev -qq
- - sudo apt-get install g++-multi gcc-multilib lib32stdc++6 -qq
+ - sudo apt-get install g++-multi gcc-multilib libc6-dev-i386 lib32stdc++6-4.7-dev lib32stdc++6 -qq
 install:
  - make && mv fzip fzip-l64 && make clean
  - make "CC=g++ -m32" && mv fzip fzip-l32
