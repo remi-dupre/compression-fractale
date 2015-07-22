@@ -1,4 +1,4 @@
-CC=g++ # Compilateur
+CXX=g++ # Compilateur
 EXEC=fzip # Les executables à générer
 
 FLAGS=-W -Wall -ansi -pedantic -O3 -s
@@ -19,7 +19,7 @@ clean:
 
 # Création de l'executable
 fzip: $(BUILD_DIR)/lodepng.o $(OBJ)
-	$(CC) -o $@ $^ $(LIBS)
+	$(CXX) -o $@ $^ $(LIBS)
 
 # Compilation des fichiers
 
@@ -27,8 +27,8 @@ $(BUILD_DIR)/lodepng.o:
 	@mkdir -p $(SOURCE_DIR)/lib $(BUILD_DIR)
 	curl -o $(SOURCE_DIR)/lib/lodepng.cpp "https://raw.githubusercontent.com/lvandeve/lodepng/master/lodepng.cpp"
 	curl -o $(SOURCE_DIR)/lib/lodepng.h "https://raw.githubusercontent.com/lvandeve/lodepng/master/lodepng.h"
-	$(CC) -c -o $(BUILD_DIR)/lodepng.o $(SOURCE_DIR)/lib/lodepng.cpp $(FLAGS) $(FILTERS)
+	$(CXX) -c -o $(BUILD_DIR)/lodepng.o $(SOURCE_DIR)/lib/lodepng.cpp $(FLAGS) $(FILTERS)
 
 $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp
 	@mkdir -p $(BUILD_DIR)
-	$(CC) -c -o $@ $< $(FLAGS) $(FILTERS)
+	$(CXX) -c -o $@ $< $(FLAGS) $(FILTERS)

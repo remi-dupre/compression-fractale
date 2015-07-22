@@ -5,16 +5,18 @@ before_install:
 - sudo apt-get update
 - sudo apt-get install -y g++ libtclap-dev -qq
 - sudo apt-get install g++-multilib gcc-multilib -qq
+- sudo apt-get install mingw32
 install:
 - make && mv fzip fzip-l64 && make clean
-- make "CC=g++ -m32" && mv fzip fzip-l32 && make clean
+- make "CXX=g++ -m32" && mv fzip fzip-l32 && make clean
+- make "CXX=i586-mingw32msvc-g++ -m32" && mv fzip fzip.exe && make clean
 after_deploy:
 - sudo apt-get install sshpass
 - wget http://www.libsdl.org/projects/SDL_image/docs/demos/lena.png
 - ./fzip-l64 -zc -p lena.png -f lena-out.ifs -s 8 -b 12
 - ./fzip-l64 -x -f lena-out.ifs -p lena-out.png
 - gzip lena-out.ifs
-- sshpass -p ${PASSWORD} scp -o 'StrictHostKeyChecking no' lena-out.png remidupre@ssh.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}.png
+- sshpass -p ${PASSWORD} scp -o 'StrictHostKeyChecking no'  lena-out.png remidupre@ssh.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}.png
 - sshpass -p ${PASSWORD} scp -o 'StrictHostKeyChecking no' lena-out.ifs.gz remidupre@ssh.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}.ifs.gz
 
 deploy:
@@ -25,6 +27,7 @@ deploy:
   file:
   - fzip-l64
   - fzip-l32
+  - fzip.exe
   skip_cleanup: true
   on:
     tags: true

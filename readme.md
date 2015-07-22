@@ -18,4 +18,5 @@ make clean # Pour enlever les fichiers de compilation
 ## Exemple
 
 Des exemples sont générés automatiquement à l'adresse suivante : http://remidupre.alwaysdata.net/fractal/
+
 ![Exemple:Lena](https://raw.githubusercontent.com/remi100756/Compression-Fractale/master/lena.gif)
