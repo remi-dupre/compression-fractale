@@ -13,8 +13,8 @@ after_deploy:
 - wget http://www.libsdl.org/projects/SDL_image/docs/demos/lena.png
 - "./fzip-l64 -zc -p lena.png -f lena-out.ifs -s 8 -b 12"
 - "./fzip-l64 -x -f lena-out.ifs -p lena-out.png"
-- sshpass -p ${PASSWORD} scp lena-out.png remidupre@ssh.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}-${TRAVIS_COMMIT}.png
-- sshpass -p ${PASSWORD} scp lena-out.ifs remidupre@ssh.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}-${TRAVIS_COMMIT}.ifs
+- sshpass -p ${PASSWORD} scp -o 'StrictHostKeyChecking no' lena-out.png remidupre@ssh.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}-${TRAVIS_COMMIT}.png
+- sshpass -p ${PASSWORD} scp -o 'StrictHostKeyChecking no' lena-out.ifs remidupre@ssh.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}-${TRAVIS_COMMIT}.ifs
 
 before_deploy:
 - mkdir -p .git/logs/refs
