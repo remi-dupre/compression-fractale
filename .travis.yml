@@ -1,10 +1,9 @@
 language: c++
 script: /bin/true
 before_install:
- - sudo dpkg --add-architecture i386
  - sudo apt-get update
  - sudo apt-get install -y g++ libtclap-dev -qq
- - sudo apt-get install g++-multi gcc-multilib libgd2-xpm ia32-libs ia32-libs-multiarch libc6-dev-i386 -qq
+ - sudo apt-get install g++-multi gcc-multilib lib32stdc++6 -qq
 install:
  - make && mv fzip fzip-l64 && make clean
  - make "CC=g++ -m32" && mv fzip fzip-l32
