@@ -2,7 +2,8 @@ uage: c++
 script: /bin/true
 before_install:
  - sudo apt-get update
- - sudo apt-get install -y g++ g++-multi gcc-multilib ia32-libs ia32-libs-multiarch libtclap-dev
+ - sudo apt-get install -y g++ libtclap-dev -qq
+ - sudo apt-get install g++-multi gcc-multilib libgd2-xpm ia32-libs ia32-libs-multiarch -qq
 install:
  - make && mv fzip fzip-l64 && make clean
  - make "CC=g++ -m32" && mv fzip fzip-l32
