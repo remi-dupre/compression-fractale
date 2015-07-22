@@ -11,13 +11,12 @@ install:
 after_deploy:
 - sudo apt-get install sshpass
 - wget http://www.libsdl.org/projects/SDL_image/docs/demos/lena.png
-- "./fzip-l64 -zc -p lena.png -f lena-out.ifs -s 8 -b 12"
-- "./fzip-l64 -x -f lena-out.ifs -p lena-out.png"
-- sshpass -p ${PASSWORD} scp -o 'StrictHostKeyChecking no' lena-out.png remidupre@ssh.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}-${TRAVIS_COMMIT}.png
-- sshpass -p ${PASSWORD} scp -o 'StrictHostKeyChecking no' lena-out.ifs remidupre@ssh.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}-${TRAVIS_COMMIT}.ifs
+- ./fzip-l64 -zc -p lena.png -f lena-out.ifs -s 8 -b 12
+- ./fzip-l64 -x -f lena-out.ifs -p lena-out.png
+- gzip lena-out.ifs
+- sshpass -p ${PASSWORD} scp -o 'StrictHostKeyChecking no' lena-out.png remidupre@ssh.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}.png
+- sshpass -p ${PASSWORD} scp -o 'StrictHostKeyChecking no' lena-out.ifs.gz remidupre@ssh.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}.ifs.gz
 
-before_deploy:
-- mkdir -p .git/logs/refs
 deploy:
   provider: releases
 
@@ -30,7 +29,7 @@ deploy:
   on:
     tags: true
     repo: remi100756/Compression-Fractale
-    
+
 env:
   matrix:
     secure: GiYLe0OzH3wnxJglq5JJiEGLZSjAd49FaRe4miZQgPUXrBQheehq7XbWZ/+HotfGam0ksqKlNYGyGRKob49CHbUis3j9/gPGITK5pQtuLR5o4PhkG5JFWZRx/93FGurmTHzLUL2t5kh4u+u9rwm+4Bph6vX4YpGIA9+ffLBB8JkliDwFT9ZVbfAfDB3ZvfRr+Bt1o9ipL73UOru/gkYfsCsW3MRwjhRNcZjQnFU7MtZfbXVvdVMomc5+bi8xuBu4lH5hYk9gyTmwv5+1pQU1CgcJ1P780wiCSl4hc4lqiLgmpoNLEliYwCCfOTvOsJJGVDpSuNx8ZOLp2jnmNQylbIMBzfV3jGn1QncpEesMpshHqlPIG38Q0EQu+Mv4XQahOE0K0DFGDitzkjESzv9FeNmMcnQ79kxEZcQNWOko9/PaVqN8Eftbr3Daoq+opPBzsSfrRUYfB4y81seo1SVfXQAPezZTvcsadrz19tUwed/zkeEguBRa7C2m1bE9CnXb0oxlLw19tGp7GdIMZEzPguuuGUo+EQ10/UX34whGBTgoFOtM3H4IGuz7KO/bg+WUc6y9MfFLr/DGamBJbePlQX8Rs5vMpCfT/sz9nvAaF/+fbb7Ur20DgoEdDoZzrLeRppSkdjgHKmSMB2D/hLDBH+bfEQPyPtp76sF81s3wmtw=
