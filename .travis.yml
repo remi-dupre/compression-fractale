@@ -15,11 +15,12 @@ after_deploy:
  - wget http://www.libsdl.org/projects/SDL_image/docs/demos/lena.png
  - ./fzip-l64 -zc -p lena.png -f lena-out.ifs -s 8 -b 12
  - ./fzip-l64 -x -f lena-out.ifs -p lena-out.png
- - sshpass -p ${PASSWORD} scp lena-out.png remidupre@www.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}-${TRAVIS_COMMIT}.png 
- - sshpass -p ${PASSWORD} scp lena-out.ifs remidupre@www.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}-${TRAVIS_COMMIT}.ifs 
+ - sshpass -p ${PASSWORD} scp lena-out.png remidupre@ssh.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}-${TRAVIS_COMMIT}.png 
+ - sshpass -p ${PASSWORD} scp lena-out.ifs remidupre@ssh.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}-${TRAVIS_COMMIT}.ifs 
  
 deploy:
   provider: releases
+  clean_up: false
   api_key:
     secure: J8NkGxApZPSO+XMUH3gTy/9nBvlf5sLe+FJ+B+3ZiZXEZrpp1YH9v6sBOBb1nKYe3k3hGu+zAvpV6V05gaYNYwyY3fTP0FkCAg/W/k3/MI4iaydBGgd9/iB0H4vNpzH++yZTGKbH7lDd9Jyis5x37iEmKhX4KIH3urtk60puTzULwa+5n3uu5oZExpRWMMMXIe2r7UmIoXw20fw980e016fX7WIBa6IZeAphuUnbV/XPlqIhYd0KQcy2nEux6HxxiZ+c0XCPDCFHh/9aHO8H9hcBvDkaHDSbaZtPG+sTic9IDs8jj4jZchVoFR4yd7pamNTpts5XXuUNt7H8080lc3D9n8HL6ZPk/kbfxNKh+hflFFwN8sqi0/2R0GMauDtGL5LUyDCsoOyplst+/uVh39/BjtneJRqw9Z0vLfHJQb6AUHqUQrGEpiB3DthI/Mgqkv2iO8RPPJ2olN5T79RbWsA/W3pJ5DBK3Kxd/zy8jOkrxMAyR1GehKhC00puvwqRxmRJIGi231c4ec6WAkZV1JWiTYGMyTzqOktiRFHHyI6zqOzWNdwdG7aqj4qMIP4WYPUtAmgIumezE7iGExFsM2duvoa06ac2Y5WvsSpsLokk58SK92QImQA/+RR9cxPEVjiaZxy8piZNL1osYd7FQO9YNpyncAGuEYM1hA8b74s=
   file:
