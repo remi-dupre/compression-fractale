@@ -1,13 +1,23 @@
 language: c++
 script: /bin/true
+env:
+ - secure: "TfobwRB2hb3Drsy1wIKPQ1ie+Gjgnb0zUknRr/6X9bMwwOaeIBpOdaUg4Cq0610K2gXBJgChljVoFWhB18aQ7QzoOagKcuWRIALkZdIEI9YDvi2vklREY5ZOii/k1OoSZA5Ll/RSSPIVBVxT0Z2dJCN2FxhUSxhKHJr/Sj4U0GmtBh9HjXvZOmp2z8xxOJ+8kui2EbdWNYjelu4a54HumFG1Zf+A8jT2wJ7nMwl8XnokoREDbTwiseOVHGYLKBaq89xgz/8BWZe8nchUk49Ui0FA9j4dR737xmwSKAFqesJN7CyYgkDwn1hF83RWsd5ntzZrBcNTt9AjPY+Nh5l3lTmbYplkqlbmI9LfZfHMPEEYNx1JcymCLFR2EDn2xWDoG6qkgK2OjbdUEiqXb7OkqomHp4RF3LRiF4pbkObPDUdrD6G3KneGZpHPPwn4Yr3PTB9zdtiv7XkufMmIhlBCUCM2tr5B5Js3+RZasdZ8fDGq/EfY8PMD4aZU2QoiXn+NUlttdJeU1BDjnB5haz7kWbfRjcap97DwvFtH1cbOiLWEl6GZ92oIfuoM9QV7cwqVfeP5Ed+gI26os/rBqfoQ1rwBuKaMCkGhNZ7pu4hqQ9qwxHXILLMO8OGGrz7o7bPHUBQvQ+bItX8nVC3n8Ctkej2I9AZp3soHdE7k4xsvLoE="
+
 before_install:
  - sudo apt-get update
  - sudo apt-get install -y g++ libtclap-dev -qq
  - sudo apt-get install g++-multilib gcc-multilib -qq
- - LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/lib32:/usr/lib32:/usr/lib/i386-linux-gnu
 install:
  - make && mv fzip fzip-l64 && make clean
- - make "CC=g++ -m32" && mv fzip fzip-l32
+ - make "CC=g++ -m32" && mv fzip fzip-l32 && make clean
+after_deploy:
+ - sudo apt-get install sshpass
+ - wget http://www.libsdl.org/projects/SDL_image/docs/demos/lena.png
+ - ./fzip-l64 -zc -p lena.png -f lena-out.ifs -s 8 -b 12
+ - ./fzip-l64 -x -f lena-out.ifs -p lena-out.png
+ - sshpass -p ${PASSWORD} scp lena-out.png remidupre@www.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}-${TRAVIS_COMMIT}.png 
+ - sshpass -p ${PASSWORD} scp lena-out.ifs remidupre@www.alwaysdata.com:/home/remidupre/www/fractal/lena-${TRAVIS_TAG}-${TRAVIS_COMMIT}.ifs 
+ 
 deploy:
   provider: releases
   api_key:
