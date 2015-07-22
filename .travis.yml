@@ -9,7 +9,7 @@ before_install:
 install:
 - make && mv fzip fzip-l64 && make clean
 - make "CXX=g++ -m32" && mv fzip fzip-l32 && make clean
-- make "CXX=i586-mingw32msvc-g++ -m32" && mv fzip fzip.exe && make clean
+- make "CXX=i586-mingw32msvc-g++ -U__STRICT_ANSI__" && mv fzip fzip.exe && make clean
 after_deploy:
 - sudo apt-get install sshpass
 - wget http://www.libsdl.org/projects/SDL_image/docs/demos/lena.png
