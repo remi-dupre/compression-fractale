@@ -26,6 +26,7 @@ deploy:
   file:
   - fzip-l64
   - fzip-l32
+  skip_cleanup: true
   on:
     tags: true
     repo: remi100756/Compression-Fractale
