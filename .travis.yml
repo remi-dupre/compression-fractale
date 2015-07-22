@@ -1,5 +1,6 @@
 language: c++
-script: "/bin/truey
+script: "/bin/true"
+deploy.clean_up: false
 
 before_install:
 - sudo apt-get update
