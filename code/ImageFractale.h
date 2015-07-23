@@ -8,7 +8,7 @@ class ImageFractale;
 #include <cmath> // ceil
 
 #include "debug.h"
-#include "format.h"
+#include "formatIfs.h"
 #include "formatFichier.h"
 #include "ImageMatricielle.h"
 

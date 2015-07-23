@@ -17,7 +17,7 @@ class ImageMatricielle;
 #include <list>
 
 #include "ImagePart.h"
-#include "format.h"
+#include "formatIfs.h"
 #include "debug.h"
 #include "multithread.h"
 

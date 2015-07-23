@@ -6,7 +6,7 @@ class ImageMatricielle;
 #include <cmath>
 #include <queue>
 #include "ImageMatricielle.h"
-#include "format.h"
+#include "formatIfs.h"
 
 #define RAD(x) (x*3.14159265/180) // degrés -> randians
 
