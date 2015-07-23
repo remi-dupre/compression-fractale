@@ -1,4 +1,4 @@
-class ImageMatricielle;
+class ImagePart;
 
 #ifndef IMAGEPART
 #define IMAGEPART
@@ -34,7 +34,7 @@ class ImagePart {
 
 		void transformer(ImagePart& sortie, const Transformation& transfo) const;
 		Transformation chercherTransformation(const ImagePart& origine, float& variance) const;
-		Correspondance chercherMeilleur(const std::vector<ImagePart>& parties, bool *satisfaisant = NULL) const;
+		bool chercherMeilleur(const std::vector<ImagePart>& parties, Correspondance& meilleurCorrespondance) const;
 
 		std::queue<ImagePart> spliter() const;
 

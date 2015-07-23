@@ -190,14 +190,14 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 	return min;
 }
 
-Correspondance ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties, bool *satisfaisant) const {
+bool ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties, Correspondance& meilleurCorrespondance) const {
 	/* Cherche la meilleur image d'origine pour une transformation
 	 * Entrée :
 	 *   - parties : un tableau de bouts d'images
-	 *   - satisfaisant : un pointeur (NULL ok) sur qui vaut false si la variance est trop grande
-	 * Sortie : un type Correspondance :
-	 *   - bloc : l'indice du bout d'image choisis dans "parties"
-	 *   - transformation : la transformation optimale pour ce bloc
+	 *   - meilleurCorrespondance : un type Correspondance :
+	 *   	- bloc : l'indice du bout d'image choisis dans "parties"
+	 *   	- transformation : la transformation optimale pour ce bloc
+	 * Sortie : true si la variance est considérée comme correcte
 	 */
 	extern float SEUIL_LISSAGE, SEUIL_VARIANCE;
 	extern int SEUIL_DECOUPE;
@@ -205,24 +205,22 @@ Correspondance ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties
 	int n = parties.size();
 	float varianceMin, variance;
 	Transformation transfo = chercherTransformation(parties[0], varianceMin); // Donne une valeur initiale à varianceMin
-	Transformation transfoMin = transfo;
-	int imin = 0;
+
+	meilleurCorrespondance.transformation = transfo;
+	meilleurCorrespondance.bloc = 0;
+	meilleurCorrespondance.spliter  = 0;
+
 	// On fait une recherche de minimum sur la variance
-	for(int i=1 ; i<n && (varianceMin>SEUIL_LISSAGE || transfoMin.droite.a != 0) && varianceMin>SEUIL_VARIANCE ; i++) {
+	for(int i=1 ; i<n && (varianceMin>SEUIL_LISSAGE || meilleurCorrespondance.transformation.droite.a != 0) && varianceMin>SEUIL_VARIANCE ; i++) {
 		transfo = chercherTransformation(parties[i], variance);
 		if(varianceMin > variance) {
-			imin = i;
-			transfoMin = transfo;
+			meilleurCorrespondance.bloc = i;
+			meilleurCorrespondance.transformation = transfo;
 			varianceMin = variance;
 		}
 	}
 
-	if( satisfaisant != NULL ) *satisfaisant = varianceMin > SEUIL_DECOUPE;
-	Correspondance retour;
-		retour.spliter = 0;
-		retour.bloc = imin;
-		retour.transformation = transfoMin;
-	return retour;
+	return varianceMin > SEUIL_DECOUPE;
 }
 
 float ImagePart::varianceDifference(const ImagePart& B, LinReg *ldroite, bool regression) const {

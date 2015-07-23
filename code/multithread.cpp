@@ -21,11 +21,11 @@ std::vector<Correspondance> chercherCorrespondances(std::queue<ImagePart>& trava
      */
     extern int TAILLE_MIN_DECOUPE;
     std::vector<Correspondance> retour;
+    Correspondance correspondanceTrouvee;
 	while(!travail.empty()) {
-        bool satisfaisant;
-        Correspondance bloc = travail.front().chercherMeilleur(antecedants, &satisfaisant);
+        bool satisfaisant = travail.front().chercherMeilleur(antecedants, correspondanceTrouvee);
         if( satisfaisant || TAILLE_MIN_DECOUPE >= travail.front().getTaille() ) {
-    		retour.push_back( bloc ); // On est satisfait, on conserve le resultat
+    		retour.push_back( correspondanceTrouvee ); // On est satisfait, on conserve le resultat
         }
         else {
             std::queue<ImagePart> decoupe = travail.front().spliter(); // On récupère les nouvelles parties
