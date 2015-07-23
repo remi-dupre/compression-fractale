@@ -5,7 +5,6 @@ before_install:
 - sudo apt-get update
 - sudo apt-get install -y g++ libtclap-dev -qq
 - sudo apt-get install g++-multilib gcc-multilib -qq
-- sudo apt-get install mingw32
 install:
 - make && mv fzip fzip-l64 && make clean
 - make "CXX=g++ -m32" && mv fzip fzip-l32 && make clean
@@ -27,7 +26,6 @@ deploy:
   file:
   - fzip-l64
   - fzip-l32
-  - fzip.exe
   skip_cleanup: true
   on:
     tags: true

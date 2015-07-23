@@ -6,12 +6,14 @@
  */
 
 #include <tclap/CmdLine.h>
+#include <cmath> // ceil
 #include "ImageFractale.h"
 #include "debug.h"
 
 int main(int argc, char** argv) {
 	extern bool VERBOSE, SILENCIEUX;
     extern int ITERATIONS_DECOMPRESSION, NB_THREADS;
+	extern int TAILLE_MIN_DECOUPE, NB_MAX_DECOUPE;
 
 		/* *************** Lecture des entrées *************** */
 
@@ -55,6 +57,8 @@ int main(int argc, char** argv) {
 		int tailleGros = argTailleGros.getValue();
         bool couleur = argCouleur.getValue();
         bool transparence = argTransparence.getValue();
+
+		TAILLE_MIN_DECOUPE = std::ceil(taillePetit / NB_MAX_DECOUPE);
 
 		/* *************** Fin du traitement des entrées *************** */
 

@@ -24,6 +24,8 @@ float SEUIL_DECOUPE = 100;
 
 // Taille minimum de redécoupe
 int TAILLE_MIN_DECOUPE = 4;
+// Le nombre maximal de découpes qui pouront être faites, /!\ Prends le dessus sur TAILLE_MIN_DECOUPE
+int NB_MAX_DECOUPE = 2;
 
 /* ****************** Débugage ****************** */
 
