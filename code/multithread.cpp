@@ -24,7 +24,7 @@ std::vector<Correspondance> chercherCorrespondances(std::queue<ImagePart>& trava
     Correspondance correspondanceTrouvee;
 	while(!travail.empty()) {
         bool satisfaisant = travail.front().chercherMeilleur(antecedants, correspondanceTrouvee);
-        if( satisfaisant || TAILLE_MIN_DECOUPE >= travail.front().getTaille() ) {
+        if( satisfaisant || TAILLE_MIN_DECOUPE > travail.front().getTaille() ) {
     		retour.push_back( correspondanceTrouvee ); // On est satisfait, on conserve le resultat
         }
         else {
