@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
         bool couleur = argCouleur.getValue();
         bool transparence = argTransparence.getValue();
 
-		TAILLE_MIN_DECOUPE = std::ceil(taillePetit / NB_MAX_DECOUPE);
+		TAILLE_MIN_DECOUPE = taillePetit / NB_MAX_DECOUPE;
 
 		/* *************** Fin du traitement des entrées *************** */
 

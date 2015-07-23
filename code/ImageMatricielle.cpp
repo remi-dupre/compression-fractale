@@ -193,11 +193,12 @@ IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros, const char* m
 		}
 	}
 
-	COUT << '\r' << message << ": " << pavagePetit.size() << '/' << pavagePetit.size() << " " << "(" << time(0) - tDebut << " secondes)" << "                       "<< std::endl;
+	COUT << '\r' << message << ": " << pavagePetit.size() << '/' << pavagePetit.size() << " " << "(" << time(0) - tDebut << " secondes)" <<  std::endl;
 	IFS retour;
 		retour.correspondances = correspondances;
 		retour.decoupeGros = tailleGros;
 		retour.decoupePetit = taillePetit;
+	debugIfs(retour);
 	return retour;
 }
 

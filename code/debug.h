@@ -19,5 +19,6 @@
 
 std::string chargement(int actuel, int total, int taille=30);
 std::string sourceToString(Correspondance source);
+void debugIfs(const IFS&);
 
 #endif

@@ -23,3 +23,14 @@ std::string sourceToString(Correspondance src) {
 	retour << " decalage:" << src.transformation.droite.a << "X+(" << src.transformation.droite.b << ")";
 	return retour.str();
 }
+
+void debugIfs(const IFS& ifs) {
+	std::vector<int> decoupes(20, 0);
+	for(int i=0 ; i < ifs.correspondances.size() ; i++)
+		decoupes[ ifs.correspondances[i].spliter ] ++;
+	for(int i=0 ; i < decoupes.size() ; i++) {
+		if( decoupes[i] != 0 ) {
+			DEBUG << " - splitage " << i << " : " << decoupes[i] << std::endl;
+		}
+	}
+}
