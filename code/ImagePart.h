@@ -33,7 +33,7 @@ class ImagePart {
 		void appliquerLinReg(const LinReg& droite);
 
 		void transformer(ImagePart& sortie, const Transformation& transfo) const;
-		Transformation chercherTransformation(const ImagePart& origine, float& variance) const;
+		float chercherTransformation(const ImagePart& origine, Transformation& resultat) const;
 		bool chercherMeilleur(const std::vector<ImagePart>& parties, Correspondance& meilleurCorrespondance) const;
 
 		std::queue<ImagePart> spliter() const;

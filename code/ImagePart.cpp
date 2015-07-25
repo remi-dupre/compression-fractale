@@ -136,22 +136,23 @@ void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo)
 	}
 }
 
-Transformation ImagePart::chercherTransformation(const ImagePart& origine, float& varianceRetour) const {
+float ImagePart::chercherTransformation(const ImagePart& origine, Transformation& min) const {
 	/* Cherche la meilleur transformation de origine pour correspondre à cet objet
 	 * Entrées :
 	 *   - origine : l'image qui subis les transformations
-	 *   - varianceRetour : un flotant
+	 *   - min : un type Transformation
 	 * Sorties :
-	 *   - retourne la tranformation optimale
-	 *   - modifie varianceRetour : la variance des couleurs de l'image de référence et de l'autre après transformation
+	 *   - retourne la variance correspondant à la transformation trouvée
+	 *   - modifie min, la transformation trouvée
 	 */
 	extern float SEUIL_LISSAGE, SEUIL_VARIANCE;
 
 	Transformation max = ROTATION(360); // max sert juste de borne mais ne peut pas être la valeur de retour
 	Transformation mid = ROTATION(0);
-	Transformation min = ROTATION(0);
-		min.droite.a = 0;					// Vérifie la droite verticale
-		min.droite.b = couleurMoyenne();	// Comme ca on a la bonen couleur sur les bouts lisses
+
+	min.rotation = 0;
+	min.droite.a = 0;					// Vérifie la droite verticale
+	min.droite.b = couleurMoyenne();	// Donne la couleur exacte sur les bouts lisses, crée de la redondanec
 
 	ImagePart img(mTaille);
 
@@ -186,8 +187,7 @@ Transformation ImagePart::chercherTransformation(const ImagePart& origine, float
 			}
 		}
 	}
-	varianceRetour = varmin; // On retourne la variance obtenue pour éviter de refaire le calcul
-	return min;
+	return varmin; // On retourne la variance obtenue pour éviter de refaire le calcul
 }
 
 bool ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties, Correspondance& meilleurCorrespondance) const {
@@ -203,8 +203,8 @@ bool ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties, Correspo
 	extern int SEUIL_DECOUPE;
 
 	int n = parties.size();
-	float varianceMin, variance;
-	Transformation transfo = chercherTransformation(parties[0], varianceMin); // Donne une valeur initiale à varianceMin
+	Transformation transfo;
+	float variance, varianceMin = chercherTransformation(parties[0], transfo); // Donne une valeur initiale à varianceMin
 
 	meilleurCorrespondance.transformation = transfo;
 	meilleurCorrespondance.bloc = 0;
@@ -212,7 +212,7 @@ bool ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties, Correspo
 
 	// On fait une recherche de minimum sur la variance
 	for(int i=1 ; i<n && (varianceMin>SEUIL_LISSAGE || meilleurCorrespondance.transformation.droite.a != 0) && varianceMin>SEUIL_VARIANCE ; i++) {
-		transfo = chercherTransformation(parties[i], variance);
+		variance = chercherTransformation(parties[i], transfo);
 		if(varianceMin > variance) {
 			meilleurCorrespondance.bloc = i;
 			meilleurCorrespondance.transformation = transfo;
