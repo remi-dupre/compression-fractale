@@ -87,7 +87,7 @@ LinReg ImagePart::chercherLinReg(const ImagePart& X) const {
 	 * Les formules développées viennent de wikipédia et sont démontrable avec le programme de supp
 	 */
 	const ImagePart &Y = *this;
-	double sumX, sumY, sumXY, sumXX; // On a besoins de calculer 4 grosses sommes
+	float sumX, sumY, sumXY, sumXX; // On a besoins de calculer 4 grosses sommes
 	sumX = sumY = sumXY = sumXX = 1; // On évite les divisions par 0
 	for(int i=0 ;  i<mTaille ; i++) {
 		for(int j=0 ; j<mTaille ; j++) {
@@ -97,7 +97,7 @@ LinReg ImagePart::chercherLinReg(const ImagePart& X) const {
 			sumXX += std::pow(X.at(i, j), 2);
 		}
 	}
-	double n = mTaille*mTaille;
+	float n = mTaille*mTaille;
 	LinReg retour;
 		retour.a = ( (sumX*sumY/n) - sumXY ) / ( (sumX*sumX/n) - sumXX );
 		retour.a = decode16bFloat( Flotant16b( retour.a ) );
@@ -124,9 +124,9 @@ void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo)
 	 * /!\ Il vaut mieux accompagner cette fonction d'un brouillon de calculs
 	 */
 	int a = imgSortie.getTaille();
-	double rapportx = (double(mTaille)/a)*cos(RAD(transfo.rotation)); // r*e^(i*theta)
-	double rapporty = (double(mTaille)/a)*sin(RAD(transfo.rotation));
-	double centre = mTaille / 2; // Centre de la rotation, en x et en y
+	float rapportx = (float(mTaille)/a)*cos(RAD(transfo.rotation)); // r*e^(i*theta)
+	float rapporty = (float(mTaille)/a)*sin(RAD(transfo.rotation));
+	float centre = mTaille / 2; // Centre de la rotation, en x et en y
 
 	int is, js;
 	for(is=0 ; is<a ; is++) {
@@ -201,7 +201,7 @@ bool ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties, Correspo
 	 * Sortie : true si la variance est considérée comme correcte
 	 */
 	extern float SEUIL_LISSAGE, SEUIL_VARIANCE;
-	extern int SEUIL_DECOUPE;
+	extern float SEUIL_DECOUPE;
 
 	int n = parties.size();
 	Transformation transfo;
@@ -220,8 +220,8 @@ bool ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties, Correspo
 			varianceMin = variance;
 		}
 	}
-
-	return varianceMin > SEUIL_DECOUPE;
+	if(varianceMin > 100){	DEBUG << SEUIL_DECOUPE << " " << varianceMin << std::endl;}
+	return varianceMin < SEUIL_DECOUPE;
 }
 
 float ImagePart::varianceDifference(const ImagePart& B, LinReg *ldroite, bool regression) const {
