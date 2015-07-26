@@ -127,8 +127,10 @@ void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo)
 	double rapportx = (double(mTaille)/a)*cos(RAD(transfo.rotation)); // r*e^(i*theta)
 	double rapporty = (double(mTaille)/a)*sin(RAD(transfo.rotation));
 	double centre = mTaille / 2; // Centre de la rotation, en x et en y
-	for(int is=0 ; is<a ; is++) {
-		for(int js=0 ; js<a ; js++) {
+
+	int is, js;
+	for(is=0 ; is<a ; is++) {
+		for(js=0 ; js<a ; js++) {
 			int i = rint( (rapportx*(is-centre)) - (rapporty*(js-centre)) + centre ); // Calculs des parties imaginaires et réelles
 			int j = rint( (rapporty*(is-centre)) + (rapportx*(js-centre)) + centre );
 			imgSortie.set(is, js, couleurLinReg(transfo.droite, at(i, j))); // On a trouvé le point correspondant, on rajoute le décalage de couleur
@@ -151,7 +153,7 @@ float ImagePart::chercherTransformation(const ImagePart& origine, Transformation
 	Transformation mid = ROTATION(0);
 
 	min.rotation = 0;
-	min.droite.a = 0;					// Vérifie la droite verticale
+	min.droite.a = 0;					// Vérifie la fonction constante
 	min.droite.b = couleurMoyenne();	// Donne la couleur exacte sur les bouts lisses, crée de la redondanec
 
 	ImagePart img(mTaille);
@@ -161,7 +163,6 @@ float ImagePart::chercherTransformation(const ImagePart& origine, Transformation
 
 	origine.transformer(img, min);
 	float varmin = varianceDifference(img, &min.droite, false); // Il faut donner une valeur à min.droite au cas où il est retourné
-	//std::cout << min.droite.b << "-" << varmin << " ";
 
 	/* Application de la dichotomie :
 	 * La variance en fonction de l'angle n'est pas (/rarement) monotone, l'algorithme tend vers un minimum local
