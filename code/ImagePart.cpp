@@ -220,7 +220,7 @@ bool ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties, Correspo
 			varianceMin = variance;
 		}
 	}
-	if(varianceMin > 100){	DEBUG << SEUIL_DECOUPE << " " << varianceMin << std::endl;}
+	if(varianceMin > 5){	DEBUG << SEUIL_DECOUPE << " " << varianceMin << std::endl;}
 	return varianceMin < SEUIL_DECOUPE;
 }
 
@@ -240,19 +240,16 @@ float ImagePart::varianceDifference(const ImagePart& B, LinReg *ldroite, bool re
 	else droite = *ldroite;
 
 	float sumCarre = 0;
-	float somme = 0; // Pour calculer la moyenne
 	for(int i=0 ; i<mTaille ; i++) {
 		for(int j=0 ; j<mTaille ; j++) {
 			int ecart = couleurLinReg(droite, B.at(i, j)) - at(i, j); // On utilise la régression linéaire
-			sumCarre += std::pow(ecart, 2);
-			somme += std::abs(ecart);
+			sumCarre += std::pow(ecart, 4);
 		}
 	}
 	if(ldroite != NULL) *ldroite = droite;
 
 	float n = mTaille*mTaille;
-	float moyenne = somme/n;
-	return (sumCarre/n) - (moyenne*moyenne);
+	return std::sqrt(std::sqrt( sumCarre / n ));
 }
 
 std::queue<ImagePart> ImagePart::spliter() const {

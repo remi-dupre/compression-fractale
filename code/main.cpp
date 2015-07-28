@@ -69,8 +69,8 @@ int main(int argc, char** argv) {
 
 		if( argCompresser.getValue() ) { // Doit encoder
 			ImageFractale imgF = ImageFractale::compresser(normalFile, taillePetit, tailleGros, couleur, transparence);
-			imgF.exporter("debug.png");
 			imgF.enregistrer( fractalFile );
+			imgF.exporter("debug.png");
 		}
 
 		if( argExtraire.getValue() ) { // Doit décoder

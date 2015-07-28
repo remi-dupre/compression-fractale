@@ -20,12 +20,13 @@ float SEUIL_LISSAGE = 5;
 float SEUIL_VARIANCE = 1;
 
 // Limite au dessus de laquelle on redécoupe la partie
-float SEUIL_DECOUPE = 25;
+float SEUIL_DECOUPE = 15;
 
 // Taille minimum de redécoupe
 int TAILLE_MIN_DECOUPE = 4;
+
 // Le nombre maximal de découpes qui pouront être faites, /!\ Prends le dessus sur TAILLE_MIN_DECOUPE
-int NB_MAX_DECOUPE = 2;
+int NB_MAX_DECOUPE = 4;
 
 /* ****************** Débugage ****************** */
 

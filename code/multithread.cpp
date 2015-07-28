@@ -13,7 +13,7 @@ void *lancerThread(void *t_data) {
     pthread_exit(NULL);
 }
 
-std::vector<Correspondance> chercherCorrespondances(std::queue<ImagePart>& travail, const std::vector<ImagePart>& antecedants ) {
+std::vector<Correspondance> chercherCorrespondances(std::queue<ImagePart>& travail, const std::vector< std::vector<ImagePart> >& antecedants, int redecoupe ) {
     /* Cherche les correspondances pour un travail donné
      * Sortie :
      *  - les correspondances sont ajoutées progressivement à 'resultat'
@@ -23,13 +23,13 @@ std::vector<Correspondance> chercherCorrespondances(std::queue<ImagePart>& trava
     std::vector<Correspondance> retour;
     Correspondance correspondanceTrouvee;
 	while(!travail.empty()) {
-        bool satisfaisant = travail.front().chercherMeilleur(antecedants, correspondanceTrouvee);
+        bool satisfaisant = travail.front().chercherMeilleur(antecedants[redecoupe], correspondanceTrouvee);
         if( satisfaisant || TAILLE_MIN_DECOUPE > travail.front().getTaille() ) {
     		retour.push_back( correspondanceTrouvee ); // On est satisfait, on conserve le resultat
         }
         else {
             std::queue<ImagePart> decoupe = travail.front().spliter(); // On récupère les nouvelles parties
-            std::vector<Correspondance> insertion = chercherCorrespondances(decoupe, antecedants); // On cherche les correspondances de ces bouts
+            std::vector<Correspondance> insertion = chercherCorrespondances(decoupe, antecedants, redecoupe+1); // On cherche les correspondances de ces bouts
             insertion[0].spliter++; // On rappel qu'on a dût spliter une fois
             for(int i=0 ; i < insertion.size() ; i++) {
                 retour.push_back( insertion[i] ); // On rajoute les nouvelles correspondances

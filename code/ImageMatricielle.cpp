@@ -144,6 +144,7 @@ IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros, const char* m
 	 *  - taillePetit / tailleGros : la taille de découpe
 	 */
 	extern int NB_THREADS;
+	extern int NB_MAX_DECOUPE; // Permet de savoir combien de pavages créer
 
 	int tDebut = time(0);
 	if(taillePetit > tailleGros) {
@@ -156,9 +157,13 @@ IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros, const char* m
 	}
 
 	COUT << "Création des pavages ...";
-	std::vector<ImagePart> pavagePetit = decouper(taillePetit);
-	std::vector<ImagePart> pavageGros = decouper(tailleGros);
-	DEBUG << "\rPetits pavés : " << pavagePetit.size() << ", Gros pavés : " << pavageGros.size() << std::endl;
+	std::vector<ImagePart> pavagePetit = decouper(taillePetit); // Les petits carrés dot on cherche une correspondance
+
+	std::vector< std::vector<ImagePart> > pavagesGros;
+	for(int i = 0 ; i <= NB_MAX_DECOUPE ; i++) {
+		pavagesGros.push_back( decouper(tailleGros / std::pow(2, i)) ); // Adapte la découpe en fonction du niveau de récursion
+	}
+	DEBUG << "\rPetits pavés : " << pavagePetit.size() << ", Gros pavés : " << pavagesGros.size() << std::endl;
 
 	std::vector< std::queue<ImagePart> > taches = decouperTache(pavagePetit, NB_THREADS); // Découpe les tâches
 	std::vector< std::vector<Correspondance> > resultats(NB_THREADS, std::vector<Correspondance>() );
@@ -167,7 +172,7 @@ IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros, const char* m
 	for(int i=0 ; i<NB_THREADS ; i++) {
 		datas[i].thread_id = i;
 		datas[i].travail = taches[i];
-		datas[i].antecedants = pavageGros;
+		datas[i].antecedants = pavagesGros;
 		datas[i].resultat = &resultats[i];
 	}
 	for(int i=0 ; i<NB_THREADS ; i++) {
@@ -207,15 +212,35 @@ ImageMatricielle ImageMatricielle::appliquerIFS(const IFS& ifs) {
 	 * Entrée : IFS : tout ce qui décrit une image encodée
 	 * Sortie : l'image obtenue après application à cet objet
 	 */
+	extern int NB_MAX_DECOUPE;
+
 	ImageMatricielle sortie(getLargeur(), getHauteur());
-	std::vector<ImagePart> decoupeEntree = decouper(ifs.decoupeGros);
+	std::vector< std::vector<ImagePart> > decoupesEntree;;
+	for(int i = 0 ; i <= NB_MAX_DECOUPE ; i++) {
+		decoupesEntree.push_back( decouper(ifs.decoupeGros / std::pow(2, i)) ); // Adapte la découpe en fonction des redécoupes
+	}
 	std::vector<ImagePart> decoupeSortie = sortie.decouper(ifs.decoupePetit);
 	decoupeSortie = adapterDecoupe(decoupeSortie, ifs.correspondances);
 
+	std::stack<int> dureeSplit;
+	//dureeSplit.push(3);
 	for(int i=0 ; i<ifs.correspondances.size() ; i++) {
+		if( ifs.correspondances[i].spliter > 0 ) {
+			if( dureeSplit.size() > 0 ) {
+				dureeSplit.top() -= 1;
+			}
+			for(int k=0 ; k < ifs.correspondances[i].spliter ; k++)
+				dureeSplit.push(3);
+			dureeSplit.top() += 1;
+		}
+
 		int j = ifs.correspondances[i].bloc;
-		Transformation transfo = ifs.correspondances[i].transformation;
-		decoupeEntree[j].transformer(decoupeSortie[i], transfo);
+		decoupesEntree[ dureeSplit.size() ][j].transformer(decoupeSortie[i], ifs.correspondances[i].transformation);
+
+		if( dureeSplit.size() > 0 ) {
+			dureeSplit.top() -= 1;
+		}
+		while( dureeSplit.size() > 0 && dureeSplit.top() == 0) dureeSplit.pop(); // On est plus dans une partie réduite
 	}
 	return sortie;
 }
