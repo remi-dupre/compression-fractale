@@ -3,10 +3,10 @@ class ImageMatricielle;
 #ifndef IMAGEMATRICIELLE
 #define IMAGEMATRICIELLE
 
-#include <iostream>
 #include <vector>
 #include <queue>
 #include <stack>
+#include <list>
 #include <ctime>
 #include <cmath> // pow
 #include <unistd.h> // sleep(int)
@@ -16,12 +16,11 @@ class ImageMatricielle;
 #include <pthread.h>
 #undef timespec
 
-#include <list>
 
 #include "ImagePart.h"
 #include "formatIfs.h"
-#include "debug.h"
 #include "multithread.h"
+#include "debug.h"
 
 class ImageMatricielle {
 	public :
@@ -29,13 +28,19 @@ class ImageMatricielle {
 		ImageMatricielle(unsigned int x, unsigned int y);
 		~ImageMatricielle();
 
+		void sauvegarder(const char* fichier) const;
+
+		/* ********** Traitement ********** */
+
 		std::vector<ImagePart> decouper(int taille);
 		static std::vector<ImagePart> adapterDecoupe(std::vector<ImagePart>&, const std::vector<Correspondance>&);
 
 		IFS chercherIFS(int taillePetit, int tailleGros, const char* message = "");
 		ImageMatricielle appliquerIFS(const IFS& ifs);
 
-		void sauvegarder(const char* fichier) const;
+		/* ********** Getters & Setters ********** */
+
+		unsigned char* operator[](int i);
 
 		int getLargeur() const;
 		int getHauteur() const;
@@ -44,10 +49,8 @@ class ImageMatricielle {
 		void adapterMoyenne(unsigned char val);
 		void remplir(unsigned char val);
 
-		unsigned char* operator[](int i);
-
 	private :
-		unsigned char **mImage;	// L'image est représentée par une matrice de int
+		unsigned char **mImage;	// Les pixeles sont représentés par des octects
 		unsigned int mLargeur;	// Largeur en pixels de l'image
 		unsigned int mHauteur;	// Hauteur en pixels de l'image
 };

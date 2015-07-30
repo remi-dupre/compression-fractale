@@ -10,7 +10,6 @@ struct ThreadData;
 #include "formatIfs.h"
 #include "ImagePart.h"
 #include <queue>
-// #include <cstdlib> // WINDOWS ?
 
 typedef struct ThreadData ThreadData;
 struct ThreadData { //TODO: Passer par des références

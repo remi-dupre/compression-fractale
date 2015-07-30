@@ -16,7 +16,8 @@ ImagePart::ImagePart(ImageMatricielle* maman, int x, int y, int taille) :
 ImagePart::ImagePart(int taille) : mTaille(taille) {
 	/* Crée un "faux" bout d'image.
 	 * Entrées :
-	 *   - taille : la cote du carré */
+	 *   - taille : la cote du carré
+	 */
 	mVirtuel = true;
 	mX = mY = 0;
 	mImage = new ImageMatricielle(mTaille, mTaille);
@@ -159,10 +160,10 @@ float ImagePart::chercherTransformation(const ImagePart& origine, Transformation
 	ImagePart img(mTaille);
 
 	origine.transformer(img, max);
-	float varmax = varianceDifference(img); // max sert juste de borne
+	float varmax = moyenneDifference(img); // max sert juste de borne
 
 	origine.transformer(img, min);
-	float varmin = varianceDifference(img, &min.droite, false); // Il faut donner une valeur à min.droite au cas où il est retourné
+	float varmin = moyenneDifference(img, &min.droite, false); // Il faut donner une valeur à min.droite au cas où il est retourné
 
 	/* Application de la dichotomie :
 	 * La variance en fonction de l'angle n'est pas (/rarement) monotone, l'algorithme tend vers un minimum local
@@ -175,7 +176,7 @@ float ImagePart::chercherTransformation(const ImagePart& origine, Transformation
 		while(max.rotation - min.rotation > 5 && varmin > SEUIL_VARIANCE) {
 			mid.rotation = (max.rotation + min.rotation) / 2; // On prend le milieu et on calcul la transformation
 			origine.transformer(img, mid);
-			float variance = varianceDifference(img, &droite);
+			float variance = moyenneDifference(img, &droite);
 			if(varmin < varmax) {
 				max.rotation = mid.rotation;
 				max.droite = droite;
@@ -220,11 +221,11 @@ bool ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties, Correspo
 			varianceMin = variance;
 		}
 	}
-	if(varianceMin > 5){	DEBUG << SEUIL_DECOUPE << " " << varianceMin << std::endl;}
+
 	return varianceMin < SEUIL_DECOUPE;
 }
 
-float ImagePart::varianceDifference(const ImagePart& B, LinReg *ldroite, bool regression) const {
+float ImagePart::moyenneDifference(const ImagePart& B, LinReg *droite, bool regression) const {
 	/* Compare deux images :
 	 * Etudie la moyenne des "distances" entre les pixels
 	 * La moyenne de chaque image est ajustée par régression linéaire
@@ -235,14 +236,11 @@ float ImagePart::varianceDifference(const ImagePart& B, LinReg *ldroite, bool re
 	 *   - regression : doit faire une regression linéaire ?
 	 *     -> sinon il utilise celle passée en argument (ne doit pas être NULL)
 	 */
-	LinReg *droite;
 	bool droiteToDestroy = false; // true s'il faut désalouer la valeur de "droite"
-	if(ldroite == NULL) {
+	if(droite == NULL) {
 		droite = new LinReg();
 		droiteToDestroy = true;
 	}
-	else
-		droite = ldroite;
 
 	if(regression)
 		*droite = chercherLinReg(B); // On cherche une transfo linéaire
@@ -255,7 +253,7 @@ float ImagePart::varianceDifference(const ImagePart& B, LinReg *ldroite, bool re
 		}
 	}
 
-	if( droiteToDestroy ) delete droite; // L'argument était NULL
+	if( droiteToDestroy ) delete droite; // Droite valait NULL
 	float n = mTaille*mTaille;
 	return sumCarre / n;
 }

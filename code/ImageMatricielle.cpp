@@ -64,7 +64,8 @@ int ImageMatricielle::getHauteur() const { return mHauteur; }
 int ImageMatricielle::getLargeur() const { return mLargeur; }
 
 unsigned char ImageMatricielle::moyenne() const {
-	/* Retourne la moyenne de teinte des pixels de l'image */
+	/* Retourne la moyenne de teinte des pixels de l'image
+	 */
 	int somme = 0;
 	for(int i=0 ; i<mLargeur ; i++) {
 		for(int j=0 ; j<mHauteur ; j++) {
@@ -75,7 +76,8 @@ unsigned char ImageMatricielle::moyenne() const {
 }
 
 void ImageMatricielle::adapterMoyenne(unsigned char val) {
-	/* Décale la moyenne de couleur des pixels pour la faire correspondre à 'val' */
+	/* Décale la moyenne de couleur des pixels pour la faire correspondre à 'val'
+	 */
 	int decalage = val - moyenne();
 	for(int i=0 ; i<mLargeur ; i++) {
 		for(int j=0 ; j<mHauteur ; j++) {
@@ -85,6 +87,8 @@ void ImageMatricielle::adapterMoyenne(unsigned char val) {
 }
 
 void ImageMatricielle::remplir(unsigned char val) {
+	/* Remplis l'image de la couleur val
+	 */
 	for(int i=0 ; i<mLargeur ; i++) {
 		for(int j=0 ; j<mHauteur ; j++) {
 			mImage[i][j] = val;

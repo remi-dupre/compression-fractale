@@ -3,7 +3,7 @@ class ImagePart;
 #ifndef IMAGEPART
 #define IMAGEPART
 
-#include <cmath>
+#include <cmath> // pow
 #include <queue>
 #include "ImageMatricielle.h"
 #include "formatIfs.h"
@@ -12,13 +12,17 @@ class ImagePart;
 
 class ImagePart {
 	/* Représente un bout d'image carré
-	 * C'est là-dessus que sont  effectuées les transformations
+	 * C'est là-dessus que sont effectuées les transformations
 	 */
 
 	public :
 		ImagePart(ImageMatricielle* maman, int x, int y, int taille);
 		ImagePart(int taille);
 		~ImagePart();
+
+		void sauvegarder(const char* fichier) const;
+
+		/* ********** Getters & Setters ********** */
 
 		void set(int x, int y, unsigned char valeur);
 		void remplir(unsigned char couleur);
@@ -27,7 +31,9 @@ class ImagePart {
 		int getTaille() const;
 
 		unsigned char couleurMoyenne() const;
-		float varianceDifference(const ImagePart& partie, LinReg *decalage = NULL, bool regression = true ) const;
+		float moyenneDifference( const ImagePart& partie, LinReg *decalage = NULL, bool regression = true ) const;
+
+		/* ********** Traitement ********** */
 
 		LinReg chercherLinReg(const ImagePart& partie) const;
 		void appliquerLinReg(const LinReg& droite);
@@ -37,8 +43,6 @@ class ImagePart {
 		bool chercherMeilleur(const std::vector<ImagePart>& parties, Correspondance& meilleurCorrespondance) const;
 
 		std::queue<ImagePart> spliter() const;
-
-		void sauvegarder(const char* fichier) const;
 
 	private :
 		ImageMatricielle* mImage;	// L'image dont c'est une partie
