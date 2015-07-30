@@ -20,12 +20,14 @@ class ImagePart {
 		ImagePart(int taille);
 		~ImagePart();
 
+
 		void sauvegarder(const char* fichier) const;
 
 		/* ********** Getters & Setters ********** */
 
 		void set(int x, int y, unsigned char valeur);
 		void remplir(unsigned char couleur);
+		void encadrer();
 
 		unsigned char at(int i, int j) const;
 		int getTaille() const;

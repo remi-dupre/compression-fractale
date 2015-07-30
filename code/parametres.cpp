@@ -20,7 +20,7 @@ float SEUIL_LISSAGE = 625;
 float SEUIL_VARIANCE = 625;
 
 // Limite au dessus de laquelle on redécoupe la partie
-float SEUIL_DECOUPE = 10000;
+float SEUIL_DECOUPE = 1000;
 
 // Taille minimum de redécoupe
 int TAILLE_MIN_DECOUPE = 4;
@@ -29,6 +29,9 @@ int TAILLE_MIN_DECOUPE = 4;
 int NB_MAX_DECOUPE = 4;
 
 /* ****************** Débugage ****************** */
+
+// Dossier contenant les resultats du debugage
+const char* DOSSIER_DEBUG = "debug/";
 
 // Si activé, désactive les affichages courrants en console
 bool SILENCIEUX = false;

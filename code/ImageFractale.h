@@ -32,6 +32,9 @@ class ImageFractale {
 		// Enregistre l'image au format ifs
 		void enregistrer(const char* fichier) const;
 
+		// Crée des images schématisants la découpe
+		void debugSplit() const;
+
 		// Getters
 		int getLargeur() const;
 		int getHauteur() const;

@@ -71,20 +71,15 @@ int main(int argc, char** argv) {
 		DEBUG << "Correspondance : " << sizeof(Pack_Correspondance) << "octets" << std::endl;
 
 		if( argCompresser.getValue() ) { // Doit encoder
-			extern float SEUIL_DECOUPE;
-			//for(SEUIL_DECOUPE = 49 ; SEUIL_DECOUPE > 0 ; SEUIL_DECOUPE -= 2) {
-				ImageFractale imgF = ImageFractale::compresser(normalFile, taillePetit, tailleGros, couleur, transparence);
-				std::stringstream nomf;
-				nomf << "out-" << SEUIL_DECOUPE << ".ifs";
-				imgF.enregistrer( nomf.str().c_str() );
-				std::stringstream nomp;
-				nomp << "debug-" << SEUIL_DECOUPE << ".png";
-				imgF.exporter(nomp.str().c_str());
-			//}
+			ImageFractale imgF = ImageFractale::compresser(normalFile, taillePetit, tailleGros, couleur, transparence);
+			imgF.enregistrer(fractalFile);
+			imgF.debugSplit();
+			imgF.exporter("debug.png");
 		}
 
 		if( argExtraire.getValue() ) { // Doit décoder
 			ImageFractale img( fractalFile );
+			img.debugSplit();
 			img.exporter( normalFile );
 		}
 	}

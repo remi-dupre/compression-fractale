@@ -142,6 +142,22 @@ void ImageFractale::exporter(const char* fichier) {
 	if(error) std::cout << fichier << " -> png encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
 }
 
+void ImageFractale::debugSplit() const {
+	extern const char* DOSSIER_DEBUG;
+	for( int i = 0 ; i < mIfs.size() ; i++ ) {
+		ImageMatricielle img(mLargeur, mHauteur);
+		std::vector<ImagePart> parties = img.decouper( mIfs[i].decoupePetit );
+		parties = ImageMatricielle::adapterDecoupe( parties, mIfs[i].correspondances );
+		for( int j = 0 ; j < parties.size() ; j++ ) {
+			parties[j].encadrer();
+		}
+
+		std::stringstream nom;
+		nom << DOSSIER_DEBUG << "grille-" << i << ".png";
+		img.sauvegarder( nom.str().c_str() );
+	}
+}
+
 /* *************** Getters / Setters *************** */
 
 int ImageFractale::getLargeur() const { return mLargeur; }

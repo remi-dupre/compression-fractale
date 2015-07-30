@@ -41,6 +41,7 @@ class ImageMatricielle {
 		/* ********** Getters & Setters ********** */
 
 		unsigned char* operator[](int i);
+		unsigned char& at(int i, int j);
 
 		int getLargeur() const;
 		int getHauteur() const;

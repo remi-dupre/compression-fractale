@@ -60,6 +60,10 @@ unsigned char* ImageMatricielle::operator[](int i) {
 	return mImage[i];
 }
 
+unsigned char& ImageMatricielle::at(int i, int j) {
+	return mImage[ i % mLargeur ][ j % mHauteur ];
+}
+
 int ImageMatricielle::getHauteur() const { return mHauteur; }
 int ImageMatricielle::getLargeur() const { return mLargeur; }
 

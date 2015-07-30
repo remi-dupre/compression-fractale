@@ -74,8 +74,21 @@ unsigned char ImagePart::couleurMoyenne() const {
 
 void ImagePart::remplir(unsigned char couleur) {
 	/* Remplis le bout d'image avec une couleur uniforme */
-	for(int i=0 ; i<mTaille ; i++) {
-		for(int j=0 ; j<mTaille ; j++) {
+	for( int i = 0 ; i < mTaille ; i++ ) {
+	for( int j = 0 ; j < mTaille ; j++ ) {
+			set(i, j, couleur);
+		}
+	}
+}
+
+void ImagePart::encadrer() {
+	/* Crée un bord noir et un milieu blanc
+	*/
+	for( int i = 0 ; i < mTaille ; i++ ) {
+		bool bordH = ( i == 0 ) || ( i == mTaille - 1 );
+		for( int j = 0 ; j < mTaille ; j++ ) {
+			bool bordV = ( j == 0 ) || ( j == mTaille - 1 );
+			int couleur = ( bordH || bordV ) ? 0 : 255;
 			set(i, j, couleur);
 		}
 	}
@@ -108,7 +121,7 @@ LinReg ImagePart::chercherLinReg(const ImagePart& X) const {
 
 void ImagePart::appliquerLinReg(const LinReg& droite) {
 	/* Applique la fonction affine droite à tous les pixels de la parcelle */
-	for(int i=0 ; i<mTaille ; i++) {
+	for(int i = 0 ; i < mTaille ; i++) {
 		for(int j=0 ; j<mTaille ; j++) {
 			set(i, j, couleurLinReg(droite, at(i, j)));
 		}
