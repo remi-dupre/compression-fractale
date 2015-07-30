@@ -19,7 +19,7 @@ clean:
 
 # Création de l'executable
 fzip: $(BUILD_DIR)/lodepng.o $(OBJ)
-	$(CXX) -o $@ $^ $(LIBS)
+	$(CXX) -o $@ $^ $(LIBS) $(FLAGS) $(FILTERS)
 
 # Compilation des fichiers
 

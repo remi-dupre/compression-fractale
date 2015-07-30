@@ -226,30 +226,38 @@ bool ImagePart::chercherMeilleur(const std::vector<ImagePart>& parties, Correspo
 
 float ImagePart::varianceDifference(const ImagePart& B, LinReg *ldroite, bool regression) const {
 	/* Compare deux images :
-	 * Etudie la variance des "distances" entre les pixels
-	 * La moyenne de chaque image est ajustée par ajout d'une constante
+	 * Etudie la moyenne des "distances" entre les pixels
+	 * La moyenne de chaque image est ajustée par régression linéaire
 	 * Entrées :
 	 *  - B : l'image à laquelle this est comparé
 	 *  - decalage : un pointeur sur une variable qui prendra la valeur de la régression linéaire appliquée
 	 *     -> decalage doit être appliqué à B pour qu'il ressemble à l'objet courrant
 	 *   - regression : doit faire une regression linéaire ?
-	 *     -> sinon il utilise celle passée en argument
+	 *     -> sinon il utilise celle passée en argument (ne doit pas être NULL)
 	 */
-	LinReg droite;
-	if(regression) droite = chercherLinReg(B); // On cherche une transfo linéaire
-	else droite = *ldroite;
+	LinReg *droite;
+	bool droiteToDestroy = false; // true s'il faut désalouer la valeur de "droite"
+	if(ldroite == NULL) {
+		droite = new LinReg();
+		droiteToDestroy = true;
+	}
+	else
+		droite = ldroite;
+
+	if(regression)
+		*droite = chercherLinReg(B); // On cherche une transfo linéaire
 
 	float sumCarre = 0;
 	for(int i=0 ; i<mTaille ; i++) {
 		for(int j=0 ; j<mTaille ; j++) {
-			int ecart = couleurLinReg(droite, B.at(i, j)) - at(i, j); // On utilise la régression linéaire
+			int ecart = couleurLinReg(*droite, B.at(i, j)) - at(i, j); // On utilise la régression linéaire
 			sumCarre += std::pow(ecart, 4);
 		}
 	}
-	if(ldroite != NULL) *ldroite = droite;
 
+	if( droiteToDestroy ) delete droite; // L'argument était NULL
 	float n = mTaille*mTaille;
-	return std::sqrt(std::sqrt( sumCarre / n ));
+	return sumCarre / n;
 }
 
 std::queue<ImagePart> ImagePart::spliter() const {

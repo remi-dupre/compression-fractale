@@ -72,7 +72,7 @@ ImageFractale ImageFractale::compresser(const char* fichier, int precisionPetit,
 	}
 	if(transparence) {
 		ImageMatricielle imageTr(fichier, 3);
-		retour.mIfs.push_back( imageTr.chercherIFS(precisionPetit*2, precisionGros*2, " - Couche alpha") );
+		retour.mIfs.push_back( imageTr.chercherIFS(precisionPetit, precisionGros, " - Couche alpha") );
 		retour.mMoyenne.push_back( imageTr.moyenne() );
 	}
 

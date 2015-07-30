@@ -15,8 +15,12 @@ void *lancerThread(void *t_data) {
 
 std::vector<Correspondance> chercherCorrespondances(std::queue<ImagePart>& travail, const std::vector< std::vector<ImagePart> >& antecedants, int redecoupe ) {
     /* Cherche les correspondances pour un travail donné
+     * Entrées :
+     *  - antecedants : où chercher la correspondance en fonction du nombre de redécoupes
+     *  - redecoupe : le nombre de splitages réalisés pour donner 'travail'
+     *  - références sur travail
      * Sortie :
-     *  - les correspondances sont ajoutées progressivement à 'resultat'
+     *  - les correspondances sont retournées
      *  - 'travail' est régulièrement élagué
      */
     extern int TAILLE_MIN_DECOUPE;

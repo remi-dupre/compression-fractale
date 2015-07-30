@@ -10,6 +10,9 @@
 #include "ImageFractale.h"
 #include "debug.h"
 
+#include <sstream>
+#include <string>
+
 int main(int argc, char** argv) {
 	extern bool VERBOSE, SILENCIEUX;
     extern int ITERATIONS_DECOMPRESSION, NB_THREADS;
@@ -21,8 +24,8 @@ int main(int argc, char** argv) {
 		TCLAP::CmdLine cmd("Algorithme de compression fractal", ' ', "0.42");
 
         // Paramètres de compression
-		TCLAP::ValueArg<int> argTailleGros("b", "big", "La taille des gros carrés (compression)", false, 12, "int");
-		TCLAP::ValueArg<int> argTaillePetit("s", "small", "La taille des petits carrés (compression)", false, 8, "int");
+		TCLAP::ValueArg<int> argTailleGros("b", "big", "La taille des gros carrés (compression)", false, 96, "int");
+		TCLAP::ValueArg<int> argTaillePetit("s", "small", "La taille des petits carrés (compression)", false, 48, "int");
 		TCLAP::ValueArg<int> argNbIterations("n", "nb-iterations", "Le nombre d'itérations à la décompression", false, ITERATIONS_DECOMPRESSION, "int");
 		TCLAP::ValueArg<int> argThreads("", "threads", "Nombre de threads maximum utilisés", false, NB_THREADS, "int");
         // Fichiers d'entrée
@@ -68,14 +71,20 @@ int main(int argc, char** argv) {
 		DEBUG << "Correspondance : " << sizeof(Pack_Correspondance) << "octets" << std::endl;
 
 		if( argCompresser.getValue() ) { // Doit encoder
-			ImageFractale imgF = ImageFractale::compresser(normalFile, taillePetit, tailleGros, couleur, transparence);
-			imgF.enregistrer( fractalFile );
-			imgF.exporter("debug.png");
+			extern float SEUIL_DECOUPE;
+			//for(SEUIL_DECOUPE = 49 ; SEUIL_DECOUPE > 0 ; SEUIL_DECOUPE -= 2) {
+				ImageFractale imgF = ImageFractale::compresser(normalFile, taillePetit, tailleGros, couleur, transparence);
+				std::stringstream nomf;
+				nomf << "out-" << SEUIL_DECOUPE << ".ifs";
+				imgF.enregistrer( nomf.str().c_str() );
+				std::stringstream nomp;
+				nomp << "debug-" << SEUIL_DECOUPE << ".png";
+				imgF.exporter(nomp.str().c_str());
+			//}
 		}
 
 		if( argExtraire.getValue() ) { // Doit décoder
 			ImageFractale img( fractalFile );
-			std::cout << "dan";
 			img.exporter( normalFile );
 		}
 	}

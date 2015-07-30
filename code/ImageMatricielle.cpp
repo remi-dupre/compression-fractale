@@ -222,10 +222,9 @@ ImageMatricielle ImageMatricielle::appliquerIFS(const IFS& ifs) {
 	std::vector<ImagePart> decoupeSortie = sortie.decouper(ifs.decoupePetit);
 	decoupeSortie = adapterDecoupe(decoupeSortie, ifs.correspondances);
 
-	std::stack<int> dureeSplit;
-	//dureeSplit.push(3);
+	std::stack<int> dureeSplit; // Chaque élément représente une couche de redécoupe et le nombre d'éléments à y traiter
 	for(int i=0 ; i<ifs.correspondances.size() ; i++) {
-		if( ifs.correspondances[i].spliter > 0 ) {
+		if( ifs.correspondances[i].spliter > 0 ) { // Au moins une redécoupe est nécessaire
 			if( dureeSplit.size() > 0 ) {
 				dureeSplit.top() -= 1;
 			}
