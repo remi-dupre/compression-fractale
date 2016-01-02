@@ -21,7 +21,7 @@ struct Pack_Correspondance;
 struct Flotant16b {
     /* Représente un flotant sur 16 bits */
 	short signed int exp       : 5;
-	short signed int mantisse  : 11; // log2(TAILLE_MANTISSE)
+	short signed int mantisse  : 11; // log2(TAILLE_MANTISSE-1) (signé)
 
 	Flotant16b() { mantisse = exp = 0; }	// Un constructeur élémentaire
     Flotant16b(float x) {					// Constructeur à partir d'un float 32 bits

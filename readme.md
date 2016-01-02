@@ -1,6 +1,8 @@
 # Compression Fractale ![Travis Status](https://api.travis-ci.org/remi100756/Compression-Fractale.svg)
 Algo de compression d'image par fractales. TIPE 2015-2016.
 
+## [Documentation du code](https://github.com/remi100756/Compression-Fractale/blob/master/documentation.md)
+
 ## Configuration
 
 ### Récupération du projet
