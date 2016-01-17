@@ -138,15 +138,16 @@ void ImagePart::transformer(ImagePart& imgSortie, const Transformation& transfo)
 	 * /!\ Il vaut mieux accompagner cette fonction d'un brouillon de calculs
 	 */
 	int a = imgSortie.getTaille();
-	float rapportx = (float(mTaille)/a)*cos(RAD(transfo.rotation)); // r*e^(i*theta)
-	float rapporty = (float(mTaille)/a)*sin(RAD(transfo.rotation));
-	float centre = mTaille / 2; // Centre de la rotation, en x et en y
+	float grandissement = float(mTaille) / a;
+	float rapportx = cos(RAD(transfo.rotation)); // r*e^(i*theta)
+	float rapporty = sin(RAD(transfo.rotation));
+	float centre = a / 2; // Centre de la rotation, en x et en y
 
 	int is, js;
 	for(is=0 ; is<a ; is++) {
 		for(js=0 ; js<a ; js++) {
-			int i = rint( (rapportx*(is-centre)) - (rapporty*(js-centre)) + centre ); // Calculs des parties imaginaires et réelles
-			int j = rint( (rapporty*(is-centre)) + (rapportx*(js-centre)) + centre );
+			int i = rint( grandissement* (rapportx*(is-centre) - rapporty*(js-centre) + centre) ); // Calculs des parties imaginaires et réelles
+			int j = rint( grandissement* (rapporty*(is-centre) + rapportx*(js-centre) + centre) );
 			imgSortie.set(is, js, couleurLinReg(transfo.droite, at(i, j))); // On a trouvé le point correspondant, on rajoute le décalage de couleur
 		}
 	}
