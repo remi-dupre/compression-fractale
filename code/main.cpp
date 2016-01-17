@@ -5,6 +5,8 @@
  *  - lpthread (nécessite d'être linké avec -lpthread)
  */
 
+#include "FigureFractale.h"
+
 #include <tclap/CmdLine.h>
 #include <cmath> // ceil
 #include "ImageFractale.h"
@@ -40,6 +42,7 @@ int main(int argc, char** argv) {
         // Type de travail
 		TCLAP::SwitchArg argCompresser("z", "compress", "Le fichier entré doit être compressé", cmd, false);
 		TCLAP::SwitchArg argExtraire("x", "extract", "Le fichier entré doit être extrait", cmd, false);
+		TCLAP::ValueArg<int> argExamples("e", "examples", "Génère un set de fichiers types, donner leur taille en argument", false, 0, "int");
 
 		cmd.add( argNormalFile );
 		cmd.add( argFractalFile );
@@ -47,6 +50,7 @@ int main(int argc, char** argv) {
 		cmd.add( argTailleGros );
 		cmd.add( argNbIterations );
 		cmd.add( argThreads );
+		cmd.add( argExamples );
 		cmd.parse( argc, argv );
 
 		VERBOSE = argVerbose.getValue();
@@ -81,6 +85,10 @@ int main(int argc, char** argv) {
 			ImageFractale img( fractalFile );
 			img.debugSplit();
 			img.exporter( normalFile );
+		}
+
+		if( argExamples.getValue() > 0 ) { // Génération de fichiers types
+			FigureFractale::generer_exemples(argExamples.getValue());
 		}
 	}
 	catch (TCLAP::ArgException &e) {

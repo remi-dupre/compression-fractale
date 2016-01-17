@@ -9,7 +9,7 @@
 int NB_THREADS = 10;
 
 // Le nombre d'itérations effectuées pour décompresser une image
-int ITERATIONS_DECOMPRESSION = 30;
+int ITERATIONS_DECOMPRESSION = 15;
 
 /* ****************** Algorithme de compression ****************** */
 

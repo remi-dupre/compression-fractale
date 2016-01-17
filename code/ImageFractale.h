@@ -18,6 +18,8 @@ class ImageFractale {
 	 * Toutes les informations nécessaires au décodage sont contenuent dans la classe
 	 */
 
+	friend class FigureFractale;
+
 	public :
 		ImageFractale();
 		// Constructeur à partir d'un fichier .ifs
