@@ -53,6 +53,16 @@ ImageMatricielle::~ImageMatricielle() {
 	delete[] mImage;
 }
 
+ImageMatricielle* ImageMatricielle::cloner() {
+	ImageMatricielle* copie = new ImageMatricielle(mLargeur, mHauteur);
+	for(int i=0 ; i < mLargeur ; i++) {
+		for(int j=0 ; i < mHauteur ; j++) {
+			(*copie)[i][j] = mImage[i][j];
+		}
+	}
+	return copie;
+}
+
 /* *************** Setters / Getters *************** */
 
 unsigned char* ImageMatricielle::operator[](int i) {
@@ -273,4 +283,23 @@ void ImageMatricielle::sauvegarder(const char* fichier) const {
 	if(!error) lodepng::save_file(png, fichier);
 
 	if(error) std::cout << fichier << " -> encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
+}
+
+/* *************** Traitement *************** */
+
+void ImageMatricielle::lisser(int n) {
+	ImageMatricielle* copie;
+	for(int k=0 ; k < n ; k++) {
+		ImageMatricielle* copie = cloner();
+		for(int i=1 ; i < mLargeur-1 ; i++) {
+			for(int j=1 ; i < mHauteur-1 ; j++) {
+				mImage[i][j] = 0;
+				mImage[i][j] += (*copie)[i+1][j] / 4;
+				mImage[i][j] += (*copie)[i][j+1] / 4;
+				mImage[i][j] += (*copie)[i-1][j] / 4;
+				mImage[i][j] += (*copie)[i][j-1] / 4;
+			}
+		}
+		delete copie;
+	}
 }

@@ -29,6 +29,7 @@ class ImageMatricielle {
 		~ImageMatricielle();
 
 		void sauvegarder(const char* fichier) const;
+		ImageMatricielle* cloner();
 
 		/* ********** Traitement ********** */
 
@@ -37,6 +38,8 @@ class ImageMatricielle {
 
 		IFS chercherIFS(int taillePetit, int tailleGros, const char* message = "");
 		ImageMatricielle appliquerIFS(const IFS& ifs);
+
+		void lisser(int n = 1);
 
 		/* ********** Getters & Setters ********** */
 
