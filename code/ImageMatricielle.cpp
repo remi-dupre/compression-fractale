@@ -56,7 +56,7 @@ ImageMatricielle::~ImageMatricielle() {
 ImageMatricielle* ImageMatricielle::cloner() {
 	ImageMatricielle* copie = new ImageMatricielle(mLargeur, mHauteur);
 	for(int i=0 ; i < mLargeur ; i++) {
-		for(int j=0 ; i < mHauteur ; j++) {
+		for(int j=0 ; j < mHauteur ; j++) {
 			(*copie)[i][j] = mImage[i][j];
 		}
 	}
@@ -292,7 +292,7 @@ void ImageMatricielle::lisser(int n) {
 	for(int k=0 ; k < n ; k++) {
 		ImageMatricielle* copie = cloner();
 		for(int i=1 ; i < mLargeur-1 ; i++) {
-			for(int j=1 ; i < mHauteur-1 ; j++) {
+			for(int j=1 ; j < mHauteur-1 ; j++) {
 				mImage[i][j] = 0;
 				mImage[i][j] += (*copie)[i+1][j] / 4;
 				mImage[i][j] += (*copie)[i][j+1] / 4;

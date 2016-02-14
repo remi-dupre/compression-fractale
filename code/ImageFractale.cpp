@@ -116,6 +116,9 @@ void ImageFractale::exporter(const char* fichier) {
 			ImageMatricielle *nouveau =  new ImageMatricielle(couche[i]->appliquerIFS(mIfs[i]));
 			delete couche[i]; // On désaloue pour ne pas créer de fuite de mémoire
 			couche[i] = nouveau;
+			if( (ITERATIONS_DECOMPRESSION - k)%2 == 1 ) {
+				couche[i]->lisser(1);
+			}
 		}
 	}
 
