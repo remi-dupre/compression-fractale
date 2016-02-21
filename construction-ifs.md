@@ -1,4 +1,4 @@
-# Définitions
+# Définitions 
 
 ## Distance de Haussdorf
 
