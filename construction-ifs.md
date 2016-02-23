@@ -6,7 +6,7 @@ Construction des IFS
 
 ### Distance de Haussdorf
 
-Soient A et B dans $$\mathcal{P}(\mathbb{C})$$, on défini la distance de Haussdorf $$\mathcal{D}$$ par $$\large{ \mathcal{D}(A, B) = max(\: sup_{a \in A}d(a, B), sup_{b \in B}d(A, b) \:) }$$
+Soient A et B dans $$\mathcal{P}(\mathbb{C})$$, on défini la distance de Haussdorf $$\mathcal{D}$$ par $$\large{ \mathcal{D}(A, B) = max(\: \sup\limits_{a \in A} d(a, B), \sup\limits_{b \in B} d(A, b) \:) }$$
 
 ### Rotation et contraction
 
@@ -33,9 +33,9 @@ $$\forall (A,B) \in \mathcal{P}(\mathbb{C})^2 , \forall a \in A,$$
 
 $$\begin{array}{rl}
 d(\mathcal{R}_{m, \alpha, \theta}(a), \mathcal{R}_{m, \alpha, \theta}(B) ) &
-= inf_{b \in B} d(\mathcal{R}_{m, \alpha, \theta}(a), \mathcal{R}_{m, \alpha, \theta}(b) ) \\ &
-= inf_{b \in B} (\: \alpha d(a, b) \:) \\ &
-= \alpha \: inf_{b \in B} d(a, b) \\ &
+= \inf\limits_{b \in B} d(\mathcal{R}_{m, \alpha, \theta}(a), \mathcal{R}_{m, \alpha, \theta}(b) ) \\ &
+= \inf\limits_{b \in B} (\: \alpha d(a, b) \:) \\ &
+= \alpha \: \inf\limits_{b \in B} d(a, b) \\ &
 = \alpha \mathcal{D}( \lbrace a \rbrace, B) \\ &
 \end{array}$$
 
@@ -50,7 +50,7 @@ Là je viens de me rendre compte que j'ai besoin de définir la taille d'un comp
 
 $$\mathcal{T} : \begin{cases}
     \mathcal{P}( \mathbb{C} ) & \longrightarrow & \mathbb{R_+} \cup \lbrace + \infty \rbrace \\
-    X & \longmapsto & sup_{(a, b) \in X^2}  d(a, b)
+    X & \longmapsto & \sup\limits_{(a, b) \in X^2}  d(a, b)
 \end{cases}$$
 
 Et disons que l'ensemble des compacts de taille $$L \in \mathbb{R_+}$$ est :
@@ -83,3 +83,39 @@ $$F : \begin{cases}
     \mathcal{P}( \mathbb{I} ) & \longrightarrow & \mathcal{P}( \mathbb{I} )  \\
     X & \longmapsto & \biguplus\limits_{i=1}^{p} f_i (X \cap A_i )
 \end{cases}$$
+
+## Preuve de l'existance d'un point fixe
+L'application F est presque contractante, mais dans le cas général non. On doit donc prouver ça de manière détournée.
+
+### Hypothèses
+On fait l'hypotèse que $$\forall i \in [|1,p|], A_i \subset B_i$$.
+Cette hypotèse ne sera en pratique pas vérifiée.
+
+### Preuve
+
+On pose pour $$i \in [|1,p|], g_i = F|_{\mathcal{P}( A_i )}$$.
+Et donc $$g_i = \sum\limits_{A_k = A_i} f_k = \sum\limits_{B_k \subset A_i} f_k$$. Et $$A_i$$ et stable par $$g_i$$.
+
+On pose
+ - $$i \in [|1,p|]$$
+ - $$(X,Y) \in \mathcal{P}(\mathbb{I})^2, x_0 \in g_i(X)$$
+ - $$(x,k) \in A_i \times [|1,p|] \ tels \ que \ g_i(x) = f_k(x) = x_0$$
+
+$$\begin{array}{rl}
+d(g_i(x), g_i(Y)) &
+= d(f_k(x), g_i(Y)) \\ &
+= d(f_k(x), \bigcup\limits_{B_j \subset A_i} f_j(Y) ) \\ &
+= \min\limits_{B_j \subset A_i} d(f_k(x), f_j(Y)) \\ &
+\le d(f_k(x), f_k(Y)) \gets B_k \subset A_i \ car \ f_k(X) \cap A_i \ne \emptyset \\ &
+= \alpha d(x, Y) \gets  f_k \ \text{est contractante} \\ &
+\end{array}$$
+
+On en déduit que $$g_k$$ est contractante. Le théorème du point fixe de Banach donne l'existance d'un point fixe $$X_i \subset A_i$$ de $$g_i$$. Et donc posant $$X = \bigcup\limits_{i=1}^p X_i$$ :
+
+$$\begin{array}{rl}
+F(X) &
+= \biguplus\limits_{i=1}^{p} f_i (X \cap A_i) \\ &
+= \biguplus\limits_{i=1}^{p} g_i (X_i) \\ &
+= \biguplus\limits_{i=1}^{p} X_i \\ &
+= X
+\end{array}$$
