@@ -28,6 +28,10 @@ int TAILLE_MIN_DECOUPE = 4;
 // Le nombre maximal de découpes qui pouront être faites, /!\ Prends le dessus sur TAILLE_MIN_DECOUPE
 int NB_MAX_DECOUPE = 4;
 
+/* ****************** Décompression ****************** */
+
+int QUALITE_DECOMPRESSION = 5; // Ameiloration de la decompression, 1 : rien n'est changé
+
 /* ****************** Débugage ****************** */
 
 // Dossier contenant les resultats du debugage

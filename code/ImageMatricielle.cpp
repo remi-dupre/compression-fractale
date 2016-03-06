@@ -303,3 +303,23 @@ void ImageMatricielle::lisser(int n) {
 		delete copie;
 	}
 }
+
+void ImageMatricielle::retrecir(int reduction) {
+	unsigned char **copie = mImage;
+
+	mImage = new unsigned char* [mLargeur / reduction];
+	for(int i=0 ; i < mLargeur / reduction ; i++) {
+		mImage[i] = new unsigned char[ mHauteur / reduction ];
+		for(int j=0 ; j < mHauteur / reduction ; j++) {
+			mImage[i][j] = copie[i*reduction][j*reduction];
+		}
+	}
+
+	for(int i=0 ; i < mLargeur ; i++) {
+		delete[] copie[i];
+	}
+	delete[] copie;
+
+	mLargeur /= reduction;
+	mHauteur /= reduction;
+}

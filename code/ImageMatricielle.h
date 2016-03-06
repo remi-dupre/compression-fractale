@@ -40,6 +40,7 @@ class ImageMatricielle {
 		ImageMatricielle appliquerIFS(const IFS& ifs);
 
 		void lisser(int n = 1);
+		void retrecir(int reduction);
 
 		/* ********** Getters & Setters ********** */
 

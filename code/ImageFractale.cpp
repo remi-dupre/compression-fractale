@@ -106,7 +106,9 @@ void ImageFractale::enregistrer(const char* fichier) const {
 void ImageFractale::exporter(const char* fichier) {
     /* Crée un rendu de l'image et l'exporte au format (.png)
 	*/
-	extern int ITERATIONS_DECOMPRESSION;
+	extern int ITERATIONS_DECOMPRESSION, QUALITE_DECOMPRESSION;
+
+	grandir(QUALITE_DECOMPRESSION);
 
 	std::vector<ImageMatricielle*> couche(mIfs.size(), NULL);
 	for(int i=0 ; i < mIfs.size() ; i++) {
@@ -116,11 +118,12 @@ void ImageFractale::exporter(const char* fichier) {
 			ImageMatricielle *nouveau =  new ImageMatricielle(couche[i]->appliquerIFS(mIfs[i]));
 			delete couche[i]; // On désaloue pour ne pas créer de fuite de mémoire
 			couche[i] = nouveau;
-			if( (ITERATIONS_DECOMPRESSION - k)%2 == 1 ) {
-				couche[i]->lisser(1);
-			}
 		}
+		couche[i]->lisser(QUALITE_DECOMPRESSION-1);
+		couche[i]->retrecir(QUALITE_DECOMPRESSION);
 	}
+
+	retrecir(QUALITE_DECOMPRESSION);
 
 	std::vector<unsigned char> pixels;
 	for(int j=0 ; j<mHauteur ; j++) {
@@ -158,6 +161,24 @@ void ImageFractale::debugSplit() const {
 		std::stringstream nom;
 		nom << DOSSIER_DEBUG << "grille-" << i << ".png";
 		img.sauvegarder( nom.str().c_str() );
+	}
+}
+
+void ImageFractale::grandir(int grandissement) {
+	mHauteur *= grandissement;
+	mLargeur *= grandissement;
+	for(int i=0 ; i < mIfs.size() ; i++) {
+		mIfs[i].decoupeGros *= grandissement;
+		mIfs[i].decoupePetit *= grandissement;
+	}
+}
+
+void ImageFractale::retrecir(int reduction) {
+	mHauteur /= reduction;
+	mLargeur /= reduction;
+	for(int i=0 ; i < mIfs.size() ; i++) {
+		mIfs[i].decoupeGros /= reduction;
+		mIfs[i].decoupePetit /= reduction;
 	}
 }
 
