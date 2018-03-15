@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
 		TCLAP::ValueArg<std::string> argNormalFile("p", "png-file", "The .png file", false, "out.png", "string");
         // Affichage
 		TCLAP::SwitchArg argVerbose("v", "verbose", "Show debugging", cmd, !VERBOSE);
-		TCLAP::SwitchArg argQuiet("q", "quiet", "Retire les affichages courants de la console", cmd, SILENCIEUX);
+		TCLAP::SwitchArg argQuiet("q", "quiet", "Removes common displays from the console", cmd, SILENCIEUX);
         // Type d'image
 		TCLAP::SwitchArg argCouleur("c", "couleur", "The image must be compressed in color", cmd, false);
 		TCLAP::SwitchArg argTransparence("t", "transparence", "The image must be compressed with transparency", cmd, false);
