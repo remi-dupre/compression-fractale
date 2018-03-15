@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
 		/* *************** Lecture des entrées *************** */
 
 	try {
-		TCLAP::CmdLine cmd("Fractal compression algorithm", ' ', "0.42");
+		TCLAP::CmdLine cmd("Fractal compression algorithm", ' ', "0.43");
 
         // Paramètres de compression
 		TCLAP::ValueArg<int> argTailleGros("b", "big", "The size of the big squares (compression)", false, 96, "int");
