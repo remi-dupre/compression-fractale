@@ -13,9 +13,19 @@ cd Compression-Fractale
 
 ### Compilation
 ```shell
-make # Compilation (linux)
+make -lpthread   # Compilation (linux)
 make clean # Pour enlever les fichiers de compilation
-```
+
+
+### Running the Compression Example
+```shell
+./fzip -p input-file.png -v -c --threads 20 -z -t -f output-file.ifs
+
+
+### Running the De-compression Example
+```shell
+
+
 
 ## Exemple
 
