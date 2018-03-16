@@ -7,7 +7,7 @@
 
 #include "FigureFractale.h"
 
-#include <tclap/CmdLine.h>
+#include "tclap/CmdLine.h"
 #include <cmath> // ceil
 #include "ImageFractale.h"
 #include "debug.h"
@@ -23,26 +23,26 @@ int main(int argc, char** argv) {
 		/* *************** Lecture des entrées *************** */
 
 	try {
-		TCLAP::CmdLine cmd("Algorithme de compression fractal", ' ', "0.42");
+		TCLAP::CmdLine cmd("Fractal compression algorithm", ' ', "0.43");
 
         // Paramètres de compression
-		TCLAP::ValueArg<int> argTailleGros("b", "big", "La taille des gros carrés (compression)", false, 96, "int");
-		TCLAP::ValueArg<int> argTaillePetit("s", "small", "La taille des petits carrés (compression)", false, 48, "int");
-		TCLAP::ValueArg<int> argNbIterations("n", "nb-iterations", "Le nombre d'itérations à la décompression", false, ITERATIONS_DECOMPRESSION, "int");
-		TCLAP::ValueArg<int> argThreads("", "threads", "Nombre de threads maximum utilisés", false, NB_THREADS, "int");
+		TCLAP::ValueArg<int> argTailleGros("b", "big", "The size of the big squares (compression)", false, 96, "int");
+		TCLAP::ValueArg<int> argTaillePetit("s", "small", "The size of the small squares (compression)", false, 48, "int");
+		TCLAP::ValueArg<int> argNbIterations("n", "nb-iterations", "The number of iterations at decompression", false, ITERATIONS_DECOMPRESSION, "int");
+		TCLAP::ValueArg<int> argThreads("", "threads", "Number of maximum threads used", false, NB_THREADS, "int");
         // Fichiers d'entrée
-		TCLAP::ValueArg<std::string> argFractalFile("f", "fractal-file", "Le fichier .ifs", false, "out.ifs", "string");
-		TCLAP::ValueArg<std::string> argNormalFile("p", "png-file", "Le fichier .png", false, "out.png", "string");
+		TCLAP::ValueArg<std::string> argFractalFile("f", "fractal-file", "The .ifs file", false, "out.ifs", "string");
+		TCLAP::ValueArg<std::string> argNormalFile("p", "png-file", "The .png file", false, "out.png", "string");
         // Affichage
-		TCLAP::SwitchArg argVerbose("v", "verbose", "Afficher le debugage", cmd, !VERBOSE);
-		TCLAP::SwitchArg argQuiet("q", "quiet", "Retire les affichages courants de la console", cmd, SILENCIEUX);
+		TCLAP::SwitchArg argVerbose("v", "verbose", "Show debugging", cmd, !VERBOSE);
+		TCLAP::SwitchArg argQuiet("q", "quiet", "Removes common displays from the console", cmd, SILENCIEUX);
         // Type d'image
-		TCLAP::SwitchArg argCouleur("c", "couleur", "L'image doit être compressée en couleur", cmd, false);
-		TCLAP::SwitchArg argTransparence("t", "transparence", "L'image doit être compressée avec transparence", cmd, false);
+		TCLAP::SwitchArg argCouleur("c", "couleur", "The image must be compressed in color", cmd, false);
+		TCLAP::SwitchArg argTransparence("t", "transparence", "The image must be compressed with transparency", cmd, false);
         // Type de travail
-		TCLAP::SwitchArg argCompresser("z", "compress", "Le fichier entré doit être compressé", cmd, false);
-		TCLAP::SwitchArg argExtraire("x", "extract", "Le fichier entré doit être extrait", cmd, false);
-		TCLAP::ValueArg<int> argExamples("e", "examples", "Génère un set de fichiers types, donner leur taille en argument", false, 0, "int");
+		TCLAP::SwitchArg argCompresser("z", "compress", "The file entered must be compressed", cmd, false);
+		TCLAP::SwitchArg argExtraire("x", "extract", "The file entered must be extracted", cmd, false);
+		TCLAP::ValueArg<int> argExamples("e", "examples", "Generate a set of type files, give their size as an argument", false, 0, "int");
 
 		cmd.add( argNormalFile );
 		cmd.add( argFractalFile );
