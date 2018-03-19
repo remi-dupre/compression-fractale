@@ -1,11 +1,11 @@
-# Compression Fractale ![Travis Status](https://api.travis-ci.org/remi100756/Compression-Fractale.svg)
+# Compression Fractale [![Build Status](https://travis-ci.org/remi-dupre/compression-fractale.svg?branch=master)](https://travis-ci.org/remi-dupre/compression-fractale)
 Algo de compression d'image par fractales. TIPE 2015-2016.
 
 ## [Documentation du code](https://github.com/remi100756/Compression-Fractale/blob/master/documentation.md)
 
 ## Configuration
 
-### Récupération du projet
+### RÃ©cupÃ©ration du projet
 ```shell
 git clone https://github.com/remi100756/Compression-Fractale.git
 cd Compression-Fractale
@@ -92,6 +92,6 @@ Where:
 
 ## Exemple
 
-Des exemples sont générés automatiquement à l'adresse suivante : http://remidupre.alwaysdata.net/fractal/
+Des exemples sont gÃ©nÃ©rÃ©s automatiquement Ã  l'adresse suivante : http://remidupre.alwaysdata.net/fractal/
 
 ![Exemple:Lena](https://raw.githubusercontent.com/remi100756/Compression-Fractale/master/lena.gif)
