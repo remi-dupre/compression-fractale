@@ -4,6 +4,12 @@
  *  - tclap (dans les dépots ubuntu, à intégrer à l'arrache avec mingw)
  *  - lpthread (nécessite d'être linké avec -lpthread)
  */
+/*
+ * Fractal image compression program (Rémi Dupré & Lucas Demarne)
+ * external dependencies:
+ * - tclap (in the ubuntu repositories, to integrate with the tear with mingw)
+ * - lpthread (needs to be linked with -lpthread)
+ */
 
 #include "FigureFractale.h"
 
@@ -17,19 +23,25 @@
 
 int main(int argc, char** argv) {
 	extern bool VERBOSE, SILENCIEUX;
-    extern int ITERATIONS_DECOMPRESSION, NB_THREADS;
-	extern int TAILLE_MIN_DECOUPE, NB_MAX_DECOUPE;
+    extern int ITERATIONS_DECOMPRESSION,  NB_THREADS;
+	// extern int TAILLE_MIN_DECOUPE, NB_MAX_DECOUPE, SEUIL_DECOUPE,  QUALITE_DECOMPRESSION;
 
 		/* *************** Lecture des entrées *************** */
 
 	try {
-		TCLAP::CmdLine cmd("Fractal compression algorithm", ' ', "0.43");
+		TCLAP::CmdLine cmd("Fractal compression algorithm", ' ', "0.45");
 
         // Paramètres de compression
 		TCLAP::ValueArg<int> argTailleGros("b", "big", "The size of the big squares (compression)", false, 96, "int");
 		TCLAP::ValueArg<int> argTaillePetit("s", "small", "The size of the small squares (compression)", false, 48, "int");
 		TCLAP::ValueArg<int> argNbIterations("n", "nb-iterations", "The number of iterations at decompression", false, ITERATIONS_DECOMPRESSION, "int");
-		TCLAP::ValueArg<int> argThreads("", "threads", "Number of maximum threads used", false, NB_THREADS, "int");
+        //   TCLAP::ValueArg<int> argQuality("r", "compression-quality", "The quality of decompression = 5,  1 = same", false, QUALITE_DECOMPRESSION, "int");
+        //   TCLAP::ValueArg<int> argOverlap("o", "overlap", "The  Minimum size of overlap = 4", false, TAILLE_MIN_DECOUPE, "int");
+        //   TCLAP::ValueArg<int> argMaxCuts("C", "max-cuts", "The maximum number of cuts made in compression = 4 ", false, NB_MAX_DECOUPE, "int");
+        //   TCLAP::ValueArg<int> argOverlapLimit("O", "overlap-limit", " Limit above which the part is overlapped = 2000", false, SEUIL_DECOUPE, "float");
+        TCLAP::ValueArg<int> argThreads("", "threads", "Number of maximum threads used", false, NB_THREADS, "int");
+ 
+        
         // Fichiers d'entrée
 		TCLAP::ValueArg<std::string> argFractalFile("f", "fractal-file", "The .ifs file", false, "out.ifs", "string");
 		TCLAP::ValueArg<std::string> argNormalFile("p", "png-file", "The .png file", false, "out.png", "string");
@@ -49,7 +61,11 @@ int main(int argc, char** argv) {
 		cmd.add( argTaillePetit );
 		cmd.add( argTailleGros );
 		cmd.add( argNbIterations );
-		cmd.add( argThreads );
+        // cmd.add( argQuality );
+        // cmd.add( argMaxCuts );
+        // cmd.add( argOverlap );
+        // cmd.add( argOverlapLimit );
+		cmd.add( argThreads );    
 		cmd.add( argExamples );
 		cmd.parse( argc, argv );
 
@@ -57,7 +73,10 @@ int main(int argc, char** argv) {
 		SILENCIEUX = argQuiet.getValue();
         ITERATIONS_DECOMPRESSION = argNbIterations.getValue();
         NB_THREADS = argThreads.getValue();
-
+        // QUALITE_DECOMPRESSION = argQuality.getValue();
+        // NB_MAX_DECOUPE =  argMaxCuts.getValue();
+        // TAILLE_MIN_DECOUPE = argOverlap.getValue();
+        // SEUIL_DECOUPE = argOverlapLimit.getValue();
 		const char* fractalFile = argFractalFile.getValue().c_str();
 		const char* normalFile = argNormalFile.getValue().c_str();
 		int taillePetit = argTaillePetit.getValue();
@@ -65,7 +84,7 @@ int main(int argc, char** argv) {
         bool couleur = argCouleur.getValue();
         bool transparence = argTransparence.getValue();
 
-		TAILLE_MIN_DECOUPE = taillePetit / NB_MAX_DECOUPE;
+		TAILLE_MIN_DECOUPE = taillePetit / NB_MAX_DECOUPE;   // TODO   comment out line when using command line variables
 
 		/* *************** Fin du traitement des entrées *************** */
 
@@ -81,13 +100,13 @@ int main(int argc, char** argv) {
 			imgF.exporter("debug.png");
 		}
 
-		if( argExtraire.getValue() ) { // Doit décoder
+		if( argExtraire.getValue() ) { // Doit décoder / must decode
 			ImageFractale img( fractalFile );
 			img.debugSplit();
 			img.exporter( normalFile );
 		}
 
-		if( argExamples.getValue() > 0 ) { // Génération de fichiers types
+		if( argExamples.getValue() > 0 ) { // Génération de fichiers types / Generation of typical files
 			FigureFractale::generer_exemples(argExamples.getValue());
 		}
 	}
