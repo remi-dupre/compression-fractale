@@ -7,7 +7,7 @@ float decode16bFloat(Flotant16b x) {
 	return x.mantisse * std::pow(2, x.exp + DECALAGE_EXPOSANT) / TAILLE_MANTISSE;
 }
 
-/* *************** Fonctions de mise en paquets *************** */
+/* *************** Fonctions de mise en paquets // Packetization functions *************** */
 
 Pack_Entete packer_entete(const ImageFractale& image) {
 	Pack_Entete retour;
@@ -68,12 +68,18 @@ void lireCorrespondancesFichier(std::ifstream& fichier, int nombre, std::vector<
 	 *  - nombre : le nombre de correspondances -de bases- à lire
 	 *  - sortie : le vecteur dans lequel verser les résultat
 	*/
+    /* Read matches in a file taking into account splitages
+      * Inputs:
+      * - file: the file in which to read
+      * - number: the number of correspondences - of bases - to read
+      * - output: the vector in which to pour the result
+    */
 	for(int i=0 ; i < nombre ; i++) {
 		Pack_Correspondance correspondance;
 		fichier.read((char*)&correspondance, SIZEOF_PACK_CORRESPONDANCE);
 		sortie.push_back( unpack_correspondance(correspondance) );
 		if( sortie.back().spliter > 0 ) {
-			lireCorrespondancesFichier(fichier, 3*sortie.back().spliter , sortie); // Le splitage a engendré des nouveaux
+			lireCorrespondancesFichier(fichier, 3*sortie.back().spliter , sortie); // Le splitage a engendré des nouveaux // Spliting has spawned new
 		}
 	}
 }

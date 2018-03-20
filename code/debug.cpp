@@ -6,6 +6,13 @@ std::string chargement(int actuel, int total, int taille) {
 	 *  - total : l'état correspondant à la fin
 	 *  - taille : la largeur de la barre
 	 */
+    /* Return an ascii loading bar
+      * - current: the current state
+      * - total: the state corresponding to the end
+      * - size: the width of the bar
+     */
+    
+    
 	std::stringstream retour;
 	retour << "[";
 	for(int i=1 ; i<=taille ; i++) {

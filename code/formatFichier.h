@@ -1,6 +1,9 @@
 /*
  * Définition des structures et des fonctions utilisées pour enregistrer dans un fichier
  */
+/*
+ * Defining the structures and functions used to save to a file
+ */
 
 struct Flotant16b;
 struct Pack_Entete;
@@ -19,12 +22,12 @@ struct Pack_Correspondance;
 #define TAILLE_MANTISSE 1024
 
 struct Flotant16b {
-    /* Représente un flotant sur 16 bits */
+    /* Représente un flotant sur 16 bits   //  Represents a 16-bit float */
 	short signed int exp       : 5;
 	short signed int mantisse  : 11; // log2(TAILLE_MANTISSE-1) (signé)
 
-	Flotant16b() { mantisse = exp = 0; }	// Un constructeur élémentaire
-    Flotant16b(float x) {					// Constructeur à partir d'un float 32 bits
+	Flotant16b() { mantisse = exp = 0; }	// Un constructeur élémentaire // An elementary constructor
+    Flotant16b(float x) {					// Constructeur à partir d'un float 32 bits // Constructor from a 32-bit float
     	int e;
     	mantisse = TAILLE_MANTISSE * std::frexp(x, &e);
     	exp = e - DECALAGE_EXPOSANT;
@@ -34,8 +37,7 @@ struct Flotant16b {
 float decode16bFloat(Flotant16b x);
 
 struct Pack_Entete {
-    /* L'en-tête du document
-     *  sur 32 bits
+    /* L'en-tête du document  -  sur 32 bits  // The document header - 32-bit
      */
 	unsigned int largeur   :15;
 	unsigned int hauteur   :15;
@@ -44,8 +46,7 @@ struct Pack_Entete {
 };
 
 struct Pack_IFS {
-    /* L'en-tête d'une couche
-     *  sur 32 bits
+    /* L'en-tête d'une couche       *  sur 32 bits  // The header of a layer - 32-bit
      */
 	unsigned int decoupeGros	:12;
 	unsigned int decoupePetit	:12;
@@ -72,7 +73,7 @@ struct Pack_Correspondance {
 
 /* *************** Fonctions de mise en paquets *************** */
 
-#define WARNING_PACKING true // Doit t'on afficher un message dans la console si une entrée semble dangereuse
+#define WARNING_PACKING true // Doit t'on afficher un message dans la console si une entrée semble dangereuse  // post a message in the console if an entry seems dangerous true
 
 Pack_Entete packer_entete(const ImageFractale&);
 Pack_IFS packer_ifs(const IFS& ifs, unsigned char moyenne = 0);

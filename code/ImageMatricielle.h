@@ -12,7 +12,7 @@ class ImageMatricielle;
 #include <unistd.h> // sleep(int)
 #include "lib/lodepng.h" // https://github.com/lvandeve/lodepng
 
-#define timespec thread_timespec // Evite un conflict avec ctime (win)
+#define timespec thread_timespec // Evite un conflict avec ctime (win) // Avoid a conflict with ctime (win)
 #include <pthread.h>
 #undef timespec
 
@@ -55,9 +55,9 @@ class ImageMatricielle {
 		void remplir(unsigned char val);
 
 	private :
-		unsigned char **mImage;	// Les pixeles sont représentés par des octects
-		unsigned int mLargeur;	// Largeur en pixels de l'image
-		unsigned int mHauteur;	// Hauteur en pixels de l'image
+		unsigned char **mImage;	// Les pixeles sont représentés par des octects //  Pixels are represented by octects
+		unsigned int mLargeur;	// Largeur en pixels de l'image  //   Width in pixels of the image
+		unsigned int mHauteur;	// Hauteur en pixels de l'image  //   Height in pixels of the image
 };
 
 #endif

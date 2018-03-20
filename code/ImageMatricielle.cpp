@@ -6,6 +6,9 @@ ImageMatricielle::ImageMatricielle(unsigned int x, unsigned int y) : mLargeur(x)
 	/* Créée une nouvelle image de dimensions données
 	 * Les pixels de l'image ne sont pas initialisés
 	 */
+    /* Create a new image of given dimensions
+   * Pixels in the image are not initialized
+   */
 	mImage = new unsigned char* [mLargeur];
 	for(int i=0 ; i<mLargeur ; i++) {
 		mImage[i] = new unsigned char[mHauteur];
@@ -19,6 +22,12 @@ ImageMatricielle::ImageMatricielle(const char* fichier, int couche) {
 		- couche : la couche à lire (de 0 à 3)
 	 * Sortie : si l'ouverture échoue, l'image prend les dimensions 0x0
 	 */
+    /* Open a file '.png'
+   * Inputs:
+    - file: the file address
+    - layer: the layer to be read (from 0 to 3)
+   * Output: if the aperture fails, the image takes the dimensions 0x0
+   */
 	extern bool VERBOSE;
 
 	bool erreur = false;
@@ -66,7 +75,7 @@ ImageMatricielle* ImageMatricielle::cloner() {
 /* *************** Setters / Getters *************** */
 
 unsigned char* ImageMatricielle::operator[](int i) {
-	/* Retourne la ligne de l'image correspondante */
+	/* Retourne la ligne de l'image correspondante */ /* Return the line of the corresponding image */
 	return mImage[i];
 }
 
@@ -78,8 +87,7 @@ int ImageMatricielle::getHauteur() const { return mHauteur; }
 int ImageMatricielle::getLargeur() const { return mLargeur; }
 
 unsigned char ImageMatricielle::moyenne() const {
-	/* Retourne la moyenne de teinte des pixels de l'image
-	 */
+	/* Retourne la moyenne de teinte des pixels de l'image  */ /* Returns the average hue of pixels in the image */
 	int somme = 0;
 	for(int i=0 ; i<mLargeur ; i++) {
 		for(int j=0 ; j<mHauteur ; j++) {
@@ -90,8 +98,7 @@ unsigned char ImageMatricielle::moyenne() const {
 }
 
 void ImageMatricielle::adapterMoyenne(unsigned char val) {
-	/* Décale la moyenne de couleur des pixels pour la faire correspondre à 'val'
-	 */
+	/* Décale la moyenne de couleur des pixels pour la faire correspondre à 'val'  */ /* Shift the color average of pixels to match 'val' */
 	int decalage = val - moyenne();
 	for(int i=0 ; i<mLargeur ; i++) {
 		for(int j=0 ; j<mHauteur ; j++) {
@@ -101,8 +108,7 @@ void ImageMatricielle::adapterMoyenne(unsigned char val) {
 }
 
 void ImageMatricielle::remplir(unsigned char val) {
-	/* Remplis l'image de la couleur val
-	 */
+	/* Remplis l'image de la couleur val  */ /* Fill the image with the color val */
 	for(int i=0 ; i<mLargeur ; i++) {
 		for(int j=0 ; j<mHauteur ; j++) {
 			mImage[i][j] = val;
@@ -116,6 +122,9 @@ std::vector<ImagePart> ImageMatricielle::decouper(int taille) {
 	/* Découpe l'image en sous-images
 	 * Les sous parties sont des carrés de côté "taille", le dépassement est ignoré
 	 */
+    /* Cut the image into sub-images
+     * Subparts are "size" side squares, overtaking is ignored
+     */
 	std::vector<ImagePart> liste;
 	for(int i=0 ; i*taille<mLargeur ; i++) {
 		for(int j=0 ; j*taille<mHauteur ; j++) {
@@ -130,18 +139,22 @@ std::vector<ImagePart> ImageMatricielle::adapterDecoupe(std::vector<ImagePart>& 
 	 *  - les blocs à spliter vont se spliter
 	 *  - la découpe de sortie sera de la même taille que la liste des correspondances
 	 */
+    /* Adapt a trivial cut to a list of matches:
+    * - the blocks to be split will split
+    * - the output cutout will be the same size as the list of matches
+     */
 	std::list<ImagePart> aTraiter;
-	for(int i=0 ; i < decoupe.size() ; i++) aTraiter.push_back(decoupe[i]); // On transforme l'entrée en liste
+	for(int i=0 ; i < decoupe.size() ; i++) aTraiter.push_back(decoupe[i]); // On transforme l'entrée en liste // We transform the entry into a list
 	std::vector<ImagePart> retour;
 	int i = 0;
 
 	while( !aTraiter.empty() ) {
-		for(int k=0 ; k < correspondances[i].spliter ; k++) { // On splite le nombre de fois demandé
-			std::queue<ImagePart> decoupes = aTraiter.front().spliter(); // Une file de 4 éléments
+		for(int k=0 ; k < correspondances[i].spliter ; k++) { // On splite le nombre de fois demandé  // We split the number of times requested
+			std::queue<ImagePart> decoupes = aTraiter.front().spliter(); // Une file de 4 éléments  // A line of 4 elements
 			aTraiter.pop_front();
-			std::list<ImagePart>::iterator pos = aTraiter.begin(); // La position où on insère tout
+			std::list<ImagePart>::iterator pos = aTraiter.begin(); // La position où on insère tout // The position where you insert everything
 			while( !decoupes.empty() ) {
-				aTraiter.insert(pos, decoupes.front()); // On verse la découpe
+				aTraiter.insert(pos, decoupes.front()); // On verse la découpe // We insert the cut
 				decoupes.pop();
 			}
 		}
@@ -161,12 +174,20 @@ IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros, const char* m
 	 *  - correspondances : la liste (respectant les indinces des blocs) des 'Correspondance' a appliquer
 	 *  - taillePetit / tailleGros : la taille de découpe
 	 */
+    /* Search the ifs for the image
+     * Inputs:
+     * - smallSize: the size of the blocks of the small pavements
+     * - sizeBig: size of the big blocks, must be bigger than sizeSmall
+     * Output: IFS
+     * - correspondences: the list (respecting the indinces of the blocks) of the 'Correspondence' to be applied
+     * - smallSize / sizeBig: cutting size
+     */
 	extern int NB_THREADS;
-	extern int NB_MAX_DECOUPE; // Permet de savoir combien de pavages créer
+	extern int NB_MAX_DECOUPE; // Permet de savoir combien de pavages créer  // Lets you know how many tessellations to create
 
 	int tDebut = time(0);
 	if(taillePetit > tailleGros) {
-		std::cerr << "Le pavage n'est pas de la bonne dimension" << std::endl;
+		std::cerr << "Pane is not the right dimension" << std::endl;
 		IFS retour;
 			retour.correspondances = std::vector<Correspondance>();
 			retour.decoupeGros = tailleGros;
@@ -175,15 +196,15 @@ IFS ImageMatricielle::chercherIFS(int taillePetit, int tailleGros, const char* m
 	}
 
 	COUT << "Création des pavages ...";
-	std::vector<ImagePart> pavagePetit = decouper(taillePetit); // Les petits carrés dot on cherche une correspondance
+	std::vector<ImagePart> pavagePetit = decouper(taillePetit); // Les petits carrés dot on cherche une correspondance  // Small squares dot one looking for a match
 
 	std::vector< std::vector<ImagePart> > pavagesGros;
 	for(int i = 0 ; i <= NB_MAX_DECOUPE ; i++) {
-		pavagesGros.push_back( decouper(tailleGros / std::pow(2, i)) ); // Adapte la découpe en fonction du niveau de récursion
+		pavagesGros.push_back( decouper(tailleGros / std::pow(2, i)) ); // Adapte la découpe en fonction du niveau de récursion // Adapts the cut according to the level of recursion
 	}
 	DEBUG << "\rPetits pavés : " << pavagePetit.size() << ", Gros pavés : " << pavagesGros.size() << std::endl;
 
-	std::vector< std::queue<ImagePart> > taches = decouperTache(pavagePetit, NB_THREADS); // Découpe les tâches
+	std::vector< std::queue<ImagePart> > taches = decouperTache(pavagePetit, NB_THREADS); // Découpe les tâches // Cut out tasks
 	std::vector< std::vector<Correspondance> > resultats(NB_THREADS, std::vector<Correspondance>() );
 	std::vector<pthread_t> threads(NB_THREADS, pthread_t());
 	std::vector<ThreadData> datas(NB_THREADS, ThreadData());
@@ -230,19 +251,23 @@ ImageMatricielle ImageMatricielle::appliquerIFS(const IFS& ifs) {
 	 * Entrée : IFS : tout ce qui décrit une image encodée
 	 * Sortie : l'image obtenue après application à cet objet
 	 */
+    /* Apply the IFS and return the result
+     * Entry: IFS: anything that describes an encoded image
+     * Output: the image obtained after application to this object
+    */
 	extern int NB_MAX_DECOUPE;
 
 	ImageMatricielle sortie(getLargeur(), getHauteur());
 	std::vector< std::vector<ImagePart> > decoupesEntree;;
 	for(int i = 0 ; i <= NB_MAX_DECOUPE ; i++) {
-		decoupesEntree.push_back( decouper(ifs.decoupeGros / std::pow(2, i)) ); // Adapte la découpe en fonction des redécoupes
+		decoupesEntree.push_back( decouper(ifs.decoupeGros / std::pow(2, i)) ); // Adapte la découpe en fonction des redécoupes // Adapts the cutting according to the re-cuts
 	}
 	std::vector<ImagePart> decoupeSortie = sortie.decouper(ifs.decoupePetit);
 	decoupeSortie = adapterDecoupe(decoupeSortie, ifs.correspondances);
 
-	std::stack<int> dureeSplit; // Chaque élément représente une couche de redécoupe et le nombre d'éléments à y traiter
+	std::stack<int> dureeSplit; // Chaque élément représente une couche de redécoupe et le nombre d'éléments à y traiter // Each element represents a redecorating layer and the number of elements to be treated
 	for(int i=0 ; i<ifs.correspondances.size() ; i++) {
-		if( ifs.correspondances[i].spliter > 0 ) { // Au moins une redécoupe est nécessaire
+		if( ifs.correspondances[i].spliter > 0 ) { // Au moins une redécoupe est nécessaire // At least one redécoupe is necessary
 			if( dureeSplit.size() > 0 ) {
 				dureeSplit.top() -= 1;
 			}
@@ -257,17 +282,21 @@ ImageMatricielle ImageMatricielle::appliquerIFS(const IFS& ifs) {
 		if( dureeSplit.size() > 0 ) {
 			dureeSplit.top() -= 1;
 		}
-		while( dureeSplit.size() > 0 && dureeSplit.top() == 0) dureeSplit.pop(); // On est plus dans une partie réduite
+		while( dureeSplit.size() > 0 && dureeSplit.top() == 0) dureeSplit.pop(); // On est plus dans une partie réduite  // We are more in a small part
 	}
 	return sortie;
 }
 
-/* *************** Enregistrement *************** */
+/* *************** Enregistrement / Saving *************** */
 
 void ImageMatricielle::sauvegarder(const char* fichier) const {
 	/* Enregistre l'image au format png au nom donné
 	 *  /!\ Comme on ne connais qu'une couche, l'image est enregistrée en niveaux de gris
 	 */
+    /* Save the image in png format to the given name
+     * /! \ Since only one layer is known, the image is saved in grayscale
+     */
+    
 	std::vector<unsigned char> pixels;
 	for(int j=0 ; j<mHauteur ; j++) {
 		for(int i=0 ; i<mLargeur ; i++) {
@@ -285,7 +314,7 @@ void ImageMatricielle::sauvegarder(const char* fichier) const {
 	if(error) std::cout << fichier << " -> encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
 }
 
-/* *************** Traitement *************** */
+/* *************** Traitement / Treatment *************** */
 
 void ImageMatricielle::lisser(int n) {
 	ImageMatricielle* copie;

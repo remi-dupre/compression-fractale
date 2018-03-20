@@ -14,7 +14,9 @@ class ImagePart {
 	/* Représente un bout d'image carré
 	 * C'est là-dessus que sont effectuées les transformations
 	 */
-
+    /* Represents a piece of square image
+      * This is where transformations are made
+    */
 	public :
 		ImagePart(ImageMatricielle* maman, int x, int y, int taille);
 		ImagePart(int taille);
@@ -47,10 +49,10 @@ class ImagePart {
 		std::queue<ImagePart> spliter() const;
 
 	private :
-		ImageMatricielle* mImage;	// L'image dont c'est une partie
-		int mTaille;				// La taille du coté de la partie
-		int mX, mY;					// La position du pixel haut-gauche dans l'image source
-		bool mVirtuel;				// Si oui, la source a été créée uniquement pour simuler un bout d'image
+		ImageMatricielle* mImage;	// L'image dont c'est une partie  // The image of which it is a part
+		int mTaille;				// La taille du coté de la partie  // The size of the side of the part
+		int mX, mY;					// La position du pixel haut-gauche dans l'image source // The position of the top-left pixel in the source image
+		bool mVirtuel;				// Si oui, la source a été créée uniquement pour simuler un bout d'image // If yes, the source was created only to simulate a piece of image
 };
 
 #endif
