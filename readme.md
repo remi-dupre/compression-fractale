@@ -1,31 +1,38 @@
-# Compression Fractale ![Travis Status](https://api.travis-ci.org/remi100756/Compression-Fractale.svg)
-Algo de compression d'image par fractales. TIPE 2015-2016.
+# fzip - Fractal Image Compression 
+Algorythm to compress and decompress fractal image files in *.ifs file format.      TIPE 2015-2016.
 
-## [Documentation du code](https://github.com/remi100756/Compression-Fractale/blob/master/documentation.md)
+## [Documentation]
+
+/documents 
 
 ## Configuration
 
-### Récupération du projet
+### Obtain the project source
+
 ```shell
-git clone https://github.com/remi100756/Compression-Fractale.git
-cd Compression-Fractale
+git clone https://github.com/wrapperband/fzip.git
+cd fzip
 ```
 
 ### Compilation
+
 ```shell
 make -lpthread   # Compilation (linux)
 make clean # Pour enlever les fichiers de compilation
+```
 
+### Example of running the compression algorithm to *.ifs
 
-### Running the Compression Example
 ```shell
 ./fzip -p input-file.png -v -c --threads 20 -z -t -f output-file.ifs
+```
 
 
-### Running the De-compression Example
+###  Example of running the decompression algorithm to *.png
+
 ```shell
-
 ./fzip -p output-file.png -v -c --threads 20 -x -t -f input-file.ifs -n 2
+```
 
 ### Run Time options
 
@@ -39,7 +46,7 @@ USAGE:
 Where: 
 
    -e <int>,  --examples <int>
-     Generate a set of type files, give their size as an argument
+     Generate a set of type files, give their size as an argument ( -e 300 )
 
    --threads <int>
      Number of maximum threads used
@@ -90,8 +97,8 @@ Where:
    Fractal compression algorithm
 
 
-## Exemple
+## Example
 
-Des exemples sont générés automatiquement à l'adresse suivante : http://remidupre.alwaysdata.net/fractal/
+Examples are generated automatically at the following address.  (Des exemples sont générés automatiquement à l'adresse suivante)  : http://remidupre.alwaysdata.net/fractal/
 
 ![Exemple:Lena](https://raw.githubusercontent.com/remi100756/Compression-Fractale/master/lena.gif)
