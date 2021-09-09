@@ -15,20 +15,21 @@ cd Compression-Fractale
 ```shell
 make -lpthread   # Compilation (linux)
 make clean # Pour enlever les fichiers de compilation
-
+```
 
 ### Running the Compression Example
 ```shell
 ./fzip -p input-file.png -v -c --threads 20 -z -t -f output-file.ifs
-
+```
 
 ### Running the De-compression Example
 ```shell
-
 ./fzip -p output-file.png -v -c --threads 20 -x -t -f input-file.ifs -n 2
+```
 
-### Run Time options
+### Runtime options
 
+```
 USAGE: 
 
    ./fzip  [-e <int>] [--threads <int>] [-n <int>] [-b <int>] [-s <int>]
@@ -88,10 +89,10 @@ Where:
 
 
    Fractal compression algorithm
-
+```
 
 ## Exemple
 
-Des exemples sont générés automatiquement à l'adresse suivante : http://remidupre.alwaysdata.net/fractal/
+Voici un exemple d'étapes successives de décompression d'une image:
 
 ![Exemple:Lena](https://raw.githubusercontent.com/remi100756/Compression-Fractale/master/lena.gif)
